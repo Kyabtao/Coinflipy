@@ -1,5 +1,18 @@
 # TossMatch Changelog
 
+## v12.0 — Modular Code Structure
+
+- Restructured the two single-file apps (`index.html`, `admin.html`) into reusable **native ES modules** (`<script type="module">` + `import`/`export`).
+- Split the inline CSS into dedicated stylesheets: `css/player/app.css`, `css/admin/app.css` and a shared `css/shared/theme.css`.
+- Extracted the shared theme engine into `js/shared/theme.js` and shared runtime state into `js/shared/runtime.js`, both imported by the player and admin apps.
+- Split the player app into `core`, `data`, `bots`, `crypto`, `state`, `helpers`, `render`, `theme`, `games`, `wallet`, `misc`, `sync`, `boot` + `main.js`.
+- Split the admin app into `core`, `render`, `theme`, `engine`, `banking`, `sync`, `boot` + `main.js`.
+- Cross-module mutable state is held in the shared runtime on `globalThis`; module top-level wiring is deferred into per-module `bind()` calls so module evaluation order cannot change app behavior.
+- Kept module evaluation order identical to the original single-file execution order (verified by the audit harness + Node module-load smoke test).
+- Bumped the service worker to `tossmatch-v12.0`, precaching every `js/` and `css/` module.
+- Updated `tools/audit.js` to (a) validate the module structure, ESM parse, import resolution and `type="module"` entrypoints, (b) keep every existing accounting, theme and asset check by scanning the concatenated module bundle, and (c) keep the shared-theme runtime smoke test.
+- Audit loop: `tossmatch/docs/audit-loop-v12.0.log` records **20/20 clean passes** as the release gate.
+
 ## v11.0 — Unified Merge Release
 
 - Merged all five project workspaces (spec document set, demo/admin uploads, combined v1 set, modular redesign, v10.8 single-file app) into one cohesive project.
