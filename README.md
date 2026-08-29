@@ -55,6 +55,31 @@ dependencies. The app is fully offline (service worker + localStorage). The
 Admin panel opens from the header link in a new tab and shares the same state
 (`localStorage` key `tossmatch_v8`) with the player app.
 
+## Deploy on GitHub Pages
+
+GitHub Pages is not enabled on this repository yet (no Actions workflow,
+no Pages site, no deployments). The app is static HTML (no build). To publish it:
+
+1. Open **Settings → Pages**.
+2. Under **Build and deployment → Source**, choose **Deploy from a branch**.
+3. Branch **main**, folder **/** (root), then **Save**.
+
+GitHub then serves `https://kyabtao.github.io/Coinflipy/` (root `index.html`
+redirects into `tossmatch/`). Direct URLs:
+
+- Player: `https://kyabtao.github.io/Coinflipy/tossmatch/`
+- Admin: `https://kyabtao.github.io/Coinflipy/tossmatch/admin.html`
+
+`_config.yml` excludes the `old data/` zip archives from the Pages build.
+Paths in the app, manifest, and service worker are relative, so they work
+under the project-site base URL.
+
+Optional: to publish **only** `tossmatch/` as the site root (so `/` is the
+player app), add `.github/workflows/deploy-pages.yml` with the official
+Pages artifact actions (`actions/upload-pages-artifact` +
+`actions/deploy-pages`), set Pages source to **GitHub Actions**, and upload
+path `tossmatch`. See `tossmatch/docs/github-pages-workflow.md`.
+
 > Play coins only. This is a local demonstration — not a payment, gambling or
 > fairness service. Real-money operation requires licensing, KYC/AML, certified
 > randomness and legal counsel (see `docs/`).

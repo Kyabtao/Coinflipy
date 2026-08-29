@@ -1,0 +1,5 @@
+# GitHub Pages (branch deploy): publish the static app, skip workspace archives.
+exclude:
+  - "old data"
+  - ".git"
+  - ".github"
