@@ -1,79 +1,84 @@
 ## Summary
 
-This PR implements Phase 1 (Directory Restructuring) and Phase 4 (UI Humanization & Targeted Rendering) of the comprehensive refactoring task.
+Completes the remaining phases of the Coinflipy/FlipArena refactor directive in
+`Task_details.MD`: **Phase 2** (Admin ↔ Player alignment), **Phase 3** (revenue,
+ledger & transaction audit), **Phase 4** (humanization + targeted rendering),
+**Phase 5** (20-pass continuous audit) and **Phase 6** (legacy deletion +
+`doc/` documentation).
 
-### Phase 1: Directory Restructuring
+Full record: **`doc/CLEANUP_AND_ARCHITECTURE.md`**.
 
-Created modular directory structure:
-- `src/components/` - Reusable UI components (button, card, modal, badge, input)
-- `src/css/` - Design system files (variables, reset, global, player/admin themes)
-- `src/js/` - Core modules (api, state, utils, render, sync)
-- `src/pages/` - Page entry points (player, admin)
+### Phase 3 — Ledger, revenue & transaction audit
 
-### Phase 4: Targeted Rendering
+* New shared module `js/shared/money.js` on top of the `src/js/utils/math.js`
+  subunit primitives. Percentages and multipliers are integer-scaled and rounded
+  **exactly once** at the coin boundary (a real double-rounding bug — `92 × 3.8%`
+  becoming `4` instead of `3` — was caught by the new simulation and fixed).
+* All coin movement (escrow, refund, settlement, shop spends, deposits,
+  withdrawals, vault moves, transfers, Admin adjustments) goes through
+  `debitWallet()` / `creditWallet()` / `debitBot()` / `creditBot()`.
+* `ledgerAudit()` asserts non-negative whole-coin balances, escrow integrity,
+  duplicate-settlement detection, well-formed rows and
+  `net profit = gross revenue − promo − comps`; `enforceWalletInvariants()`
+  repairs drift on boot and every reconcile.
+* `withWalletLock()` serialises wallet-critical sections (double-click /
+  rapid-click double-spend protection).
 
-Implemented targeted DOM render orchestration:
-- `renderChrome()` - Updates header, wallet balance, coin counters, jackpot tickers
-- `renderTab(tab)` - Updates only the active tab's specific DOM widgets
-- `renderTick()` - Updates chrome and active tab live widgets only
-- `render()` - Full boot, initialization, and theme evaluation
+### Phase 2 — Admin ↔ Player alignment
 
-Tab switching now updates activeTab state and invokes renderTab() without triggering monolithic re-renders.
+* **Game parameters** (Rates & Jackpot): minimum stake, stake ceiling, payout
+  cap, house edge, flip animation speed and Auto Bet stop — read live by the
+  player app (`checkGuards`, `maxStake`, `settleFlip`, `settleGameWin`,
+  `animateFlip`, `houseEdge`).
+* **Player management**: freeze/unfreeze for the demo player and every simulated
+  player (enforced in `checkGuards`, `readyBotPool`, bot games, transfers,
+  shop), per-player bet history in the record drawer, live player session
+  monitor, and manual credit/debit through the money module.
+* **Revenue dashboard** (Commercial → Revenue): volume/NGR tiles, daily and
+  weekly SVG charts, reconciliation readout, and **CSV + JSON exports** of the
+  merged transaction log.
 
-### Components Implemented
+### Phase 4 — Humanization & targeted rendering
 
-**Button Component:**
-- Variants: primary, secondary, accent, danger, ghost, gold, green, purple
-- Sizes: sm, md, lg
-- States: loading, disabled
+* `renderChrome()` / `renderTab()` / `renderTick()` (player) and
+  `renderAdminChrome()` / `renderAdminTab()` / `renderAdminTick()` (admin);
+  tab clicks and background bot ticks now repaint only the active screen
+  (verified by comparing an inactive panel's HTML before/after a tick).
+* Internal codes (`B1–B4`, `UX1–UX4`, `G21–G23`, `CAT18–CAT33`, `E6–E9`,
+  `S1–S7`) are gone from every user-visible string; the Feature Directory shows
+  the human category and its search index ignores codes. `.code` remains only
+  as an internal data key and for private-room invite codes.
+* Navigation redesign: icon chips, gold/purple active accent bars with glow,
+  gradient header hairline, hover polish, `:focus-visible` rings, `min-width`
+  guards for the mobile tab bar.
+* The `src/components` library and `src/css/variables.css` are now wired into
+  the app (the Revenue screen builds tiles and buttons from them).
 
-**Card Component:**
-- Standard cards with premium variant
-- Stat tiles and grids
-- Game cards
-- Coin flip display
+### Phase 5 — 20-pass audit
 
-**Modal Component:**
-- Alert, confirmation, and toast notifications
-- Modal backdrop and close handlers
+`tools/run-audit-loop.sh 20` runs three harnesses per pass:
 
-**Badge Component:**
-- Status badges with variants
-- Live indicators
-- Win/loss result badges
-- VIP tier badges
-- Balance chips
+| Harness | Covers |
+|---|---|
+| `tools/audit.js` | module graph, DOM ids, assets, SW cache, JS hygiene, human labels, targeted rendering, component wiring, Admin ↔ Player alignment, repository hygiene |
+| `tools/ledger-simulation.mjs` | safe integer math, escrow conservation, concurrency/double-spend, invariants, reconciliation formula |
+| `tools/boot-smoke.mjs` | headless jsdom boot of both apps, all 34 screens, tab walks, a live bet, Admin Revenue rendering, zero console output |
 
-**Input Component:**
-- Bet selectors with quick chips
-- Side selectors (Heads/Tails)
-- Number steppers
-- Search inputs
+**Result: 20/20 clean passes — 157 checks per pass, 3,140 assertions, 0
+failures** (`tossmatch/docs/audit-loop-v13.0.log`).
 
-### Utilities Added
+### Phase 6 — Cleanup & documentation
 
-- **Math:** Safe integer operations, percentage calculations, clamping
-- **Format:** Currency formatting (Indian locale), time ago, duration
-- **Sanitize:** Input validation for username, taunt, bet amount, room codes
+29 paths (~7.9 MB) deleted — `old data/` workspace archives, superseded
+single-file prototypes/mock data under `docs/legacy/`, and unreferenced
+duplicate component stylesheets. Every path is itemised with its reason in
+`doc/CLEANUP_AND_ARCHITECTURE.md`, which also documents the architecture,
+component catalog, integration hooks, ledger audit and audit confirmation.
+`README.md` and `_config.yml` were updated for the new layout.
 
-### CSS Foundation
+## Test plan
 
-- Design tokens in `variables.css` (palette, spacing, shadows, radii)
-- CSS reset and base styles in `reset.css`
-- Global utilities in `global.css`
-- Player sidebar with gold accent bar + glow styling
-- Admin sidebar with purple accent bar styling
-
-### Cross-Tab Sync
-
-BroadcastChannel-based communication for:
-- Bot engine pulse signals
-- State synchronization between tabs
-- Admin live status monitoring
-
----
-
-This is the first PR of the refactoring task. Future PRs will address:
-- Phase 2: Admin alignment with player view
-- Phase 3: Revenue and ledger audit
-- Phase 5: Audit expansion and healing loop
+- [x] `node tools/audit.js` — all checks clean
+- [x] `node tools/ledger-simulation.mjs` — 20/20 money + concurrency checks
+- [x] `node tools/boot-smoke.mjs` — 25/25 headless boot checks (`npm i jsdom`)
+- [x] `bash tools/run-audit-loop.sh 20` — 20/20 consecutive clean passes

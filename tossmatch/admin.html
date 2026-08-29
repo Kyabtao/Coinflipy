@@ -4,7 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>FlipArena v12.0 — Admin Panel</title>
-<link rel="stylesheet" href="css/admin/app.css">
+<link rel="stylesheet" href="src/css/variables.css">
+  <link rel="stylesheet" href="css/admin/app.css">
   <link rel="stylesheet" href="css/shared/theme.css">
 </head>
 <body>
@@ -27,23 +28,24 @@
 <main>
   <nav class="tabs" id="tabs">
     <div class="admin-nav-brand"><span>CONTROL CENTER</span><b>v12.0</b></div>
-    <div class="admin-nav-tools"><input id="adminNavSearch" type="search" placeholder="Find Admin screen…" aria-label="Search Admin navigation"/><select id="adminNavJump" aria-label="Jump to Admin screen"><option value="">Quick jump…</option><optgroup label="Command"><option value="dash">Overview</option><option value="ops">Live Ops</option><option value="people">Players</option><option value="features">Feature Hub</option><option value="directory">Feature Directory</option></optgroup><optgroup label="Commercial"><option value="rates">Rates & Jackpot</option><option value="econ">Economy</option><option value="topups">Top-up Analytics</option><option value="withdraw">Withdrawals</option><option value="promo">Promotions</option></optgroup><optgroup label="Engagement"><option value="vip">VIP & Levels</option><option value="trny">Tournaments</option></optgroup><optgroup label="Governance"><option value="audit">Audit & Data</option><option value="trust">Trust Center</option></optgroup></select><div class="admin-nav-empty" id="adminNavEmpty">No Admin screens match.</div></div>
-    <div class="admin-nav-label">Command</div>
+    <div class="admin-nav-tools"><input id="adminNavSearch" type="search" placeholder="Find Admin screen…" aria-label="Search Admin navigation"/><select id="adminNavJump" aria-label="Jump to Admin screen"><option value="">Quick jump…</option><optgroup label="Command"><option value="dash">Overview</option><option value="ops">Live Ops</option><option value="people">Players</option><option value="features">Feature Hub</option><option value="directory">Feature Directory</option></optgroup><optgroup label="Commercial"><option value="rates">Rates & Jackpot</option><option value="econ">Economy</option><option value="revenue">Revenue</option><option value="topups">Top-up Analytics</option><option value="withdraw">Withdrawals</option><option value="promo">Promotions</option></optgroup><optgroup label="Engagement"><option value="vip">VIP & Levels</option><option value="trny">Tournaments</option></optgroup><optgroup label="Governance"><option value="audit">Audit & Data</option><option value="trust">Trust Center</option></optgroup></select><div class="admin-nav-empty" id="adminNavEmpty">No Admin screens match.</div></div>
+    <div class="admin-nav-label"><span class="admin-nav-chip" aria-hidden="true">⌁</span>Command</div>
     <button class="tab active" data-tab="dash">⌁ Overview</button>
     <button class="tab" data-tab="ops">🚦 Live Ops</button>
     <button class="tab" data-tab="people">👥 Players</button>
     <button class="tab" data-tab="features">✨ Feature Hub</button>
     <button class="tab" data-tab="directory">🗂 Feature Directory</button>
-    <div class="admin-nav-label">Commercial</div>
+    <div class="admin-nav-label"><span class="admin-nav-chip" aria-hidden="true">💹</span>Commercial</div>
     <button class="tab" data-tab="rates">💹 Rates & Jackpot</button>
     <button class="tab" data-tab="econ">📈 Economy</button>
+    <button class="tab" data-tab="revenue">📊 Revenue</button>
     <button class="tab" data-tab="topups">💳 Top-up Analytics</button>
     <button class="tab" data-tab="withdraw">🏦 Withdrawals</button>
     <button class="tab" data-tab="promo">🎁 Promotions</button>
-    <div class="admin-nav-label">Engagement</div>
+    <div class="admin-nav-label"><span class="admin-nav-chip" aria-hidden="true">🎯</span>Engagement</div>
     <button class="tab" data-tab="vip">💎 VIP & Levels</button>
     <button class="tab" data-tab="trny">🏟 Tournaments</button>
-    <div class="admin-nav-label">Governance</div>
+    <div class="admin-nav-label"><span class="admin-nav-chip" aria-hidden="true">🛡️</span>Governance</div>
     <button class="tab" data-tab="audit">🧾 Audit & Data</button>
     <button class="tab" data-tab="trust">🛡️ Trust Center</button>
   </nav>
@@ -144,6 +146,32 @@
         <div><label>House capital</label><input type="number" id="cfgHouseCap" min="0" step="1000" value="100000"/></div>
       </div>
       <button class="btn btn-primary" id="saveRules" style="margin-top:14px">💾 Save rules</button>
+    </div>
+    <div class="card">
+      <h3>🎛 Game parameters <span class="muted" style="margin-left:auto;font-weight:400">mirrors every player-side betting control</span></h3>
+      <p class="muted">Stake bounds, payout ceiling, house edge and animation speed are read live by the player app, so an Admin change is reflected on the very next bet.</p>
+      <div class="grid3">
+        <div><label>Minimum stake</label><input type="number" id="cfgStakeMin" min="1" max="1000" value="10"/></div>
+        <div><label>Maximum stake ceiling</label><input type="number" id="cfgStakeMax" min="10" max="100000" step="10" value="1000"/></div>
+        <div><label>Payout cap per game (0 = unlimited)</label><input type="number" id="cfgPayoutCap" min="0" step="100" value="0"/></div>
+        <div><label>House edge (%)</label><input type="number" id="cfgEdge" min="0" max="25" step="0.5" value="2"/></div>
+        <div><label>Flip animation (ms)</label><input type="number" id="cfgAnim" min="200" max="6000" step="100" value="2300"/></div>
+        <div><label>Auto Bet default stop</label><input type="number" id="cfgAutoStop" min="-10000" max="-50" step="50" value="-200"/></div>
+      </div>
+      <div class="row" style="margin-top:14px"><button class="btn btn-primary" id="saveGameParams">💾 Save game parameters</button><button class="btn btn-ghost btn-sm" id="resetGameParams">Reset defaults</button><span class="muted" id="gameParamsStatus"></span></div>
+      <div class="section-title" style="margin-top:16px">🛰️ Live player session</div>
+      <div id="playerSessionMonitor"></div>
+    </div>
+  </section>
+
+  <!-- REVENUE -->
+  <section class="panel" id="panel-revenue">
+    <div class="admin-hero compact"><div><span class="admin-eyebrow">COMMERCIAL ANALYTICS</span><h1>Revenue Dashboard</h1><p>Total staked volume, net platform profit, daily and weekly trends, and exportable transaction logs — every figure is derived from integer-subunit money math.</p></div></div>
+    <div id="revenueRoot"></div>
+    <div class="card">
+      <h3>🧮 Ledger reconciliation</h3>
+      <p class="muted"><b>Net platform profit = Gross revenue − Promotional cost − Comps.</b> Gross revenue = Coin Toss fees + P2P Games fees + Series Cup rakes + Tournament rakes + Shop + Transfer fees. Top-ups are funding (cash-in) and withdrawals are cash-out — neither is ever counted as revenue.</p>
+      <div id="revenueRecon"></div>
     </div>
   </section>
 
@@ -374,7 +402,7 @@
     <div class="card">
       <h3>🧾 v10.8–v12.0 consistency register</h3>
       <p class="muted">Before-and-after status synchronized with the player release notes, project documentation, feature register and audit report.</p>
-      <div class="release-admin-grid"><div><b>P2P & bots</b><span>Delayed-only → manual + auto + bot-vs-bot</span></div><div><b>VIP</b><span>Rates → complete 8-tier benefits</span></div><div><b>B1–B4</b><span>Ideas → 23 working demos</span></div><div><b>History</b><span>Partial → 9 searchable categories</span></div><div><b>Statistics</b><span>Career basics → payout/ROI plus Player/bot top-up analytics</span></div><div><b>Mobile</b><span>Wrapping/overlap → responsive controls</span></div><div><b>Admin</b><span>Tabs → command center and drawer</span></div><div><b>Audit</b><span>Accounting warnings → corrected paths</span></div><div><b>Auto Bet</b><span>Hard-coded −200 → configurable stop</span></div><div><b>Directory</b><span>Distributed details → category product map</span></div><div><b>Phase 1 games</b><span>22 suggested concepts → 22 playable Catalog/Arcade demos</span></div><div><b>Bot network</b><span>Core-game focus → autonomous social + all Arcade Zone activity</span></div><div><b>Bot growth</b><span>99 fixed bots → configurable automatic player growth</span></div><div><b>Progression</b><span>29 achievements/25 levels → 49 achievements/50 levels</span></div><div><b>Shop</b><span>Original inventory → +38 items across 9 categories</span></div><div><b>Phase 2 trust</b><span>14 remaining records → working Platform/Security/RG demo flows</span></div><div><b>Navigation v10</b><span>Long menus → search, quick jump, command palette and mobile dock</span></div><div><b>Game navigation v10.1</b><span>45 horizontal game tabs → search, groups, jump, favorites and exact-game commands</span></div><div><b>Audit & roadmap v10.2</b><span>Distributed warnings → one cons register + 12 Suggested next features</span></div><div><b>UX release v10.3</b><span>Fixed Home/repeated setup → UX1–UX4 working demos; 8 production ideas remain Suggested</span></div><div><b>Coin utility v10.4</b><span>45 games + existing spends → 53 games + 4 new non-wager coin uses</span></div><div><b>Top-up analytics v10.5</b><span>Action logs → Player/Admin cards, combined metrics, trends, filtered records and CSV export</span></div><div><b>Live Admin sync v10.6</b><span>Player-only timers → new-tab Admin, hidden engine fallback, leader lock, BroadcastChannel pulses and live storage refresh</span></div><div><b>First top-up gate v10.7</b><span>Play-before-top-up → every bot completes a varied first top-up before games or activity</span></div><div><b>Bot wallet v10.8</b><span>Seeded MAIN balances → 0 MAIN + 1,000 BONUS, then first MAIN top-up and promo BONUS</span></div><div><b>Unified merge v12.0</b><span>Five project archives → one app: bot withdrawals, Player Directory, Photoreal coin skin and shared image assets</span></div><div><b>Classics restored v12.0</b><span>Unreachable legacy code → playable G21 Crash, G22 Hi-Lo and G23 Mines with proofs, history and jackpot hooks (23 Arcade Zone modes)</span></div></div>
+      <div class="release-admin-grid"><div><b>P2P & bots</b><span>Delayed-only → manual + auto + bot-vs-bot</span></div><div><b>VIP</b><span>Rates → complete 8-tier benefits</span></div><div><b>Feature ideas</b><span>Ideas → 23 working demos</span></div><div><b>History</b><span>Partial → 9 searchable categories</span></div><div><b>Statistics</b><span>Career basics → payout/ROI plus Player/bot top-up analytics</span></div><div><b>Mobile</b><span>Wrapping/overlap → responsive controls</span></div><div><b>Admin</b><span>Tabs → command center and drawer</span></div><div><b>Audit</b><span>Accounting warnings → corrected paths</span></div><div><b>Auto Bet</b><span>Hard-coded −200 → configurable stop</span></div><div><b>Directory</b><span>Distributed details → category product map</span></div><div><b>Phase 1 games</b><span>22 suggested concepts → 22 playable Catalog/Arcade demos</span></div><div><b>Bot network</b><span>Core-game focus → autonomous social + all Arcade Zone activity</span></div><div><b>Bot growth</b><span>99 fixed bots → configurable automatic player growth</span></div><div><b>Progression</b><span>29 achievements/25 levels → 49 achievements/50 levels</span></div><div><b>Shop</b><span>Original inventory → +38 items across 9 categories</span></div><div><b>Phase 2 trust</b><span>14 remaining records → working Platform/Security/RG demo flows</span></div><div><b>Navigation v10</b><span>Long menus → search, quick jump, command palette and mobile dock</span></div><div><b>Game navigation v10.1</b><span>45 horizontal game tabs → search, groups, jump, favorites and exact-game commands</span></div><div><b>Audit & roadmap v10.2</b><span>Distributed warnings → one cons register + 12 Suggested next features</span></div><div><b>UX release v10.3</b><span>Fixed Home/repeated setup → dashboard, presets, accessibility and discovery working demos; 8 production ideas remain Suggested</span></div><div><b>Coin utility v10.4</b><span>45 games + existing spends → 53 games + 4 new non-wager coin uses</span></div><div><b>Top-up analytics v10.5</b><span>Action logs → Player/Admin cards, combined metrics, trends, filtered records and CSV export</span></div><div><b>Live Admin sync v10.6</b><span>Player-only timers → new-tab Admin, hidden engine fallback, leader lock, BroadcastChannel pulses and live storage refresh</span></div><div><b>First top-up gate v10.7</b><span>Play-before-top-up → every bot completes a varied first top-up before games or activity</span></div><div><b>Bot wallet v10.8</b><span>Seeded MAIN balances → 0 MAIN + 1,000 BONUS, then first MAIN top-up and promo BONUS</span></div><div><b>Unified merge v12.0</b><span>Five project archives → one app: bot withdrawals, Player Directory, Photoreal coin skin and shared image assets</span></div><div><b>Classics restored v12.0</b><span>Unreachable legacy code → playable Crash, Hi-Lo and Mines with proofs, history and jackpot hooks (23 Arcade Zone modes)</span></div></div>
     </div>
     <div class="card">
       <h3>🧩 Feature controls</h3>
@@ -384,7 +412,7 @@
         <button class="btn btn-ghost" data-feature-admin="expire-sub">Expire subscription</button>
         <button class="btn btn-ghost" data-feature-admin="advance-stake">Advance staking week</button>
         <button class="btn btn-ghost" data-feature-admin="clear-chat">Clear chat</button>
-        <button class="btn btn-danger" data-feature-admin="reset-features">Reset B1–B4 state</button>
+        <button class="btn btn-danger" data-feature-admin="reset-features">Reset feature state</button>
       </div>
     </div>
   </section>
@@ -394,7 +422,7 @@
     <div class="admin-hero compact"><div><span class="admin-eyebrow">PRODUCT MAP</span><h1>Feature Directory</h1><p>Browse every implemented, demo-only and recommended feature by category, with a one-click jump to the matching player or admin screen.</p></div></div>
     <div class="grid4" id="directoryTiles"></div>
     <div class="card" style="margin-top:16px">
-      <div class="directory-toolbar"><input id="directorySearch" placeholder="Search feature, code or description…"/><select id="directoryCategory"><option value="">All categories</option></select><select id="directoryStatus"><option value="">All statuses</option><option value="Implemented">Implemented</option><option value="Partial">Partial / demo-only</option><option value="Suggested">Suggested next</option></select></div>
+      <div class="directory-toolbar"><input id="directorySearch" placeholder="Search feature or description…"/><select id="directoryCategory"><option value="">All categories</option></select><select id="directoryStatus"><option value="">All statuses</option><option value="Implemented">Implemented</option><option value="Partial">Partial / demo-only</option><option value="Suggested">Suggested next</option></select></div>
       <div id="featureDirectory"></div>
     </div>
   </section>
@@ -447,8 +475,8 @@
     <div class="admin-hero compact"><div><span class="admin-eyebrow">TRUST & SAFETY</span><h1>Trust Center</h1><p>Real-time analytics, anti-cheat scans, 2FA and responsible-gaming posture, PWA/API status, monthly statements, notifications and promotion claims.</p></div></div>
     <div class="grid4" id="trustTiles"></div>
     <div class="grid2">
-      <div class="card"><h3>📈 T4 · Realtime Analytics</h3><p class="muted">Local five-second samples of players, games, gross revenue, queue, social and Arcade activity.</p><div id="analyticsMetrics"></div><div id="analyticsChart" class="rng-chart" style="height:190px"></div><div class="row"><button class="btn btn-ghost btn-sm" id="exportAnalytics">Export analytics JSON</button></div></div>
-      <div class="card"><h3>🛡️ SEC2 · Anti-Cheat</h3><div id="antiCheatMetrics"></div><button class="btn btn-primary" id="runAntiCheat">Run rules scan</button><div id="antiCheatList" style="margin-top:12px"></div></div>
+      <div class="card"><h3>📈 Realtime Analytics</h3><p class="muted">Local five-second samples of players, games, gross revenue, queue, social and Arcade activity.</p><div id="analyticsMetrics"></div><div id="analyticsChart" class="rng-chart" style="height:190px"></div><div class="row"><button class="btn btn-ghost btn-sm" id="exportAnalytics">Export analytics JSON</button></div></div>
+      <div class="card"><h3>🛡️ Anti-Cheat Detection</h3><div id="antiCheatMetrics"></div><button class="btn btn-primary" id="runAntiCheat">Run rules scan</button><div id="antiCheatList" style="margin-top:12px"></div></div>
     </div>
     <div class="grid2">
       <div class="card"><h3>🧭 Responsible Gaming Posture</h3><div id="rgAdminMetrics"></div><div class="row"><button class="btn btn-ghost btn-sm" id="advanceRgDelay">Advance pending limit delay (demo)</button></div></div>

@@ -1,5 +1,6 @@
 /* FlipArena player module — games */
 import "../shared/runtime.js";
+import {add,coin,creditWallet,debitWallet,mul,pct,sub,withWalletLock} from "../shared/money.js";
 import {STAKE_MIN} from "./core.js";
 import {ACHIEVEMENTS,COS,FREE_EMOJIS,QUESTS_SEED,applyVipUnlocks,currentVipEntitlements,sessionStart} from "./bots.js";
 import {randHex,shaHex} from "./crypto.js";
@@ -16,25 +17,36 @@ function checkGuards(stake){
   const now=Date.now(),rg=S.rg;if(rg.selfExPermanent||now<(rg.selfExUntil||0))throw new Error("Durable self-exclusion is active.");if(now<(rg.coolOffUntil||0))throw new Error(`Session cool-off active until ${new Date(rg.coolOffUntil).toLocaleTimeString()}.`);if((rg.sessionLimitMin||0)>0&&now-sessionStart>=rg.sessionLimitMin*60000){rg.coolOffUntil=Math.max(rg.coolOffUntil||0,now+(rg.coolOffMin||1)*60000);throw new Error(`Session time limit (${rg.sessionLimitMin}m) reached. Cool-off started.`);}betTimes=betTimes.filter(t=>now-t<60000);
   if(betTimes.length>=12)throw new Error("Slow down — max 12 bets per minute.");
   if(S.lossLimit>0 && sessionNet<=-S.lossLimit)throw new Error(`Session loss limit (−${S.lossLimit}) reached. Take a break.`);
-  if(stake<STAKE_MIN)throw new Error("Minimum stake is 10.");
-  if(stake>maxStake())throw new Error(`Max stake for level ${S.level} is ${maxStake()}.`);
+  const stakeMin=Math.max(1,Math.round(cfg().stakeMin||STAKE_MIN));
+  if(stake<stakeMin)throw new Error(`Minimum stake is ${fmt(stakeMin)}.`);
+  if(stake>maxStake())throw new Error(`Max stake for level ${S.level} is ${fmt(maxStake())}.`);
+  if(S.frozen&&S.frozen.you)throw new Error("Account frozen by Admin"+(S.frozen.reason?" · "+S.frozen.reason:"")+".");
   if(S.wallet.main+S.wallet.bonus+S.wallet.referral+S.wallet.rakeback<stake)throw new Error("Insufficient total balance.");
   betTimes.push(now);
 }
 function escrow(stake){
-  const cap=Math.round(stake*cfg().nonMainCapPct/100);
+  stake=coin(stake);
+  const cap=pct(stake,cfg().nonMainCapPct);
   const split={main:0,bonus:0,referral:0,rakeback:0};let rem=cap;
-  // Calculate first, then debit atomically. A failed MAIN-balance check must not
-  // silently consume bonus/referral/rakeback funds.
-  for(const seg of ["bonus","referral","rakeback"]){const take=Math.min(rem,S.wallet[seg]);split[seg]=take;rem-=take;}
-  split.main=stake-(split.bonus+split.referral+split.rakeback);
-  if(S.wallet.main<split.main)throw new Error(`Need ${fmt(split.main)} MAIN (you have ${fmt(S.wallet.main)}). Non-main capped at ${cfg().nonMainCapPct}%.`);
-  for(const seg of ["main","bonus","referral","rakeback"])S.wallet[seg]-=split[seg];
+  // Calculate first, then debit atomically through the shared money module so a
+  // failed MAIN-balance check can never silently consume bonus funds.
+  for(const seg of ["bonus","referral","rakeback"]){const take=Math.min(rem,coin(S.wallet[seg]));split[seg]=take;rem=sub(rem,take);}
+  split.main=sub(stake,split.bonus+split.referral+split.rakeback);
+  if(coin(S.wallet.main)<split.main)throw new Error(`Need ${fmt(split.main)} MAIN (you have ${fmt(S.wallet.main)}). Non-main capped at ${cfg().nonMainCapPct}%.`);
+  const res=debitWallet(split,"Escrow · coin toss stake");
+  if(!res.ok)throw new Error(res.error||"Escrow failed.");
   return split;
 }
-function refund(split){for(const k in split)S.wallet[k]+=split[k];}
+function refund(split){creditWallet(split,"Refund · cancelled escrow");}
 async function postBet(side,stake,taunt,priv=false){
-  if(busy)return;stake=Math.round(+stake);
+  // Serialise through the wallet lock: two rapid clicks (or a click landing
+  // mid bot-tick) can never both see the same pre-spend balance.
+  if(busy)return;busy=true;
+  try{return await withWalletLock(async()=>{return await postBetInner(side,stake,taunt,priv);});}
+  finally{busy=false;}
+}
+async function postBetInner(side,stake,taunt,priv=false){
+  stake=coin(stake);
   if(!side){toast("Pick HEADS or TAILS.","err");return;}
   try{checkGuards(stake);}catch(e){toast(e.message,"err");return;}
   let split;try{split=escrow(stake);}catch(e){toast(e.message,"err");return;}
@@ -92,7 +104,7 @@ async function matchWithBot(pbet,bot){
 }
 async function settleFlip(maker,taker,bot,opts={}){
   busy=true;
-  const stake=maker.stake,pot=stake*2,fee=Math.round(pot*cfg().feePct/100),gameId=S.gid++;
+  const stake=coin(maker.stake),pot=mul(stake,2),fee=pct(pot,cfg().feePct),gameId=S.gid++;
   const makerSeed=randHex(),takerSeed=randHex(),serverSeed=randHex();
   const makerHash=await shaHex(`${makerSeed}:${gameId}:${stake}:${maker.side}`);
   const takerHash=await shaHex(`${takerSeed}:${gameId}:${stake}:${taker.side}`);
@@ -103,17 +115,20 @@ async function settleFlip(maker,taker,bot,opts={}){
   const result=fb%2===0?"HEADS":"TAILS";
   const armed=S.jackpot>=cfg().jpArm;
   const jpHit=fb===0&&armed;
-  const jpContrib=Math.max(0,Math.min(fee-1,Math.max(cfg().jpFloor,Math.round(fee*cfg().jpFundPct/100))));
+  const jpContrib=Math.max(0,Math.min(sub(fee,1),Math.max(cfg().jpFloor,pct(fee,cfg().jpFundPct))));
   S.jackpot+=jpContrib;
   const vip=vipFor(S.monthWagered);
   const rbYou=Math.round((fee/2)*effectiveRakeback(vip.rakeback)/100);S.accruedRakeback+=rbYou;
-  let payout=pot-fee,jpPayout=0;
-  if(jpHit){jpPayout=Math.round(S.jackpot*cfg().jpPayPct/100);S.jackpot-=jpPayout;}
+  let payout=sub(pot,fee),jpPayout=0;
+  if(jpHit){jpPayout=pct(S.jackpot,cfg().jpPayPct);S.jackpot=sub(S.jackpot,jpPayout);}
+  // Admin-configured payout multiplier cap (0 = unlimited).
+  const payCap=Math.round(cfg().payoutCap||0);
+  if(payCap>0&&payout>payCap)payout=payCap;
   const youSide=maker.owner==="you"?maker.side:taker.side;
   const youWin=result===youSide;
   const opp=taker.owner==="you"?maker:taker;
   let delta=0;
-  if(youWin){S.wallet.main+=payout+jpPayout;delta=(payout+jpPayout)-stake;}
+  if(youWin){creditWallet({main:add(payout,jpPayout)},"Payout · settled coin toss");delta=sub(add(payout,jpPayout),stake);}
   else delta=-stake;
   if(bot){
     bot.games=(bot.games||0)+1;
@@ -197,14 +212,15 @@ function checkProgressAchievements(){
   if((st.catalogGames||0)>0&&(st.seriesPlayed||0)>0&&(st.tournamentEntries||0)>0&&(st.friendGames||0)>0&&(st.arcadePlays||0)>0)unlockAch("allrounder");
 }
 async function animateFlip(result){
-  const coin=$("coin");$("matchStatus").innerHTML='<span class="spinner"></span> Flipping…';
-  coin.style.transition="none";coin.style.transform="rotateY(0deg)";coin.offsetHeight;coin.style.transition="";
-  coin.classList.add("flipping");
+  const coinEl=$("coin");$("matchStatus").innerHTML='<span class="spinner"></span> Flipping…';
+  coinEl.style.transition="none";coinEl.style.transform="rotateY(0deg)";coinEl.offsetHeight;coinEl.style.transition="";
+  coinEl.classList.add("flipping");
   const spins=5,target=result==="HEADS"?spins*360:spins*360+180;
-  const dur=S.settings.instant?450:2300;
-  coin.style.transition=`transform ${dur}ms cubic-bezier(.2,.7,.2,1.05)`;
-  requestAnimationFrame(()=>coin.style.transform=`rotateY(${target}deg)`);
-  sfxFlip();await new Promise(r=>setTimeout(r,dur+100));coin.classList.remove("flipping");
+  // Admin can override the flip animation speed (Live Ops → presentation).
+  const dur=S.settings.instant?450:Math.max(200,Math.round(cfg().animMs||2300));
+  coinEl.style.transition=`transform ${dur}ms cubic-bezier(.2,.7,.2,1.05)`;
+  requestAnimationFrame(()=>coinEl.style.transform=`rotateY(${target}deg)`);
+  sfxFlip();await new Promise(r=>setTimeout(r,dur+100));coinEl.classList.remove("flipping");
 }
 function showResult(rec,yw,jpP,opp){
   $("matchStatus").textContent="";

@@ -170,7 +170,9 @@ function moduleStructure() {
 console.log('TossMatch audit');
 /* 1. root/site config */
 check('root index redirects into tossmatch/', /tossmatch\//.test(fs.readFileSync(path.join(root, 'index.html'), 'utf8')));
-check('_config.yml excludes old data', fs.existsSync(path.join(root, '_config.yml')) && /"old data"/.test(fs.readFileSync(path.join(root, '_config.yml'), 'utf8')));
+const cfgYml = fs.readFileSync(path.join(root, '_config.yml'), 'utf8');
+check('_config.yml keeps tooling/docs out of the Pages build', /exclude:/.test(cfgYml) && /"doc"/.test(cfgYml) && /"tools"/.test(cfgYml));
+check('workspace archives are gone from the tree', !fs.existsSync(path.join(root, 'old data')));
 
 /* 2. per-app checks */
 for (const f of files) {
@@ -219,7 +221,7 @@ for (const f of files) {
   check(f + ' cash-flow helpers present', hasCash);
   check(f + ' houseCashIn includes player and bot', /\(h\.deposits\|\|0\)\+\(h\.botDeposits\|\|0\)/.test(js));
   check(f + ' houseCashOut includes bot and player', /\(h\.withdrawals\|\|0\)\+\(h\.playerWithdrawals\|\|0\)/.test(js));
-  check(f + ' reconcileHouse syncs netCash', /h\.netCash=Math\.round\(houseNetCash\(\)\)/.test(js));
+  check(f + ' reconcileHouse syncs netCash', /h\.netCash=(Math\.round\(houseNetCash\(\)\)|r\.netCash)/.test(js));
 }
 check('index deposit writes house.deposits', /cfg\(\)\.house\.deposits=\(cfg\(\)\.house\.deposits\|\|0\)\+a/.test(extractScript('tossmatch/index.html').js));
 check('index bot top-up writes house.botDeposits', /cfg\(\)\.house\.botDeposits=\(cfg\(\)\.house\.botDeposits\|\|0\)\+base/.test(extractScript('tossmatch/index.html').js));
@@ -292,6 +294,154 @@ _res;
 for (const f of files) {
   const r = themeEngineSmoke(f);
   check(f + ' theme engine runtime smoke', r.ok, r.detail);
+}
+
+
+/* 9. Phase 3 — shared money module + ledger/concurrency simulation ───────── */
+console.log('\nledger & money math');
+const moneyFile = path.join(root, 'tossmatch', 'js', 'shared', 'money.js');
+check('shared money module present', fs.existsSync(moneyFile));
+for (const f of files) {
+  const dir = path.dirname(path.join(root, 'tossmatch', 'js', f.includes('admin') ? 'admin' : 'player', 'x.js'));
+  const entry = f === 'tossmatch/index.html' ? 'js/player' : 'js/admin';
+  const folder = path.join(root, 'tossmatch', entry);
+  const wired = fs.readdirSync(folder).some(m => /shared\/money\.js/.test(fs.readFileSync(path.join(folder, m), 'utf8')));
+  check(f + ' imports the shared money module', wired);
+}
+const smokeFile = path.join(root, 'tools', 'boot-smoke.mjs');
+if (fs.existsSync(smokeFile)) {
+  let out = '', rep = null;
+  try { out = cp.execFileSync(process.execPath, [smokeFile], { encoding: 'utf8', timeout: 180000 }); }
+  catch (e) { out = String(e.stdout || '') + String(e.stderr || ''); }
+  try { rep = JSON.parse(out); } catch (e) { /* fall through */ }
+  if (!rep) check('headless boot smoke runs', false, out.slice(0, 240));
+  else for (const c of rep.checks) check('boot · ' + c.name, c.ok, c.detail);
+}
+const simFile = path.join(root, 'tools', 'ledger-simulation.mjs');
+check('ledger simulation harness present', fs.existsSync(simFile));
+if (fs.existsSync(simFile)) {
+  let out = '', rep = null;
+  try { out = cp.execFileSync(process.execPath, [simFile], { encoding: 'utf8' }); }
+  catch (e) { out = String(e.stdout || '') + String(e.stderr || ''); }
+  try { rep = JSON.parse(out); } catch (e) { /* fall through */ }
+  if (!rep) check('ledger simulation runs', false, out.slice(0, 200));
+  else for (const c of rep.checks) check('ledger · ' + c.name, c.ok, c.detail);
+}
+
+/* 10. Phase 4.3 — targeted rendering ─────────────────────────────────────── */
+console.log('\ntargeted rendering');
+{
+  const pj = concatApp('tossmatch/index.html');
+  for (const fn of ['renderChrome', 'renderTab', 'renderTick']) {
+    check('player defines ' + fn + '()', new RegExp('function ' + fn + '\\(').test(pj));
+    check('player registers ' + fn + ' on globalThis', new RegExp('Object\\.assign\\(globalThis,\\{[^}]*\\b' + fn + '\\b').test(pj));
+  }
+  check('player tab switch uses renderTab()', /renderTab\(b\.dataset\.tab\)/.test(pj));
+  check('background tick routes through renderTick()', /renderTick\(\);save\(\)/.test(pj));
+  check('player renderChrome guards missing elements', /function el\(id\)\{/.test(pj));
+  const aj = concatApp('tossmatch/admin.html');
+  for (const fn of ['renderAdminChrome', 'renderAdminTab', 'renderAdminTick']) {
+    check('admin defines ' + fn + '()', new RegExp('function ' + fn + '\\(').test(aj));
+  }
+  check('admin registers renderAdminTab on globalThis', /Object\.assign\(globalThis,\{[^}]*\brenderAdminTab\b/.test(aj));
+  check('admin tab switch uses renderAdminTab()', /renderAdminTab\(b\.dataset\.tab\)/.test(aj));
+  const chromeIds = ['mainVal', 'jpVal', 'jpMeter', 'maintBanner', 'broadcast', 'togSound', 'togInstant', 'togAuto', 'autoBetConfig', 'autoStopInput', 'togPrivate', 'coin', 'coinStage', 'skinLbl', 'feeNote', 'sessionInfo'];
+  const pHtml = fs.readFileSync(path.join(root, 'tossmatch/index.html'), 'utf8');
+  const missingChrome = chromeIds.filter(id => !new RegExp('id="' + id + '"').test(pHtml));
+  check('every renderChrome element id exists in the DOM', missingChrome.length === 0, missingChrome.join(', '));
+}
+
+/* 11. Phase 1 — component library wired into the app ────────────────────── */
+console.log('\ncomponent library');
+{
+  const compDir = path.join(root, 'tossmatch', 'src', 'components');
+  const comps = ['button', 'card', 'modal', 'badge', 'input'];
+  for (const c of comps) {
+    const f = path.join(compDir, c, c + '.js');
+    check('component ' + c + ' present with factories', fs.existsSync(f) && /export function create/.test(fs.readFileSync(f, 'utf8')));
+  }
+  const allAppJs = [];
+  for (const d of ['player', 'admin', 'shared']) {
+    for (const m of fs.readdirSync(path.join(root, 'tossmatch', 'js', d))) if (m.endsWith('.js')) allAppJs.push(path.join(root, 'tossmatch', 'js', d, m));
+  }
+  const srcImported = allAppJs.filter(f => /from\s+"[^"]*src\/(components|js\/utils)/.test(fs.readFileSync(f, 'utf8')));
+  check('app modules import the reusable component/utils library', srcImported.length >= 2, srcImported.length + ' module(s)');
+  let badImports = [];
+  for (const f of allAppJs.concat([moneyFile])) {
+    const txt = fs.readFileSync(f, 'utf8');
+    for (const m of txt.matchAll(/from\s+["']([^"']+)["']/g)) {
+      if (!fs.existsSync(path.resolve(path.dirname(f), m[1]))) badImports.push(path.basename(f) + ' → ' + m[1]);
+    }
+  }
+  check('module imports (including src/) resolve', badImports.length === 0, badImports.slice(0, 4).join(', '));
+}
+
+/* 12. Phase 4.1 — zero user-visible internal codes ──────────────────────── */
+console.log('\nhuman labels');
+{
+  const codeToken = /\b(?:B[1-4]|UX[1-4]|G\d{1,2}|CAT\d{1,2}|E[1-9]|S[1-7]|LIVE[1-4]|TRUST[1-4]|OPS\d|SEC\d|RG\d|T\d|RET-\d|WAL-\d|CORE-\d)\b\s?(?:·|–|—|-)/;
+  for (const f of ['tossmatch/index.html', 'tossmatch/admin.html']) {
+    const html = fs.readFileSync(path.join(root, f), 'utf8');
+    const visible = [...html.matchAll(/>([^<{]+)</g)].map(m => m[1]).join(' ');
+    const hits = (visible.match(new RegExp(codeToken.source, 'g')) || []);
+    check(f + ' shows no internal codes in visible copy', hits.length === 0, hits.slice(0, 4).join(', '));
+  }
+  for (const f of files) {
+    const js = concatApp(f);
+    // ${r.code} is allowed only as a private-room invite code (data, not a badge).
+    let scan = js;
+    const refs = [...scan.matchAll(/\$\{[a-z]\.code\}/g)];
+    const stray = refs.filter(m => !/code\s*$|Invite code/.test(scan.slice(Math.max(0, m.index - 60), m.index)));
+    check(f + ' renders no internal ${x.code} badges (invite codes excepted)', stray.length === 0, stray.length + ' stray reference(s)');
+    const uiHits = (js.match(/<h3>[^`<]*\b(?:B[1-4]|UX[1-4]|G\d{1,2}|CAT\d{1,2}|E[1-9]) ·/g) || []);
+    check(f + ' has no code-prefixed card headings', uiHits.length === 0, uiHits.slice(0, 3).join(' | '));
+  }
+  const dirJs = fs.readFileSync(path.join(root, 'tossmatch', 'js', 'admin', 'core.js'), 'utf8');
+  check('feature directory search index ignores internal codes', !/`\$\{x\.code\} \$\{x\.name\}/.test(dirJs));
+  check('feature directory badge shows the human category', /directory-code">\$\{x\.cat\}/.test(dirJs));
+}
+
+/* 13. Phase 2 — Admin ↔ Player alignment ─────────────────────────────────── */
+console.log('\nadmin ↔ player alignment');
+{
+  const adminHtml = fs.readFileSync(path.join(root, 'tossmatch/admin.html'), 'utf8');
+  for (const id of ['panel-revenue', 'revenueRoot', 'revenueRecon', 'cfgStakeMin', 'cfgStakeMax', 'cfgPayoutCap', 'cfgEdge', 'cfgAnim', 'cfgAutoStop', 'playerSessionMonitor']) {
+    check('admin.html provides #' + id, new RegExp('id="' + id + '"').test(adminHtml));
+  }
+  const aj = concatApp('tossmatch/admin.html');
+  check('revenue screen renders tiles + charts from the component library', /createStatGrid\(/.test(aj) && /revenueChartSVG\(/.test(aj));
+  check('transaction log exports as CSV and JSON', /fliparena-transactions\.csv/.test(aj) && /fliparena-transactions\.json/.test(aj));
+  check('reconciliation panel states the NGR formula', /Net platform profit = Gross revenue/.test(adminHtml));
+  check('player management offers freeze / unfreeze', /function adminSetFreeze\(/.test(aj) && /data-unfreeze=/.test(aj));
+  check('player management offers bet history', /function adminPlayerHistory\(/.test(aj) && /data-history=/.test(aj));
+  const pj = concatApp('tossmatch/index.html');
+  check('player enforces the Admin freeze flag', /S\.frozen&&S\.frozen\.you/.test(pj));
+  check('player honours Admin stake bounds', /cfg\(\)\.stakeMin/.test(pj) && /cfg\(\)\.stakeMax/.test(pj));
+  check('player honours the Admin payout cap', /cfg\(\)\.payoutCap/.test(pj));
+  check('player honours the Admin animation speed', /cfg\(\)\.animMs/.test(pj));
+  check('player honours the Admin house edge', /cfg\(\)\.edgePct/.test(pj));
+  check('frozen simulated players leave every activity pool', /!b\.frozen/.test(pj));
+  const stateJs = fs.readFileSync(path.join(root, 'tossmatch', 'js', 'player', 'state.js'), 'utf8');
+  const adminCore = fs.readFileSync(path.join(root, 'tossmatch', 'js', 'admin', 'core.js'), 'utf8');
+  for (const key of ['stakeMin', 'stakeMax', 'payoutCap', 'animMs', 'edgePct']) {
+    check('game parameter "' + key + '" defaults exist in both apps', new RegExp(key + ':').test(stateJs) && new RegExp(key + ':').test(adminCore));
+  }
+}
+
+/* 14. Phase 6 — repository hygiene ──────────────────────────────────────── */
+console.log('\nrepository hygiene');
+{
+  const docFile = path.join(root, 'doc', 'CLEANUP_AND_ARCHITECTURE.md');
+  if (fs.existsSync(docFile)) {
+    const doc = fs.readFileSync(docFile, 'utf8');
+    const rows = [...doc.matchAll(/^\|`([^`]+)`\|/gm)].map(m => m[1]);
+    const leftovers = rows.filter(r => fs.existsSync(path.join(root, r)));
+    check('every file in the deletion register is really gone', leftovers.length === 0, leftovers.slice(0, 4).join(', '));
+  }
+  const legacyDir = path.join(root, 'tossmatch', 'docs', 'legacy');
+  const legacyLeft = fs.existsSync(legacyDir) ? fs.readdirSync(legacyDir).filter(f => /\.(html|json)$/.test(f)) : [];
+  check('legacy single-file prototypes and mock data are purged', legacyLeft.length === 0, legacyLeft.join(', '));
+  check('workspace archives are purged', !fs.existsSync(path.join(root, 'old data')));
 }
 
 if (failures.length) {

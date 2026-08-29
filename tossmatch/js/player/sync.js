@@ -1,12 +1,13 @@
 /* FlipArena player module — sync */
 import "../shared/runtime.js";
+import {add,allocate,coin,creditBot,creditWallet,debitBot,mul,numOr,pct,sub} from "../shared/money.js";
 import {SAVE_KEY,SIM_LEADER_KEY,SIM_TAB_ID,TAB_KEY,botLiveChannel} from "./core.js";
 import {COS,HUB,applyVipUnlocks,currentVipEntitlements} from "./bots.js";
 import {randHex,shaHex} from "./crypto.js";
 import {autoMatchBotTossBet,botByName,botFillCup,checkGuards,checkProgressAchievements,createTournament,escrow,fillTournamentBots,makeCup,refund,runTournament,seedBotBets,seedBotCatalogBets,unlockAch} from "./games.js";
 import {$,EXT_ARCADE,addFeed,applyPendingDepositLimits,awardXp,checkRealityReminder,confettiFx,effectiveRakeback,filterSkillBots,fmt,pushHistory,recordAnalyticsSample,recordEngagement,recordPlayerMetrics,recordSessionPoint,renderNewGamesHub,toast,vipFor} from "./helpers.js";
 import {checkVipMonthReset} from "./misc.js";
-import {playerAviHTML,playerName,render} from "./render.js";
+import {playerAviHTML,playerName,render,renderTick} from "./render.js";
 import {cfg,initializeBotStartingWallet,load,save} from "./state.js";
 
 function heartbeat(){localStorage.setItem(TAB_KEY,Date.now());}
@@ -103,7 +104,9 @@ async function backgroundTick(source='player-interval'){
     console.warn("backgroundTick error (recovered):",err);
   }finally{
     tickRunning=false;lastBotTickAt=Date.now();
-    try{render();if(S.waiting.some(b=>b.kind==="catalog"&&b.catalogGame===activeGame))renderGamePanel();save();}catch(e){console.warn("render error:",e);}
+    // Targeted refresh: background ticks only repaint chrome + the active tab,
+    // so hidden panels (and any input the player is typing into) stay untouched.
+    try{renderTick();save();}catch(e){console.warn("render error:",e);}
     if(botLiveChannel)botLiveChannel.postMessage({type:'bot-tick',id:SIM_TAB_ID,t:lastBotTickAt,source,games:S.global.totalGames,bots:S.bots.length,queue:S.waiting.length});
   }
 }
@@ -145,6 +148,7 @@ async function settleBotFlip(a,b,stake){
   if(Math.random()<0.12)botBuyShop(w);
 }
 function botBuyShop(bot){
+  if(!bot||bot.frozen)return;
   const catalog=[];for(const cat of ['skins','avatars','frames','colours','fx','themes','sounds','emojis'])for(const item of COS[cat]||[])if(item.price>0&&!item.vipOnly&&item.price<=Math.min(1200,bot.balance))catalog.push({cat,item});
   const choices=catalog.filter(x=>!(bot.shop||[]).includes(x.item.id)),pool=choices.length?choices:catalog,pick=pool[Math.floor(Math.random()*Math.max(1,pool.length))];if(!pick)return;
   const {cat,item}=pick;bot.balance-=item.price;bot.shop=bot.shop||[];if(!bot.shop.includes(item.id))bot.shop.push(item.id);if(cat==='skins')bot.skin=item.id;
@@ -152,7 +156,7 @@ function botBuyShop(bot){
   if(Math.random()<0.75)addFeed(`🛍️ <b>${bot.name}</b> bought ${item.name} from ${cat}`);
 }
 function botTransferCoins(){
-  const senders=S.bots.filter(b=>ensureBotFirstTopup(b,'Required first top-up before activity')&&b.balance>=600);if(senders.length<2)return;
+  const senders=S.bots.filter(b=>!b.frozen&&ensureBotFirstTopup(b,'Required first top-up before activity')&&b.balance>=600);if(senders.length<2)return;
   const from=senders[Math.floor(Math.random()*senders.length)];let to=S.bots[Math.floor(Math.random()*S.bots.length)];while(to===from)to=S.bots[Math.floor(Math.random()*S.bots.length)];
   const amount=[50,100,250,500][Math.floor(Math.random()*4)];if(from.balance<amount)return;
   const fee=Math.max(1,Math.round(amount*cfg().transferFee/100)),received=amount-fee;
@@ -209,7 +213,7 @@ function topUpBot(bot,reason="low balance",forceFirst=false){
 }
 function ensureBotFirstTopup(bot,reason="Required first top-up before play"){if(!bot)return false;if(!bot.firstTopupDone)topUpBot(bot,reason,true);return !!bot.firstTopupDone;}
 function ensureAllBotsFirstTopups(reason="Required first top-up before activation"){const pending=S.bots.filter(b=>!b.firstTopupDone);if(!pending.length)return 0;const old=window._suppressFeed;window._suppressFeed=true;pending.forEach(b=>ensureBotFirstTopup(b,reason));window._suppressFeed=old;addFeed(`💳 <b>${pending.length} bot${pending.length===1?'':'s'}</b> started at 0 MAIN + 1,000 BONUS and completed required first top-up before play`);return pending.length;}
-function readyBotPool(pool,reason="Required first top-up before matchmaking"){return (pool||[]).filter(b=>ensureBotFirstTopup(b,reason));}
+function readyBotPool(pool,reason="Required first top-up before matchmaking"){return (pool||[]).filter(b=>!b.frozen&&ensureBotFirstTopup(b,reason));}
 function botActivityLog(kind,row){
   S.botActivity=S.botActivity||{socialActions:0,arcadePlays:0,createdBots:0,socialLog:[],arcadeLog:[],lastCreatedAt:0};const key=kind==='social'?'socialLog':'arcadeLog';S.botActivity[key]=S.botActivity[key]||[];S.botActivity[key].unshift({t:Date.now(),...row});if(S.botActivity[key].length>120)S.botActivity[key].length=120;
 }
@@ -301,12 +305,18 @@ async function gameOutcome(label,extra){
   return {client,server,commit,h,byte:parseInt(h.slice(0,2),16),jpByte:parseInt(h.slice(2,4),16),
     result:parseInt(h.slice(4,6),16),result2:parseInt(h.slice(6,8),16)};
 }
-function houseEdge(){return 0.98;}
+/* House edge is Admin-configurable (Game parameters → house edge). The demo
+   default of 2% matches the previously hard-coded 0.98 return-to-player. */
+function houseEdge(){const e=Math.min(25,Math.max(0,numOr(cfg().edgePct,2)));return sub(1,e/100);}
 function settleGameWin(gameId,stake,payout,label,oppName,resultText,proof,deltaOverride){
-  const fee=Math.round((payout>0?payout:0)*0); // games use edge baked into multipliers; no extra fee
-  const won=payout>stake;
-  const delta=won?payout-stake:-stake;
-  if(won)S.wallet.main+=payout;
+  const fee=0; // games use edge baked into multipliers; no extra fee
+  stake=coin(stake);
+  // Admin-configured payout cap (0 = unlimited) bounds any single arcade payout.
+  const payCap=Math.round(cfg().payoutCap||0);
+  let gross=coin(payout);if(payCap>0&&gross>payCap)gross=payCap;
+  const won=gross>stake;
+  const delta=won?sub(gross,stake):-stake;
+  if(won){creditWallet({main:gross},"Payout · "+label);}
   S.stats.games++;S.global.totalGames++;S.monthWagered+=stake;awardXp(stake);
   S.stats.net+=delta;sessionNet+=delta;
   if(won){S.stats.wins++;S.stats.bestWin=Math.max(S.stats.bestWin,payout-stake);}else S.stats.losses++;
@@ -519,8 +529,8 @@ function renderGames(){
   renderGamePanel();
 }
 function renderGamePanel(){
-  // Classic Arcade Zone panels (G21-G23) are hosted by the New Games hub: when that
-  // hub is the visible view, refresh it instead of the hidden catalog panel.
+  // The restored classic Arcade Zone panels (Crash, Hi-Lo and Mines) are hosted by the
+  // New Games hub: when that hub is visible, refresh it instead of the hidden catalog panel.
   const hubPanel=document.getElementById("panel-newgames");
   if(hubPanel&&hubPanel.classList.contains("active")&&["crash","hilo","mines"].includes(HUB.newgames)){renderNewGamesHub();return;}
   const p=$("gpanel-"+activeGame),g=GAMES.find(x=>x.id===activeGame);if(!p||!g)return;
@@ -899,16 +909,19 @@ function bindGamePanel(){
   else if(activeGame==="mines")bindMines();
 }
 async function settleBotCatalogMatch(g,a,pickA,b,pickB,stake,stakesEscrowed=false){
-  if(!stakesEscrowed){a.balance-=stake;b.balance-=stake;}
+  stake=coin(stake);
+  // Escrow and payout both go through the shared money module so bot wallets
+  // obey the same zero-negative invariant as the player wallet.
+  if(!stakesEscrowed){debitBot(a,stake);debitBot(b,stake);}
   const fair=await catalogFairOutcome(g,stake,pickA,pickB),out=resolveCatalogGame(g,String(pickA),String(pickB),fair.bytes);
-  const pot=stake*2,fee=Math.round(pot*cfg().feePct/100),jpc=Math.max(0,Math.min(fee-1,Math.max(cfg().jpFloor,Math.round(fee*cfg().jpFundPct/100))));
-  S.jackpot+=jpc;cfg().house.catalogFees=(cfg().house.catalogFees||0)+fee-jpc;cfg().house.netRevenue+=fee-jpc;cfg().sinks+=fee;
-  S.gameCarries=S.gameCarries||{};const carry=S.gameCarries[g.id]||0,available=pot-fee+carry;
+  const pot=mul(stake,2),fee=pct(pot,cfg().feePct),jpc=Math.max(0,Math.min(sub(fee,1),Math.max(cfg().jpFloor,pct(fee,cfg().jpFundPct))));
+  S.jackpot=add(S.jackpot,jpc);cfg().house.catalogFees=add(cfg().house.catalogFees||0,sub(fee,jpc));cfg().house.netRevenue=add(cfg().house.netRevenue||0,sub(fee,jpc));cfg().sinks=add(cfg().sinks||0,fee);
+  S.gameCarries=S.gameCarries||{};const carry=coin(S.gameCarries[g.id]||0),available=add(sub(pot,fee),carry);
   a.games=(a.games||0)+1;b.games=(b.games||0)+1;
-  if(out.winner==="player"){a.balance+=available;a.wins=(a.wins||0)+1;a.streak=(a.streak||0)+1;a.bestStreak=Math.max(a.bestStreak||0,a.streak);a.net=(a.net||0)+available-stake;b.losses=(b.losses||0)+1;b.streak=0;b.net=(b.net||0)-stake;S.gameCarries[g.id]=0;}
-  else if(out.winner==="bot"){b.balance+=available;b.wins=(b.wins||0)+1;b.streak=(b.streak||0)+1;b.bestStreak=Math.max(b.bestStreak||0,b.streak);b.net=(b.net||0)+available-stake;a.losses=(a.losses||0)+1;a.streak=0;a.net=(a.net||0)-stake;S.gameCarries[g.id]=0;}
-  else if(out.winner==="split"){const ap=Math.floor(available/2),bp=available-ap;a.balance+=ap;b.balance+=bp;a.net=(a.net||0)+ap-stake;b.net=(b.net||0)+bp-stake;S.gameCarries[g.id]=0;}
-  else{a.net=(a.net||0)-stake;b.net=(b.net||0)-stake;S.gameCarries[g.id]=carry+pot-fee;}
+  if(out.winner==="player"){creditBot(a,available);a.wins=(a.wins||0)+1;a.streak=(a.streak||0)+1;a.bestStreak=Math.max(a.bestStreak||0,a.streak);a.net=sub(add(a.net||0,available),stake);b.losses=(b.losses||0)+1;b.streak=0;b.net=sub(b.net||0,stake);S.gameCarries[g.id]=0;}
+  else if(out.winner==="bot"){creditBot(b,available);b.wins=(b.wins||0)+1;b.streak=(b.streak||0)+1;b.bestStreak=Math.max(b.bestStreak||0,b.streak);b.net=sub(add(b.net||0,available),stake);a.losses=(a.losses||0)+1;a.streak=0;a.net=sub(a.net||0,stake);S.gameCarries[g.id]=0;}
+  else if(out.winner==="split"){const parts=allocate(available,[1,1]),ap=parts[0],bp=parts[1];creditBot(a,ap);creditBot(b,bp);a.net=sub(add(a.net||0,ap),stake);b.net=sub(add(b.net||0,bp),stake);S.gameCarries[g.id]=0;}
+  else{a.net=sub(a.net||0,stake);b.net=sub(b.net||0,stake);S.gameCarries[g.id]=add(carry,sub(pot,fee));}
   logCatalogMatch({t:Date.now(),id:fair.proof.gameId,game:g.name,playerA:a.name,pickA:String(pickA),playerB:b.name,pickB:String(pickB),stake,fee,result:out.winner==="player"?`${a.name} WIN`:out.winner==="bot"?`${b.name} WIN`:out.winner.toUpperCase(),detail:out.detail,proof:fair.proof.finalHash});
   S.global.totalGames++;if(fair.bytes[0]%2===0)S.global.heads++;else S.global.tails++;
   [a,b].forEach(x=>topUpBot(x,"Catalog balance"));
@@ -918,11 +931,11 @@ async function autoMatchBotCatalogBet(id){
   const open=S.waiting.find(x=>x.id===id&&x.kind==="catalog"&&x.owner!=="you");if(!open||busy)return;
   const g=GAMES.find(x=>x.id===open.catalogGame),a=botByName(open.owner);if(!g||!a)return;
   const pool=S.bots.filter(x=>x!==a&&x.balance>=open.stake);if(!pool.length)return;
-  const b=pool[Math.floor(Math.random()*pool.length)],pickB=catalogBotPick(g,open.pick);b.balance-=open.stake;S.waiting=S.waiting.filter(x=>x!==open);
+  const b=pool[Math.floor(Math.random()*pool.length)],pickB=catalogBotPick(g,open.pick);debitBot(b,coin(open.stake));S.waiting=S.waiting.filter(x=>x!==open);
   await settleBotCatalogMatch(g,a,String(open.pick),b,String(pickB),open.stake,true);
 }
 async function botPlayGame(){
-  const g=GAMES[Math.floor(Math.random()*GAMES.length)],stake=[50,100,250][Math.floor(Math.random()*3)],pool=S.bots.filter(b=>ensureBotFirstTopup(b,'Required first top-up before activity')&&b.balance>=stake);if(pool.length<2)return;
+  const g=GAMES[Math.floor(Math.random()*GAMES.length)],stake=[50,100,250][Math.floor(Math.random()*3)],pool=S.bots.filter(b=>!b.frozen&&ensureBotFirstTopup(b,'Required first top-up before activity')&&b.balance>=stake);if(pool.length<2)return;
   const a=pool[Math.floor(Math.random()*pool.length)];let b=pool[Math.floor(Math.random()*pool.length)];while(b===a)b=pool[Math.floor(Math.random()*pool.length)];const pickA=catalogRandomPick(g),pickB=catalogBotPick(g,pickA);
   await settleBotCatalogMatch(g,a,pickA,b,pickB,stake,false);
 }

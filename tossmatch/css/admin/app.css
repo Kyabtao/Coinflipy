@@ -195,3 +195,19 @@ body.light{--shadow:0 16px 40px rgba(30,41,59,.1);--shadow-soft:0 7px 22px rgba(
 @media(max-width:1100px){.tabs{flex-wrap:nowrap!important;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}.tab{display:inline-flex!important}.row{min-width:0}.row>input,.row>select{min-width:150px;flex:1 1 180px}}
 @media(max-width:800px){html,body{max-width:100%;overflow-x:hidden}.hwrap{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;padding:8px 10px}.logo{grid-column:1;overflow:hidden;text-overflow:ellipsis}.h-spacer,.admin-profile,.admin-live{display:none!important}.hwrap>.icon-btn{width:34px;height:34px}main{padding:10px}.tabs{top:58px;margin-bottom:10px;padding:5px;border-radius:11px}.tab{font-size:11px;padding:8px 10px}.card{padding:14px;border-radius:14px}.grid2,.grid3,.grid4{grid-template-columns:1fr!important;gap:10px}.row{align-items:stretch}.row>input,.row>select,.row>textarea{width:100%!important;max-width:none!important;flex:1 1 100%}.row>.btn{flex:1 1 auto;justify-content:center}.quick-actions{grid-template-columns:1fr 1fr;gap:6px}.quick-actions button{min-width:0}.admin-hero{border-radius:15px;margin-bottom:10px}.admin-alerts{scrollbar-width:none}.admin-alert{min-width:220px}.feature-control-grid{grid-template-columns:1fr}.release-admin-grid{grid-template-columns:1fr 1fr}.directory-toolbar{grid-template-columns:1fr}.directory-grid{grid-template-columns:1fr 1fr}.vip-row{grid-template-columns:30px minmax(120px,1fr) 85px 70px;overflow-x:auto}.vip-row>span:last-child{grid-column:2/5}.admin-drawer{width:100vw;padding:15px}table{min-width:680px}#qaList,#botTransferList,#botTopupList,#gameHistory,#catalogHistory{overflow-x:auto}.btn:not(.btn-sm){min-height:40px}}
 @media(max-width:430px){.release-admin-grid,.directory-grid{grid-template-columns:1fr}.logo .vbadge{display:none}.quick-actions{grid-template-columns:1fr}.admin-hero h1{font-size:20px}.stat-tile .v{font-size:21px}.card h3{font-size:13px}.tabs{top:55px}}
+/* ── Navigation redesign · icon chips, purple accent bar, focus rings ───── */
+.admin-nav-label{display:flex;align-items:center;gap:6px}
+.admin-nav-chip{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:6px;font-size:10px;line-height:1;background:rgba(var(--purple-rgb),.14);border:1px solid rgba(var(--purple-rgb),.28)}
+.tab{position:relative}
+.tab.active:before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--purple),var(--violet));box-shadow:0 0 10px rgba(var(--purple-rgb),.6)}
+.tab.active{box-shadow:inset 3px 0 var(--purple),0 0 20px rgba(var(--purple-rgb),.14)}
+header:after{content:"";display:block;height:2px;background:linear-gradient(90deg,transparent,rgba(var(--purple-rgb),.5),transparent)}
+.card,.btn,.qchip,.toast{transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+.card:hover{border-color:rgba(var(--purple-rgb),.24)}
+.btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0)}
+.tab:focus-visible,.btn:focus-visible,.icon-btn:focus-visible,.qchip:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.table-frozen{background:rgba(var(--red-rgb),.06)}
+.stat-tile{transition:transform .16s ease,border-color .16s ease}
+/* Mobile: sidebar becomes a horizontal tab bar; group labels stay hidden. */
+@media(max-width:1100px){.admin-nav-label,.admin-nav-brand,.admin-nav-chip{display:none!important}}
+@media(min-width:1101px){.admin-nav-label{display:flex}.admin-nav-brand{display:flex}}

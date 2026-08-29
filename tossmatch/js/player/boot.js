@@ -1,5 +1,6 @@
 /* FlipArena player module — boot */
 import "../shared/runtime.js";
+import {enforceWalletInvariants} from "../shared/money.js";
 import {applyVipUnlocks} from "./bots.js";
 import {checkProgressAchievements,seedBotBets,seedBotCatalogBets,selectSide} from "./games.js";
 import {$,addFeed,applyDeepLink,fmt,syncPlayerNavigation} from "./helpers.js";
@@ -16,6 +17,7 @@ export function bind(){
   window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();pwaInstallPrompt=e;});
   if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
   load();
+  enforceWalletInvariants(); // zero-negative-balance invariant before the first paint
   checkVipMonthReset();
   applyVipUnlocks(false);
   checkProgressAchievements();

@@ -1,5 +1,6 @@
 /* FlipArena player module — wallet */
 import "../shared/runtime.js";
+import {add,coin,creditBot,creditWallet,debitWallet,pct,sub} from "../shared/money.js";
 import {checkProgressAchievements} from "./games.js";
 import {$,activePromotions,addFeed,applyPendingDepositLimits,checkDepositLimit,checkRealityReminder,fmt,pushHistory,recordAnalyticsSample,recordDeposit,recordSessionPoint,renderServicesHub,toast} from "./helpers.js";
 import {render,renderStats,renderWallet} from "./render.js";
@@ -30,7 +31,7 @@ function openDepositFlow(){
     window._bankBusy=true;
     $("modalContent").innerHTML=`<h3>💳 Processing deposit</h3><div class="muted">${method} · ${fmt(a)} · ${ref} · processing…</div><div class="result-banner" style="display:block;margin-top:12px">⏳ Processing…</div>`;
     setTimeout(()=>{
-      S.wallet.main+=a;if(totalBonus)S.wallet.bonus+=totalBonus;cfg().taps+=a+totalBonus;cfg().house.promoCost+=totalBonus;cfg().house.deposits=(cfg().house.deposits||0)+a;S.firstDepositDone=true;
+      creditWallet({main:a,bonus:totalBonus},"Deposit "+ref);cfg().taps=add(cfg().taps||0,add(a,totalBonus));cfg().house.promoCost+=totalBonus;cfg().house.deposits=(cfg().house.deposits||0)+a;S.firstDepositDone=true;
       recordDeposit(a,{firstBonus,campaignBonus,totalBonus,credited,campaignId:promo?.id||'',method,reference:ref,status:'COMPLETED',processingMs:1100});
       ledger('deposit',a,`Deposit ${ref} · ${method}${firstBonus?' + first bonus':''}${campaignBonus?' + campaign '+promo.id:''}`);audit("deposit",`${a} via ${method} · ${ref} · bonus ${totalBonus}`);
       if(promo){S.services.promoClaims[promo.id]={t:Date.now(),amount:campaignBonus,deposit:a};S.services.activeDepositPromo="";}
@@ -75,8 +76,8 @@ function openWithdrawFlow(){
       const ref=withdrawReference();
       $("modalContent").innerHTML=`<h3>🏧 Processing withdrawal</h3><div class="muted">${method} · ${fmt(a)} · ${ref} · processing…</div><div class="result-banner" style="display:block;margin-top:12px">⏳ Processing…</div>`;
       setTimeout(()=>{
-        if(S.wallet.main<a){toast("Not enough MAIN.","err");$("modalBg").classList.remove("show");window._bankBusy=false;return;}
-        S.wallet.main-=a;
+        const wd=debitWallet({main:a},"Withdrawal "+ref);
+        if(!wd.ok){toast(wd.error||"Not enough MAIN.","err");$("modalBg").classList.remove("show");window._bankBusy=false;return;}
         S.playerWithdrawals=S.playerWithdrawals||{count:0,amount:0,log:[]};S.playerWithdrawals.log=S.playerWithdrawals.log||[];
         S.playerWithdrawals.log.unshift({t:Date.now(),amount:a,method,reference:ref,status:'COMPLETED',kyc:S.kyc?.name||''});if(S.playerWithdrawals.log.length>200)S.playerWithdrawals.log.length=200;
         S.playerWithdrawals.count=(S.playerWithdrawals.count||0)+1;S.playerWithdrawals.amount=(S.playerWithdrawals.amount||0)+a;
@@ -99,8 +100,12 @@ function openWithdrawFlow(){
 }
 
 export function bind(){
-  $("parkBtn").onclick=()=>{const a=Math.round(+$("bankAmt").value);if(a<10||S.wallet.main<a){toast("Invalid.","err");return;}S.wallet.main-=a;S.wallet.bank+=a;toast(`Parked ${fmt(a)}.`,"ok");render();};
-  $("unparkBtn").onclick=()=>{const a=Math.round(+$("bankAmt").value);if(a<10||S.wallet.bank<a){toast("Invalid.","err");return;}S.wallet.bank-=a;S.wallet.main+=a;toast(`Unparked ${fmt(a)}.`,"ok");render();};
+  $("parkBtn").onclick=()=>{const a=coin($("bankAmt").value);if(a<10){toast("Invalid.","err");return;}
+    const park=debitWallet({main:a},"Park to vault");if(!park.ok){toast(park.error||"Invalid.","err");return;}
+    creditWallet({bank:a},"Park to vault");toast(`Parked ${fmt(a)}.`,"ok");render();};
+  $("unparkBtn").onclick=()=>{const a=coin($("bankAmt").value);if(a<10){toast("Invalid.","err");return;}
+    const un=debitWallet({bank:a},"Unpark from vault");if(!un.ok){toast(un.error||"Invalid.","err");return;}
+    creditWallet({main:a},"Unpark from vault");toast(`Unparked ${fmt(a)}.`,"ok");render();};
   $("depositBtn").onclick=openDepositFlow;
   $("withdrawBtn").onclick=openWithdrawFlow;
   $("refApplyBtn").onclick=()=>{const code=$("refApply").value.trim().toUpperCase();if(!code||S.referredBy){toast(S.referredBy?"Already referred.":"Enter a code.","err");return;}if(code===S.referralCode){toast("Can't refer yourself.","err");return;}S.referredBy=code;toast("Referral applied — your friend earns 5% of your fees.","ok");render();};
@@ -110,8 +115,10 @@ export function bind(){
     if(a<cfg().transferMin){toast("Min 10.","err");return;}
     if(S.transferToday+a>cfg().transferCap){toast("Daily cap 500.","err");return;}
     if(S.wallet.main<a){toast("Not enough MAIN.","err");return;}
-    const fee=Math.round(a*cfg().transferFee/100);S.wallet.main-=a;S.transferToday+=a;
-    const bot=S.bots[Math.floor(Math.random()*S.bots.length)];bot.balance+=(a-fee);
+    const fee=pct(a,cfg().transferFee);
+    const sent=debitWallet({main:a},"Peer transfer");if(!sent.ok){toast(sent.error||"Not enough MAIN.","err");return;}
+    S.transferToday=add(S.transferToday||0,a);
+    const bot=S.bots[Math.floor(Math.random()*S.bots.length)];creditBot(bot,sub(a,fee));
     cfg().house.xfFees=(cfg().house.xfFees||0)+fee;cfg().house.netRevenue+=fee;cfg().sinks+=fee;S.transferCount=(S.transferCount||0)+1;checkProgressAchievements();
     toast(`Sent ${fmt(a-fee)} to ${bot.name} (fee ${fmt(fee)}).`,"ok");addFeed(`💸 <b>You</b> transferred ${fmt(a-fee)} to ${bot.name}`);render();
   };

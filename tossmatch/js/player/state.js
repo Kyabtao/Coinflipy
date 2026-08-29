@@ -1,5 +1,6 @@
 /* FlipArena player module — state */
 import "../shared/runtime.js";
+import {coin,enforceWalletInvariants,numOr,reconciliation,sub} from "../shared/money.js";
 import {SAVE_KEY} from "./core.js";
 import {BOTS_SEED,VIP_SEED} from "./data.js";
 
@@ -9,7 +10,18 @@ function houseNet(){const h=cfg().house;return houseGross()-(h.promoCost||0)-(h.
 function houseCashIn(){const h=cfg().house;return (h.deposits||0)+(h.botDeposits||0);}
 function houseCashOut(){const h=cfg().house;return (h.withdrawals||0)+(h.playerWithdrawals||0);}
 function houseNetCash(){return houseCashIn()-houseCashOut();}
-function reconcileHouse(){const h=cfg().house;h.netRevenue=Math.round(houseNet());h.netCash=Math.round(houseNetCash());return h;}
+/* Reconciliation is delegated to the shared money module so both apps derive
+   net revenue from the same integer-subunit formula:
+       Net revenue = Gross revenue − Promo cost − Comps
+       Gross revenue = fees + catalog fees + cup rakes + tournament rakes + shop + transfer fees */
+function reconcileHouse(){
+  const h=cfg().house,r=reconciliation();
+  h.netRevenue=r.net;h.netCash=r.netCash;
+  const drift=sub(coin(r.net),coin(houseNet()));
+  if(Math.abs(drift)>0){h.netRevenue=coin(houseNet());h.netCash=coin(houseNetCash());}
+  enforceWalletInvariants();
+  return h;
+}
 function initializeBotStartingWallet(bot){if(!bot)return bot;if((bot.walletVersion||0)<2){bot.balance=0;bot.bonusBalance=1000;bot.walletVersion=2;bot.startingBonus=1000;bot.startingBonusAccounted=false;bot.startingBonusAt=0;bot.firstTopupDone=false;bot.firstTopupAt=0;bot.topupCount=0;bot.topupTotal=0;bot.lastTopupBase=0;}else{bot.balance=Math.max(0,+(bot.balance||0));bot.bonusBalance=Math.max(0,+(bot.bonusBalance??1000));}return bot;}
 function defaultState(){
   const now=Date.now();
@@ -47,7 +59,9 @@ function defaultState(){
     economyPlus:{cratesOpened:0,tradingListings:[],staking:{balance:0,lastClaim:Date.now()},subscription:{tier:"none",expires:0,lastDropMonth:""},boosters:{xpUntil:0,rakeUntil:0},utility:{crafts:[],eventTickets:0,ticketPurchases:[],clanTreasury:0,clanLevel:1,roomUpgrade:'basic',roomPurchases:[]}},
     spectatorEvents:[],
     lossLimit:0,
+    frozen:{you:false,reason:"",at:0,by:""},
     config:{
+      stakeMin:10,stakeMax:1000,payoutCap:0,animMs:2300,edgePct:2,
       feePct:5,cupRakePct:5,trnyRakePct:10,jpFundPct:10,jpFloor:1,jpArm:50,jpPayPct:50,
       nonMainCapPct:20,transferFee:2,transferMin:10,transferCap:500,
       botTopupThreshold:500,botGrowthMax:250,botGrowthIntervalSec:15,botGrowthBatch:1,botArcadePerTick:2,wdMin:3000,wdMax:5000,wdTickChance:0.35,
@@ -88,6 +102,12 @@ function load(){
       S.economyPlus=Object.assign(defaultState().economyPlus,p.economyPlus||{});S.economyPlus.staking=Object.assign(defaultState().economyPlus.staking,(p.economyPlus&&p.economyPlus.staking)||{});S.economyPlus.subscription=Object.assign(defaultState().economyPlus.subscription,(p.economyPlus&&p.economyPlus.subscription)||{});S.economyPlus.boosters=Object.assign(defaultState().economyPlus.boosters,(p.economyPlus&&p.economyPlus.boosters)||{});S.economyPlus.utility=Object.assign(defaultState().economyPlus.utility,(p.economyPlus&&p.economyPlus.utility)||{});
       S.vipUnlockedTier=Math.max(1,p.vipUnlockedTier||1);S.vipBenefits=Object.assign(defaultState().vipBenefits,p.vipBenefits||{});S.vipBenefits.unlockedAt=Object.assign({1:Date.now()},(p.vipBenefits&&p.vipBenefits.unlockedAt)||{});
       S.config=Object.assign(defaultState().config,p.config||{});
+      S.frozen=Object.assign(defaultState().frozen,p.frozen||{});
+      S.config.stakeMin=Math.max(1,Math.round(S.config.stakeMin||10));
+      S.config.stakeMax=Math.max(S.config.stakeMin,Math.round(S.config.stakeMax||1000));
+      S.config.payoutCap=Math.max(0,Math.round(S.config.payoutCap||0));
+      S.config.animMs=Math.max(200,Math.round(S.config.animMs||2300));
+      S.config.edgePct=Math.min(25,Math.max(0,numOr(S.config.edgePct,2)));
       S.config.house=Object.assign(defaultState().config.house,(p.config&&p.config.house)||{});if(S.config.house.deposits==null)S.config.house.deposits=0;if(S.config.house.botDeposits==null)S.config.house.botDeposits=0;
       S.withdrawals=Object.assign(defaultState().withdrawals,p.withdrawals||{});if(!Array.isArray(S.withdrawals.log))S.withdrawals.log=[];
       S.config.features=Object.assign(defaultState().config.features,(p.config&&p.config.features)||{});
@@ -117,7 +137,7 @@ function load(){
   }catch(e){console.warn(e)}
   S=defaultState();reconcileHouse();
 }
-function ledger(type,delta,note){const bal={...S.wallet};S.ledger.unshift({t:Date.now(),type,delta,note,balance:bal.main});if(S.ledger.length>200)S.ledger.pop();}
+function ledger(type,delta,note){const bal={...S.wallet};S.ledger=S.ledger||[];S.ledger.unshift({t:Date.now(),type,delta:coin(delta),note,balance:coin(bal.main)});if(S.ledger.length>200)S.ledger.pop();}
 function audit(action,detail){S.config.audit.unshift({t:Date.now(),who:"player",action,detail});if(S.config.audit.length>50)S.config.audit.pop();}
 
 export function bind(){

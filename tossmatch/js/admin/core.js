@@ -1,6 +1,10 @@
 /* FlipArena admin module — _top */
 import "../shared/runtime.js";
 import {applyTheme} from "../shared/theme.js";
+import {coin,ledgerAudit,numOr,reconciliation,revenueChartSVG,revenueSeries,transactionLog,wageredVolume} from "../shared/money.js";
+import {createBadge,createLiveBadge} from "../../src/components/badge/badge.js";
+import {createButton} from "../../src/components/button/button.js";
+import {createCard,createStatGrid,createStatTile} from "../../src/components/card/card.js";
 
 const SAVE_KEY="tossmatch_v8",BOT_CHANNEL_NAME="tossmatch_bot_live_v1";
 const ADMIN_LIVE_ID="admin-"+(sessionStorage.adminLiveId||(sessionStorage.adminLiveId=Math.random().toString(36).slice(2)));
@@ -85,7 +89,7 @@ const FEATURE_DIRECTORY=[
  {cat:'Wallet & Commerce',code:'WAL-3',name:'Shop & Cosmetics',desc:'Nine expanded categories, 38 new items, VIP rewards, discounts and equip controls.',status:'Implemented',tab:'shop'},
  {cat:'Wallet & Commerce',code:'WAL-4',name:'Transfers & Bot Economy',desc:'Bots start at 0 MAIN + 1,000 BONUS, complete a varied first MAIN top-up before activity, then use active economy, later top-ups and roster growth.',status:'Implemented',tab:'wallet',admin:'ops'},
  {cat:'Operations',code:'OPS-1',name:'Command Center',desc:'KPIs, live bot-engine status, alerts, quick actions, revenue, top-up volume, jackpot and RNG monitoring.',status:'Implemented',admin:'dash'},
- {cat:'Operations',code:'OPS-2',name:'Feature Hub',desc:'B1–B4 telemetry and feature administration controls.',status:'Implemented',admin:'features'},
+ {cat:'Operations',code:'OPS-2',name:'Feature Hub',desc:'Community, Arcade Zone, Progress+ and Economy+ telemetry with feature administration controls.',status:'Implemented',admin:'features'},
  {cat:'Operations',code:'OPS-3',name:'Audit & Exports',desc:'Audit trail, review flags, filtering, pagination and data exports.',status:'Implemented',admin:'audit'},
  {cat:'Operations',code:'OPS-4',name:'Promotions Manager',desc:'Scheduled campaigns now support Player credit/cash-drop claims, next-top-up activation, one-claim tracking and Admin counts.',status:'Implemented',tab:'services',feature:'offers',admin:'promo'},
  {cat:'Operations',code:'OPS-5',name:'Withdrawals',desc:'Bots file cash-outs when MAIN reaches a personal 3,000-5,000 trigger; the Admin ledger tracks paid bot requests and the demo player\'s KYC-verified withdrawals with references.',status:'Implemented',admin:'withdraw'},
@@ -119,7 +123,7 @@ const FEATURE_DIRECTORY=[
 ];
 const PAGE_SIZE=20;
 const DIRECTORY={search:"",category:"",status:""};
-const VIEWS={withdrawals:{page:1,filter:"",sort:"time-desc"},people:{page:1,filter:"",sort:"balance"},audit:{page:1,filter:"",sort:"time-desc"},games:{page:1,filter:"",sort:"time-desc"},catalog:{page:1,filter:"",result:"",sort:"time-desc"},transfers:{page:1,filter:"",sort:"time-desc"},topups:{page:1,filter:"",sort:"time-desc"},playerTopups:{page:1,filter:"",sort:"time-desc"},levels:{page:1,filter:"",sort:"level-asc"},queue:{page:1,filter:"",sort:"wait-desc"},flags:{page:1,filter:"",sort:"time-desc"},tournaments:{page:1,status:"",sort:"time-desc"}};
+const VIEWS={revenue:{range:"day"},withdrawals:{page:1,filter:"",sort:"time-desc"},people:{page:1,filter:"",sort:"balance"},audit:{page:1,filter:"",sort:"time-desc"},games:{page:1,filter:"",sort:"time-desc"},catalog:{page:1,filter:"",result:"",sort:"time-desc"},transfers:{page:1,filter:"",sort:"time-desc"},topups:{page:1,filter:"",sort:"time-desc"},playerTopups:{page:1,filter:"",sort:"time-desc"},levels:{page:1,filter:"",sort:"level-asc"},queue:{page:1,filter:"",sort:"wait-desc"},flags:{page:1,filter:"",sort:"time-desc"},tournaments:{page:1,status:"",sort:"time-desc"}};
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.round(n).toLocaleString("en-IN");
 function pageRows(rows,view){const pages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE));view.page=Math.max(1,Math.min(view.page,pages));return {rows:rows.slice((view.page-1)*PAGE_SIZE,view.page*PAGE_SIZE),pages,total:rows.length};}
@@ -129,7 +133,7 @@ function toast(m){const t=document.createElement("div");t.className="toast";t.te
 function audit(action,detail=""){S.config.audit.unshift({t:Date.now(),who:"admin",action,detail});if(S.config.audit.length>50)S.config.audit.pop();}
 function save(){if(applyingRemoteState)return;localStorage.setItem(SAVE_KEY,JSON.stringify(S));}
 function load(){
-  const d={v:11.0,config:{feePct:5,cupRakePct:5,trnyRakePct:10,jpFundPct:10,jpFloor:1,jpArm:50,jpPayPct:50,nonMainCapPct:20,transferFee:2,transferMin:10,transferCap:500,
+  const d={v:11.0,frozen:{you:false,reason:"",at:0,by:""},config:{stakeMin:10,stakeMax:1000,payoutCap:0,animMs:2300,edgePct:2,feePct:5,cupRakePct:5,trnyRakePct:10,jpFundPct:10,jpFloor:1,jpArm:50,jpPayPct:50,nonMainCapPct:20,transferFee:2,transferMin:10,transferCap:500,
     botTopupThreshold:500,botGrowthMax:250,botGrowthIntervalSec:15,botGrowthBatch:1,botArcadePerTick:2,wdMin:3000,wdMax:5000,wdTickChance:0.35,
     vip:[{tier:1,name:"Starter",wagered:0,rakeback:0,color:"#8d6e63"},{tier:2,name:"Silver",wagered:1000,rakeback:4,color:"#c0c0c0"},{tier:3,name:"Gold",wagered:3000,rakeback:6,color:"#ffd700"},{tier:4,name:"Platinum",wagered:8000,rakeback:8,color:"#e5e4e2"},{tier:5,name:"Diamond",wagered:20000,rakeback:12,color:"#b9f2ff"},{tier:6,name:"Black Diamond",wagered:50000,rakeback:15,color:"linear-gradient(135deg,#111827,#f43f5e)"},{tier:7,name:"Royal",wagered:75000,rakeback:17,color:"linear-gradient(135deg,#f43f5e,#fbbf24)"},{tier:8,name:"Legend",wagered:100000,rakeback:20,color:"linear-gradient(135deg,#fbbf24,#f43f5e,#a855f7)"}],
     levelRewards:Object.fromEntries(Array.from({length:49},(_,n)=>[n+2,(n+2)*50])),
@@ -151,6 +155,12 @@ function load(){
     S=Object.assign(d,p);
     S.settings=Object.assign(d.settings,p.settings||{});
     S.config=Object.assign(d.config,p.config||{});
+    S.frozen=Object.assign(d.frozen,p.frozen||{});
+    S.config.stakeMin=Math.max(1,Math.round(S.config.stakeMin||10));
+    S.config.stakeMax=Math.max(S.config.stakeMin,Math.round(S.config.stakeMax||1000));
+    S.config.payoutCap=Math.max(0,Math.round(S.config.payoutCap||0));
+    S.config.animMs=Math.max(200,Math.round(S.config.animMs||2300));
+    S.config.edgePct=Math.min(25,Math.max(0,numOr(S.config.edgePct,2)));
     S.config.house=Object.assign(d.config.house,(p.config&&p.config.house)||{});if(!S.config.house.playerWithdrawals)S.config.house.playerWithdrawals=0;if(S.config.house.deposits==null)S.config.house.deposits=0;if(S.config.house.botDeposits==null)S.config.house.botDeposits=0;
     S.withdrawals=Object.assign({count:0,amount:0,log:[]},p.withdrawals||{});if(!Array.isArray(S.withdrawals.log))S.withdrawals.log=[];
     S.rg.deposits=Array.isArray(p.rg&&p.rg.deposits)?p.rg.deposits:d.rg.deposits;
@@ -227,7 +237,7 @@ function renderFeatureAdmin(){
   const economy=(ep.cratesOpened||0)+(ep.tradingListings?.length||0)+(stake.balance||0)+(utility.crafts?.length||0)+(utility.ticketPurchases?.length||0)+(utility.clanTreasury||0)+(utility.roomPurchases?.length||0);
   $("featureTiles").innerHTML=[['🤝',socialCount,'Social actions'],['🎮',arcadeCount,'Arcade sessions'],['🚀',progress,'Progress score'],['💼',economy,'Economy+ activity']].map(x=>`<div class="stat-tile"><div style="font-size:22px">${x[0]}</div><div class="v">${fmt(x[1])}</div><div class="k">${x[2]}</div></div>`).join('');
   $("communityMetrics").innerHTML=`<div class="kv"><span class="k">Friends</span><b>${(social.friends||[]).length}</b></div><div class="kv"><span class="k">Chat messages</span><b>${(social.chat||[]).length}</b></div><div class="kv"><span class="k">Private rooms</span><b>${(social.privateRooms||[]).length}</b></div><div class="kv"><span class="k">Clan</span><b>${social.clan?`[${social.clan.tag}] ${social.clan.name}`:'None'}</b></div><div class="kv"><span class="k">Gifts</span><b>${(social.gifts||[]).length}</b></div><div class="kv"><span class="k">Autonomous bot social actions</span><b>${ba.socialActions||0}</b></div><div class="kv"><span class="k">Incoming bot requests</span><b>${(social.friendRequests||[]).length}</b></div>`;
-  $("arcadeMetrics").innerHTML=`<div class="kv"><span class="k">Wheel spins</span><b>${fg.wheel?.spins||0}</b></div><div class="kv"><span class="k">Dice sessions</span><b>${fg.dice?.length||0}</b></div><div class="kv"><span class="k">Raffle tickets</span><b>${fg.raffle?.playerTickets||0}</b></div><div class="kv"><span class="k">Scratch history</span><b>${fg.scratch?.length||0}</b></div><div class="kv"><span class="k">Last wheel prize</span><b>${fg.wheel?.lastPrize||'—'}</b></div><div class="kv"><span class="k">G7–G16 player sessions</span><b>${fg.extended?.plays?.length||0}</b></div><div class="kv"><span class="k">Autonomous bot Arcade Zone plays</span><b>${ba.arcadePlays||0}</b></div>`;
+  $("arcadeMetrics").innerHTML=`<div class="kv"><span class="k">Wheel spins</span><b>${fg.wheel?.spins||0}</b></div><div class="kv"><span class="k">Dice sessions</span><b>${fg.dice?.length||0}</b></div><div class="kv"><span class="k">Raffle tickets</span><b>${fg.raffle?.playerTickets||0}</b></div><div class="kv"><span class="k">Scratch history</span><b>${fg.scratch?.length||0}</b></div><div class="kv"><span class="k">Last wheel prize</span><b>${fg.wheel?.lastPrize||'—'}</b></div><div class="kv"><span class="k">Extended Arcade Zone sessions</span><b>${fg.extended?.plays?.length||0}</b></div><div class="kv"><span class="k">Autonomous bot Arcade Zone plays</span><b>${ba.arcadePlays||0}</b></div>`;
   $("progressMetrics").innerHTML=`<div class="kv"><span class="k">Battle Pass</span><b>${eng.battlePass?.premium?'Premium':'Free'} · ${fmt(eng.battlePass?.xp||0)} XP</b></div><div class="kv"><span class="k">Prestige</span><b>${eng.prestige||0}</b></div><div class="kv"><span class="k">Skill-only matching</span><b>${eng.skillOnly?'Enabled':'Off'}</b></div><div class="kv"><span class="k">Weekly wins</span><b>${eng.weekly?.wins||0}</b></div>`;
   $("economyPlusMetrics").innerHTML=`<div class="kv"><span class="k">Crates opened</span><b>${ep.cratesOpened||0}</b></div><div class="kv"><span class="k">Trading listings</span><b>${ep.tradingListings?.length||0}</b></div><div class="kv"><span class="k">Staked coins</span><b>${fmt(stake.balance||0)}</b></div><div class="kv"><span class="k">Subscription</span><b>${sub.expires>Date.now()?sub.tier:'None'}</b></div><div class="kv"><span class="k">XP / rake boosters</span><b>${boost.xpUntil>Date.now()?'XP active':'—'} / ${boost.rakeUntil>Date.now()?'Rake active':'—'}</b></div><div class="kv"><span class="k">Crafts / event tickets</span><b>${utility.crafts?.length||0} / ${utility.eventTickets||0}</b></div><div class="kv"><span class="k">Clan treasury / room tier</span><b>${fmt(utility.clanTreasury||0)} / ${utility.roomUpgrade||'basic'}</b></div>`;
 }
@@ -241,9 +251,10 @@ function renderTrust(){const svc=S.services||{},rg=S.rg||{},an=S.analytics||{sam
  $("serviceAdminMetrics").innerHTML=`<div class="grid4"><div class="stat-tile"><div class="v">${(cfg().promotions||[]).length}</div><div class="k">Campaigns</div></div><div class="stat-tile green"><div class="v">${claims}</div><div class="k">Player claims</div></div><div class="stat-tile blue"><div class="v">${(svc.statements||[]).length}</div><div class="k">Statements</div></div><div class="stat-tile purple"><div class="v">${(svc.emailLog||[]).length}</div><div class="k">Email simulations</div></div></div>`;}
 function renderFeatureDirectory(){
   const categories=[...new Set(FEATURE_DIRECTORY.map(x=>x.cat))],q=DIRECTORY.search.toLowerCase(),catEl=$("directoryCategory");if(!catEl.dataset.ready){catEl.innerHTML='<option value="">All categories</option>'+categories.map(x=>`<option value="${x}">${x}</option>`).join('');catEl.dataset.ready='1';}catEl.value=DIRECTORY.category;$("directoryStatus").value=DIRECTORY.status;if(document.activeElement!==$("directorySearch"))$("directorySearch").value=DIRECTORY.search;
-  let rows=FEATURE_DIRECTORY.filter(x=>(!DIRECTORY.category||x.cat===DIRECTORY.category)&&(!DIRECTORY.status||x.status===DIRECTORY.status)&&(!q||`${x.code} ${x.name} ${x.desc} ${x.cat}`.toLowerCase().includes(q)));
+  // Search matches human-facing copy only — internal codes stay out of the index.
+  let rows=FEATURE_DIRECTORY.filter(x=>(!DIRECTORY.category||x.cat===DIRECTORY.category)&&(!DIRECTORY.status||x.status===DIRECTORY.status)&&(!q||`${x.name} ${x.desc} ${x.cat} ${x.status}`.toLowerCase().includes(q)));
   const counts={Implemented:FEATURE_DIRECTORY.filter(x=>x.status==='Implemented').length,Partial:FEATURE_DIRECTORY.filter(x=>x.status==='Partial').length,Suggested:FEATURE_DIRECTORY.filter(x=>x.status==='Suggested').length};$("directoryTiles").innerHTML=[['✅',counts.Implemented,'Implemented'],['⚠️',counts.Partial,'Partial / demo-only'],['🧭',counts.Suggested,'Suggested next'],['🗂',FEATURE_DIRECTORY.length,'Total features']].map(x=>`<div class="stat-tile"><div style="font-size:21px">${x[0]}</div><div class="v">${x[1]}</div><div class="k">${x[2]}</div></div>`).join('');
-  $("featureDirectory").innerHTML=categories.map(cat=>{const list=rows.filter(x=>x.cat===cat);if(!list.length)return'';return `<div class="directory-category">${cat} · ${list.length}</div><div class="directory-grid">${list.map(x=>`<div class="directory-card"><div class="directory-top"><span class="directory-code">${x.code}</span><span class="directory-status ${x.status.toLowerCase().replace(/\W+/g,'')}">${x.status}</span></div><h4>${x.name}</h4><p>${x.desc}</p><div class="directory-links">${x.tab?`<a href="index.html?tab=${x.tab}${x.feature?'&feature='+x.feature:''}" target="_blank">Open player ↗</a>`:''}${x.admin?`<button data-admin-go="${x.admin}">Open admin</button>`:''}${!x.tab&&!x.admin?'<span class="muted">Roadmap item</span>':''}</div></div>`).join('')}</div>`}).join('')||'<div class="muted">No features match these filters.</div>';
+  $("featureDirectory").innerHTML=categories.map(cat=>{const list=rows.filter(x=>x.cat===cat);if(!list.length)return'';return `<div class="directory-category">${cat} · ${list.length}</div><div class="directory-grid">${list.map(x=>`<div class="directory-card"><div class="directory-top"><span class="directory-code">${x.cat}</span><span class="directory-status ${x.status.toLowerCase().replace(/\W+/g,'')}">${x.status}</span></div><h4>${x.name}</h4><p>${x.desc}</p><div class="directory-links">${x.tab?`<a href="index.html?tab=${x.tab}${x.feature?'&feature='+x.feature:''}" target="_blank">Open player ↗</a>`:''}${x.admin?`<button data-admin-go="${x.admin}">Open admin</button>`:''}${!x.tab&&!x.admin?'<span class="muted">Roadmap item</span>':''}</div></div>`).join('')}</div>`}).join('')||'<div class="muted">No features match these filters.</div>';
 }
 function render(){
   const c=cfg(),h=reconcileHouse();
@@ -257,16 +268,7 @@ function render(){
   // dash
   renderDash();
   // rates
-  $("rngFee").value=c.feePct;$("lblFee").textContent=c.feePct+"%";
-  $("rngCup").value=c.cupRakePct;$("lblCup").textContent=c.cupRakePct+"%";
-  $("rngTrny").value=c.trnyRakePct;$("lblTrny").textContent=c.trnyRakePct+"%";
-  $("rngXf").value=c.transferFee;$("lblXf").textContent=c.transferFee+"%";
-  $("rngJpFund").value=c.jpFundPct;$("lblJpFund").textContent=c.jpFundPct+"%";
-  $("rngJpFloor").value=c.jpFloor;$("lblJpFloor").textContent=c.jpFloor;
-  $("rngJpArm").value=c.jpArm;$("lblJpArm").textContent=c.jpArm;
-  $("rngJpPay").value=c.jpPayPct;$("lblJpPay").textContent=c.jpPayPct+"%";
-  $("cfgCap").value=c.nonMainCapPct;$("cfgXfCap").value=c.transferCap;$("cfgXfMin").value=c.transferMin;
-  $("cfgWdMin").value=c.wdMin??3000;$("cfgWdMax").value=c.wdMax??5000;$("cfgWdChance").value=c.wdTickChance??0.35;$("cfgArcadeTick").value=c.botArcadePerTick??2;$("cfgSeason").value=c.seasonNumber||1;$("cfgHouseCap").value=c.house.capital||0;
+  renderRates();
   // vip
   renderVip();
   renderLevels();
@@ -276,32 +278,10 @@ function render(){
   renderPromo();
   // econ and top-up analytics
   renderEcon();renderTopupAnalytics();renderWithdrawals();renderPeople();
+  renderRevenue();renderGameParams();renderSessionMonitor();renderAdminLiveStatus();
   // ops
-  $("togMaint").checked=!!c.features.maintenance;
-  $("togTopupPromo").checked=c.features.topupPromo!==false;
-  $("togAuto").checked=!!c.features.autoMatch;
-  $("togBots").checked=!!c.features.bots;$("togBotGrowth").checked=c.features.botGrowth!==false;
-  $("botTopupThreshold").value=c.botTopupThreshold??500;$("botGrowthMax").value=c.botGrowthMax??250;$("botGrowthInterval").value=c.botGrowthIntervalSec??15;$("botGrowthBatch").value=c.botGrowthBatch??1;const botReadyCount=S.bots.filter(b=>b.firstTopupDone).length,botPendingCount=S.bots.length-botReadyCount;$("botGrowthStatus").textContent=`${S.bots.length+1} total players · ${botReadyCount} top-up ready · ${botPendingCount} blocked · ${(S.botActivity?.createdBots||0)} auto-created`;$("botFirstTopupStatus").innerHTML=[[fmt(botReadyCount),'First top-up complete','green'],[fmt(botPendingCount),'Blocked before play',botPendingCount?'red':'green'],[fmt(S.bots.reduce((n,b)=>n+(b.topupCount||0),0)),'All bot top-ups','purple'],[fmt(S.bots.reduce((n,b)=>n+(b.balance||0),0)),'Bot MAIN balance','blue'],[fmt(S.bots.reduce((n,b)=>n+(b.bonusBalance||0),0)),'Bot BONUS balance','purple']].map(x=>`<div class="stat-tile ${x[2]}"><div class="v">${x[0]}</div><div class="k">${x[1]}</div></div>`).join('');$("botTopupHeading").textContent=`Recent bot top-ups (first top-up required · later trigger below ${fmt(c.botTopupThreshold??500)})`;
-  $("togQuests").checked=!!c.features.quests;
-  $("togLogin").checked=!!c.features.dailyLogin;
-  $("togX2").checked=true;
-  $("plLvl").textContent=S.level+" ("+fmt(S.xp)+" XP)";
-  let vipT=c.vip[0];for(const tier of c.vip)if(S.monthWagered>=tier.wagered)vipT=tier;
-  const maxVip=c.vip.find(v=>v.tier===(S.vipUnlockedTier||vipT.tier))||vipT;
-  $("plVip").innerHTML=`<span class="vip-dot" style="background:${vipT.color}"></span>${vipT.name} (${vipT.rakeback}%) · highest ${maxVip.name}<br><span class="muted">${VIP_BENEFIT_LABELS[vipT.tier]||''}</span>`;
-  $("plWager").textContent=fmt(S.monthWagered);
-  $("plNet2").textContent=(S.stats.net>=0?'+':'')+fmt(S.stats.net);
-  renderFlags();
-  $("qaDepth").textContent=S.waiting.length;
-  $("qaEscrow").textContent=fmt(S.waiting.reduce((a,b)=>a+(b.stake||0),0));
-  $("qaBots").textContent=S.bots.length;
-  const qv=VIEWS.queue,qq=qv.filter.toLowerCase();let qw=[...S.waiting];const qgame=b=>b.gameName||((b.kind||'toss')==='toss'?'Coin Toss':b.kind);if(qq)qw=qw.filter(b=>`${qgame(b)} ${b.name||b.owner} ${b.pick??b.side??'AUTO'}`.toLowerCase().includes(qq));qw.sort((a,b)=>qv.sort==="stake-desc"?(b.stake||0)-(a.stake||0):qv.sort==="game-asc"?qgame(a).localeCompare(qgame(b)):(b.wait||0)-(a.wait||0));const qp=pageRows(qw,qv);setPager("queue",qv,qp);$("qaList").innerHTML=qp.rows.length?`<table><thead><tr><th>Game</th><th>Player</th><th>Pick</th><th>Stake</th><th>Wait</th></tr></thead><tbody>${qp.rows.map(b=>`<tr><td>${qgame(b)}</td><td>${b.name||b.owner}</td><td>${b.pick??b.side??'AUTO'}</td><td>${fmt(b.stake||0)}</td><td>${b.wait||0}s</td></tr>`).join('')}</tbody></table>`:'<div class="muted">Queue is empty.</div>';
-  const xv=VIEWS.transfers,xq=xv.filter.toLowerCase();let bt=[...(S.botTransfers||[])];if(xq)bt=bt.filter(x=>`${x.from} ${x.to}`.toLowerCase().includes(xq));bt.sort((a,b)=>xv.sort==="time-asc"?a.t-b.t:xv.sort==="amount-desc"?(b.received||0)-(a.received||0):xv.sort==="fee-desc"?(b.fee||0)-(a.fee||0):b.t-a.t);const bx=pageRows(bt,xv);setPager("botXf",xv,bx);$("botTransferList").innerHTML=bx.rows.length?`<table><thead><tr><th>When</th><th>From</th><th>To</th><th>Sent</th><th>Fee</th></tr></thead><tbody>${bx.rows.map(x=>`<tr><td>${new Date(x.t).toLocaleTimeString()}</td><td>${x.from}</td><td>${x.to}</td><td>${fmt(x.received)}</td><td>${fmt(x.fee)}</td></tr>`).join('')}</tbody></table>`:'<div class="muted">No bot transfers match.</div>';
-  const uv=VIEWS.topups,uq=uv.filter.toLowerCase();let bu=[...(S.botTopups||[])];if(uq)bu=bu.filter(x=>`${x.bot} ${x.reason}`.toLowerCase().includes(uq));bu.sort((a,b)=>uv.sort==="time-asc"?a.t-b.t:uv.sort==="total-desc"?(b.total||0)-(a.total||0):uv.sort==="promo-desc"?(b.bonus||0)-(a.bonus||0):b.t-a.t);const up=pageRows(bu,uv);setPager("botTopup",uv,up);$("botTopupList").innerHTML=up.rows.length?`<table><thead><tr><th>When</th><th>Bot</th><th>MAIN top-up</th><th>Starting BONUS</th><th>Promo BONUS</th><th>Wallet credit</th><th>Reason</th></tr></thead><tbody>${up.rows.map(x=>`<tr><td>${new Date(x.t).toLocaleTimeString()}</td><td>${x.bot}</td><td>${fmt(x.base)}</td><td>${x.startingBonus?`+${fmt(x.startingBonus)}`:'—'}</td><td>${x.bonus?`+${fmt(x.bonus)}`:'—'}</td><td>${fmt(x.walletCredit??((x.total||0)+(x.startingBonus||0)))}</td><td>${x.reason}</td></tr>`).join('')}</tbody></table>`:'<div class="muted">No bot top-ups match.</div>';
-  // audit
-  renderAudit();
-  renderGameHistory();renderCatalogHistory();
-  save();
+  renderOps();
+
 }
 function renderTopupAnalytics(){
   const a=topupAnalytics(),p=a.playerStats,b=a.botStats,c=a.combined;
@@ -519,7 +499,11 @@ function renderPeople(){
     {v:fmt(online),k:"Appearing online",cls:"blue"},
   ].map(t=>`<div class="stat-tile ${t.cls||''}"><div class="v">${t.v}</div><div class="k">${t.k}</div></div>`).join("");
   const pg=pageRows(rows,v);setPager("people",v,pg);
-  $("peopleList").innerHTML=`<table><thead><tr><th>Name</th><th>Playable</th><th>MAIN / BONUS</th><th>W–L</th><th>Net</th><th>Lv</th><th>Top-ups</th><th>Withdrawals</th></tr></thead><tbody>${pg.rows.map(r=>`<tr><td>${r.name}${r.you?" · you":" · "+(r.country||"")}</td><td>${fmt(r.bal||r.balance||0)}</td><td>${fmt(r.balance!==undefined?r.balance:0)} / ${fmt(r.bonusBalance||0)}</td><td>${r.wins||0}–${r.losses||0}</td><td style="color:${(r.net||0)>=0?"var(--green)":"var(--red)"}">${(r.net||0)>=0?"+":""}${fmt(r.net||0)}</td><td>${r.level||"–"}</td><td>${r.topupCount||r.topups||0}</td><td>${r.withdraws||0}</td></tr>`).join("")||'<tr><td colspan="8" class="muted">No players match.</td></tr>'}</tbody></table>`;
+  const frozenYou=!!(S.frozen&&S.frozen.you);
+  $("peopleList").innerHTML=`<table><thead><tr><th>Name</th><th>Playable</th><th>MAIN / BONUS</th><th>W–L</th><th>Net</th><th>Lv</th><th>Top-ups</th><th>Withdrawals</th><th>Status</th><th>Manage</th></tr></thead><tbody>${pg.rows.map(r=>{
+    const isFrozen=r.you?frozenYou:!!r.frozen;
+    return `<tr${isFrozen?' class="table-frozen"':''}><td>${r.name}${r.you?" · you":" · "+(r.country||"")}</td><td>${fmt(r.bal||r.balance||0)}</td><td>${fmt(r.balance!==undefined?r.balance:0)} / ${fmt(r.bonusBalance||0)}</td><td>${r.wins||0}–${r.losses||0}</td><td style="color:${(r.net||0)>=0?"var(--green)":"var(--red)"}">${(r.net||0)>=0?"+":""}${fmt(r.net||0)}</td><td>${r.level||"–"}</td><td>${r.topupCount||r.topups||0}</td><td>${r.withdraws||0}</td><td>${isFrozen?'<span class="tag danger">FROZEN</span>':'<span class="tag on">ACTIVE</span>'}</td><td style="white-space:nowrap"><button class="btn btn-sm ${isFrozen?'btn-green':'btn-danger'}" ${isFrozen?`data-unfreeze="${r.you?'__player__':r.name}"`:`data-freeze="${r.you?'__player__':r.name}"`}>${isFrozen?'❄️ Unfreeze':'⛔ Freeze'}</button> <button class="btn btn-sm btn-ghost" data-history="${r.you?'__player__':r.name}">🕘 Bets</button></td></tr>`;
+  }).join("")||'<tr><td colspan="10" class="muted">No players match.</td></tr>'}</tbody></table>`;
 }
 function renderAudit(){
   const el=$("auditBody"),v=VIEWS.audit,q=v.filter.toLowerCase();let rows=[...(cfg().audit||[])];
@@ -547,12 +531,12 @@ function renderCatalogHistory(){
 }
 const ADMIN_NAV_META=[
  ['Command','dash','⌁','Overview','KPIs, alerts, revenue and quick controls','dashboard command'],['Command','ops','🚦','Live Ops','Player controls, queues, bots, limits and transfers','liquidity player bot'],['Command','people','👥','Players','Searchable roster with balances, records and top-ups','directory roster players'],['Command','features','✨','Feature Hub','Community, Arcade, Progress and Economy telemetry','b1 b4 features'],['Command','directory','🗂','Feature Directory','Search every feature and open exact destinations','product map'],
- ['Commercial','rates','💹','Rates & Jackpot','Fees, jackpot rules and transfer limits','configuration'],['Commercial','econ','📈','Economy','P&L, taps, sinks, simulator and compensation','revenue finance'],['Commercial','topups','💳','Top-up Analytics','Player and bot top-up volume, bonuses, trends and records','topup deposit credit bonus liquidity'],['Commercial','withdraw','🏦','Withdrawals','Paid cash-outs, house P&L and reversal controls','cashout payout reversal'],['Commercial','promo','🎁','Promotions','Campaigns, top-up offer and broadcast banner','offers marketing'],
+ ['Commercial','rates','💹','Rates & Jackpot','Fees, jackpot rules and transfer limits','configuration'],['Commercial','econ','📈','Economy','P&L, taps, sinks, simulator and compensation','revenue finance'],['Commercial','revenue','📊','Revenue','Total volume, net profit, daily/weekly charts and transaction exports','revenue volume profit chart export csv json'],['Commercial','topups','💳','Top-up Analytics','Player and bot top-up volume, bonuses, trends and records','topup deposit credit bonus liquidity'],['Commercial','withdraw','🏦','Withdrawals','Paid cash-outs, house P&L and reversal controls','cashout payout reversal'],['Commercial','promo','🎁','Promotions','Campaigns, top-up offer and broadcast banner','offers marketing'],
  ['Engagement','vip','💎','VIP & Levels','Eight VIP tiers and paginated level rewards','progression'],['Engagement','trny','🏟','Tournaments','Create and inspect bot and player brackets','competition'],
  ['Governance','audit','🧾','Audit & Data','Audit trail, histories, proofs and exports','compliance records'],['Governance','trust','🛡️','Trust Center','Analytics, anti-cheat, RG, PWA, API, 2FA and statements','security safety']
 ].map(x=>({group:x[0],tab:x[1],icon:x[2],name:x[3],desc:x[4],keys:x[5]}));
-const ADMIN_CATALOG_GAMES=[['overunder','Over / Under'],['speed','Speed Round'],['tug','Tug of War'],['evenodd','Even / Odd Sum'],['closest','Closest Number'],['luckybattle','Lucky Number Battle'],['sumpredict','Sum Prediction'],['higherbyte','Higher Byte'],['patternrace','Pattern Race'],['parlayduel','Parlay Duel'],['prediction','Prediction Streak'],['blind','Blind Pick'],['rangewar','Range War'],['bullseye','Bullseye'],['chain','Chain Reaction'],['ladder','Elimination Ladder'],['mirrored','Mirrored Coins'],['rps','CAT18 · Rock Paper Scissors'],['closest21','CAT19 · Closest to 21'],['triplecoin','CAT20 · Triple Coin Majority'],['sequencebuilder','CAT21 · Sequence Builder'],['dicesumduel','CAT22 · Dice Sum Duel'],['colourspectrum','CAT23 · Colour Spectrum'],['primecomposite','CAT24 · Prime vs Composite'],['medianbattle','CAT25 · Median Battle'],['streaksurvivor','CAT26 · Streak Survivor'],['territory','CAT27 · Territory Capture'],['modulo4','CAT28 · Modulo Four'],['pokerhigh','CAT29 · Poker High'],['threedicepoker','CAT30 · Three Dice Poker'],['lastdigit','CAT31 · Last Digit Duel'],['binaryduel','CAT32 · Binary Code Duel'],['coinbalance','CAT33 · Coin Balance Battle']];
-const ADMIN_ARCADE_GAMES=[['wheel','G1 · Lucky Wheel'],['scratch','G2 · Scratch Cards'],['dice','G3 · Dice Roll'],['raffle','G4 · Weekly Raffle'],['ladder','G5 · Multiplier Ladder'],['war','G6 · War Card'],['plinko','G7 · Plinko'],['slots','G8 · Mini Slots'],['keno','G9 · Quick Keno'],['bingo','G10 · Bingo Rush'],['treasure','G11 · Treasure Hunt'],['memory','G12 · Memory Match'],['dropball','G13 · Drop Ball'],['trivia','G14 · Daily Trivia'],['fishing','G15 · Fishing Reel'],['penalty','G16 · Penalty Shootout'],['coinpusher','G17 · Coin Pusher'],['tower','G18 · Tower Builder'],['match3','G19 · Match-3 Rush'],['vault','G20 · Mystery Vault']];
+const ADMIN_CATALOG_GAMES=[['overunder','Over / Under'],['speed','Speed Round'],['tug','Tug of War'],['evenodd','Even / Odd Sum'],['closest','Closest Number'],['luckybattle','Lucky Number Battle'],['sumpredict','Sum Prediction'],['higherbyte','Higher Byte'],['patternrace','Pattern Race'],['parlayduel','Parlay Duel'],['prediction','Prediction Streak'],['blind','Blind Pick'],['rangewar','Range War'],['bullseye','Bullseye'],['chain','Chain Reaction'],['ladder','Elimination Ladder'],['mirrored','Mirrored Coins'],['rps','Rock Paper Scissors'],['closest21','Closest to 21'],['triplecoin','Triple Coin Majority'],['sequencebuilder','Sequence Builder'],['dicesumduel','Dice Sum Duel'],['colourspectrum','Colour Spectrum'],['primecomposite','Prime vs Composite'],['medianbattle','Median Battle'],['streaksurvivor','Streak Survivor'],['territory','Territory Capture'],['modulo4','Modulo Four'],['pokerhigh','Poker High'],['threedicepoker','Three Dice Poker'],['lastdigit','Last Digit Duel'],['binaryduel','Binary Code Duel'],['coinbalance','Coin Balance Battle']];
+const ADMIN_ARCADE_GAMES=[['wheel','Lucky Wheel'],['scratch','Scratch Cards'],['dice','Dice Roll'],['raffle','Weekly Raffle'],['ladder','Multiplier Ladder'],['war','War Card'],['plinko','Plinko'],['slots','Mini Slots'],['keno','Quick Keno'],['bingo','Bingo Rush'],['treasure','Treasure Hunt'],['memory','Memory Match'],['dropball','Drop Ball'],['trivia','Daily Trivia'],['fishing','Fishing Reel'],['penalty','Penalty Shootout'],['coinpusher','Coin Pusher'],['tower','Tower Builder'],['match3','Match-3 Rush'],['vault','Mystery Vault']];
 function goAdminTab(name){document.querySelector(`.tab[data-tab="${name}"]`)?.click();}
 function adminCommandEntries(){return [...ADMIN_NAV_META.map(x=>({...x,playerTab:'',feature:''})),...ADMIN_CATALOG_GAMES.map(x=>({group:'Player · Catalog Games',playerTab:'games',feature:x[0],icon:'🎲',name:x[1],desc:'Open exact P2P Games game',keys:'player game'})),...ADMIN_ARCADE_GAMES.map(x=>({group:'Player · Arcade Zone Games',playerTab:'newgames',feature:x[0],icon:'🎮',name:x[1],desc:'Open exact Arcade Zone game',keys:'player arcade'}))];}
 function renderAdminCommand(q=''){q=q.trim().toLowerCase();const rows=adminCommandEntries().filter(x=>!q||`${x.name} ${x.desc} ${x.keys} ${x.group}`.toLowerCase().includes(q));let group='';$("adminCommandList").innerHTML=rows.map((x,i)=>{const head=x.group!==group?(group=x.group,`<div class="admin-command-group">${x.group}</div>`):'';return `${head}<button class="admin-command-item" ${x.playerTab?`data-command-player="${x.playerTab}" data-command-feature="${x.feature}"`:`data-command-admin="${x.tab}"`}><span class="ci">${x.icon}</span><span><b>${x.name}</b><small>${x.desc}</small></span><kbd>${i+1<10?i+1:''}</kbd></button>`;}).join('')||'<div class="muted" style="padding:18px">No matching Admin screens or games.</div>';}
@@ -560,6 +544,244 @@ function openAdminCommand(q=''){const bg=$("adminCommandBg");bg.classList.add('s
 function closeAdminCommand(){$("adminCommandBg").classList.remove('show');$("adminCommandBg").setAttribute('aria-hidden','true');}
 function filterAdminNavigation(q){q=q.trim().toLowerCase();let shown=0;document.querySelectorAll('#tabs .tab[data-tab]').forEach(b=>{const meta=ADMIN_NAV_META.find(x=>x.tab===b.dataset.tab),match=!q||`${b.textContent} ${meta?.name||''} ${meta?.desc||''} ${meta?.keys||''}`.toLowerCase().includes(q);b.style.display=match?'':'none';if(match)shown++;});document.querySelectorAll('#tabs .admin-nav-label').forEach(x=>x.style.display=q?'none':'');$("adminNavEmpty").style.display=shown?'none':'block';}
 function syncAdminNavigation(tab){$("adminNavJump").value=tab;document.querySelectorAll('#adminQuickDock [data-admin-tab]').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tab));}
+
+
+/* ── Revenue dashboard (Admin ↔ player ledger, integer-subunit math) ─────── */
+const REVENUE_VIEW={range:"day"};
+function downloadFile(filename,content,type){
+  const blob=new Blob([content],{type:type||"text/plain"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+function renderRevenue(){
+  const root=$("revenueRoot");if(!root)return;
+  const r=reconciliation(),v=wageredVolume(),auditRep=ledgerAudit();
+  root.innerHTML="";
+  root.appendChild(createStatGrid([
+    {icon:"🎯",value:fmt(v.lifetime||0),label:"Lifetime wagered volume",color:"blue"},
+    {icon:"📈",value:fmt(r.gross),label:"Gross revenue",color:"green"},
+    {icon:"💰",value:fmt(r.net),label:"Net platform profit",color:r.net>=0?"green":"red"},
+    {icon:"🎁",value:fmt((r.promoCost||0)+(r.comps||0)),label:"Promo cost + comps",color:"purple"},
+  ]));
+  const unit=REVENUE_VIEW.range==="week"?"week":"day";
+  const series=revenueSeries(unit,unit==="week"?8:14);
+  const chartCard=createCard({title:`📊 ${unit==="week"?"Weekly":"Daily"} volume`});
+  const controls=document.createElement("div");controls.className="row";controls.style.marginBottom="10px";
+  controls.appendChild(createButton({label:"Daily",variant:unit==="day"?"primary":"ghost",size:"sm",onclick:()=>{REVENUE_VIEW.range="day";renderRevenue();}}));
+  controls.appendChild(createButton({label:"Weekly",variant:unit==="week"?"primary":"ghost",size:"sm",onclick:()=>{REVENUE_VIEW.range="week";renderRevenue();}}));
+  chartCard.appendChild(controls);
+  const chart=document.createElement("div");
+  chart.innerHTML=revenueChartSVG(series,"volume",{label:unit+"ly volume",color:"var(--gold)"});
+  chartCard.appendChild(chart);
+  const revChart=document.createElement("div");revChart.style.marginTop="10px";
+  revChart.innerHTML=revenueChartSVG(series,"revenue",{label:unit+"ly recognised revenue",color:"var(--green)"});
+  chartCard.appendChild(revChart);
+  root.appendChild(chartCard);
+
+  const exportCard=createCard({title:"📦 Exportable transaction logs"});
+  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const rows=transactionLog(2000);
+  const meta=document.createElement("p");meta.className="muted";
+  meta.textContent=`${rows.length} merged transaction rows — settled wagers, payouts, fees, top-ups, withdrawals, transfers and ledger movements. CSV and JSON contain the same records.`;
+  exportCard.appendChild(meta);
+  const btnRow=document.createElement("div");btnRow.className="row";btnRow.style.marginTop="10px";
+  btnRow.appendChild(createButton({label:"⬇️ Export CSV",variant:"primary",size:"sm",onclick:()=>{
+    const csv=[["timestamp_iso","when","type","category","who","amount","balance","note"]]
+      .concat(rows.map(x=>[new Date(x.t).toISOString(),new Date(x.t).toLocaleString(),x.type,x.category,x.who,x.amount,x.balance,x.note]))
+      .map(r=>r.map(q).join(",")).join("\n");
+    downloadFile("fliparena-transactions.csv",csv,"text/csv");toast("Transaction log CSV exported.");audit("export-transactions-csv",rows.length+" rows");
+  }}));
+  btnRow.appendChild(createButton({label:"⬇️ Export JSON",variant:"ghost",size:"sm",onclick:()=>{
+    downloadFile("fliparena-transactions.json",JSON.stringify({exportedAt:new Date().toISOString(),reconciliation:r,volume:v,rows},null,2),"application/json");
+    toast("Transaction log JSON exported.");audit("export-transactions-json",rows.length+" rows");
+  }}));
+  btnRow.appendChild(createButton({label:"🧾 Revenue summary CSV",variant:"ghost",size:"sm",onclick:()=>{
+    const csv=[["Metric","Value"],["Gross revenue",r.gross],["Net platform profit",r.net],["Promo cost",r.promoCost],["Comps",r.comps],["Cash in",r.cashIn],["Cash out",r.cashOut],["Net cash flow",r.netCash],["Lifetime wagered",v.lifetime],["Settled games",v.games],["Taps",r.taps],["Sinks",r.sinks],["House bankroll",r.bankroll]]
+      .map(r=>r.map(q).join(",")).join("\n");
+    downloadFile("fliparena-revenue-summary.csv",csv,"text/csv");toast("Revenue summary CSV exported.");
+  }}));
+  exportCard.appendChild(btnRow);
+  root.appendChild(exportCard);
+
+  const recon=$("revenueRecon");if(recon){
+    const check=(label,value,expected,good)=>`<div class="kv"><span class="k">${label}</span><span class="v" style="color:${good?"var(--green)":"var(--red)"}">${fmt(value)}${expected!=null?` <span class="muted">(expected ${fmt(expected)})</span>`:""}</span></div>`;
+    recon.innerHTML=
+      check("Coin Toss fees + P2P fees + rakes + shop + transfer fees = Gross revenue",r.gross,null,true)+
+      check("Gross revenue − promo cost − comps = Net platform profit",r.net,sub(r.gross,(r.promoCost||0)+(r.comps||0)),r.net===sub(r.gross,(r.promoCost||0)+(r.comps||0)))+
+      `<div class="kv"><span class="k">Cash in (top-ups / deposits)</span><span class="v">${fmt(r.cashIn)}</span></div>`+
+      `<div class="kv"><span class="k">Cash out (withdrawals)</span><span class="v">${fmt(r.cashOut)}</span></div>`+
+      `<div class="kv"><span class="k">Net cash flow</span><span class="v">${fmt(r.netCash)}</span></div>`+
+      `<div class="kv"><span class="k">House bankroll (capital + net profit)</span><span class="v">${fmt(r.bankroll)}</span></div>`+
+      `<div class="kv"><span class="k">Coins created (taps) / removed (sinks)</span><span class="v">${fmt(r.taps)} / ${fmt(r.sinks)}</span></div>`+
+      `<div class="kv"><span class="k">Ledger invariants</span><span class="v">${auditRep.ok?'<span class="tag on">PASS</span>':'<span class="tag danger">'+auditRep.issues.length+' ISSUE(S)</span>'}</span></div>`+
+      (auditRep.ok?'':`<div class="muted" style="margin-top:6px">${auditRep.issues.map(i=>"• "+i).join("<br>")}</div>`);
+  }
+}
+/* Safe subtraction helper used by the reconciliation readout. */
+function sub(a,b){return coin(a)-coin(b);}
+
+/* ── Game parameters (mirrors every player-side betting control) ─────────── */
+function gameParamDefaults(){return {stakeMin:10,stakeMax:1000,payoutCap:0,animMs:2300,edgePct:2,autoStop:-200};}
+function renderGameParams(){
+  const c=cfg(),d=gameParamDefaults();
+  const set=(id,val)=>{const el=$(id);if(el&&document.activeElement!==el)el.value=val;};
+  set("cfgStakeMin",c.stakeMin??d.stakeMin);set("cfgStakeMax",c.stakeMax??d.stakeMax);
+  set("cfgPayoutCap",c.payoutCap??d.payoutCap);set("cfgEdge",c.edgePct??d.edgePct);
+  set("cfgAnim",c.animMs??d.animMs);set("cfgAutoStop",(S.settings&&S.settings.autoRebetStop)??d.autoStop);
+}
+function saveGameParams(){
+  const c=cfg(),d=gameParamDefaults();
+  const num=(id,fallback)=>{const el=$(id);const v=el?parseFloat(el.value):NaN;return isFinite(v)?v:fallback;};
+  let stakeMin=Math.max(1,Math.round(num("cfgStakeMin",d.stakeMin)));
+  let stakeMax=Math.max(stakeMin,Math.round(num("cfgStakeMax",d.stakeMax)));
+  c.stakeMin=stakeMin;c.stakeMax=stakeMax;
+  c.payoutCap=Math.max(0,Math.round(num("cfgPayoutCap",d.payoutCap)));
+  c.edgePct=Math.min(25,Math.max(0,num("cfgEdge",d.edgePct)));
+  c.animMs=Math.max(200,Math.min(6000,Math.round(num("cfgAnim",d.animMs))));
+  S.settings=S.settings||{};S.settings.autoRebetStop=Math.min(-50,Math.max(-10000,Math.round(num("cfgAutoStop",d.autoStop))));
+  audit("game-params",`stake ${stakeMin}–${stakeMax} · cap ${c.payoutCap} · edge ${c.edgePct}% · anim ${c.animMs}ms · auto-stop ${S.settings.autoRebetStop}`);
+  const st=$("gameParamsStatus");if(st)st.textContent=`Saved · stake ${fmt(stakeMin)}–${fmt(stakeMax)} · edge ${c.edgePct}%`;
+  save();render();toast("Game parameters saved — the player app picks them up on the next bet.");
+}
+function resetGameParams(){
+  const d=gameParamDefaults();Object.assign(cfg(),d);S.settings=S.settings||{};S.settings.autoRebetStop=d.autoStop;
+  audit("game-params-reset","Restored default game parameters");save();render();toast("Game parameters reset to defaults.");
+}
+
+/* ── Live player session monitoring ──────────────────────────────────────── */
+function renderSessionMonitor(){
+  const el=$("playerSessionMonitor");if(!el)return;
+  const w=S.wallet||{},pts=(S.rg&&S.rg.sessionPoints)||[];
+  const last=pts.length?pts[pts.length-1]:null;
+  const frozenYou=!!(S.frozen&&S.frozen.you);
+  const frozenBots=(S.bots||[]).filter(b=>b.frozen).length;
+  el.innerHTML=`<div class="grid4">
+    <div class="stat-tile"><div class="v">${fmt(w.main||0)}</div><div class="k">MAIN balance</div></div>
+    <div class="stat-tile blue"><div class="v">${fmt((w.bonus||0)+(w.referral||0)+(w.rakeback||0))}</div><div class="k">Bonus + referral + rakeback</div></div>
+    <div class="stat-tile ${(S.stats&&S.stats.net)||0>=0?'green':'red'}"><div class="v">${((S.stats&&S.stats.net)||0)>=0?'+':''}${fmt((S.stats&&S.stats.net)||0)}</div><div class="k">Career net</div></div>
+    <div class="stat-tile purple"><div class="v">${(S.waiting||[]).length}</div><div class="k">Open (escrowed) bets</div></div>
+  </div>
+  <div class="kv"><span class="k">Player account</span><span class="v">${frozenYou?'<span class="tag danger">FROZEN</span>':'<span class="tag on">ACTIVE</span>'} ${S.playerName||"Player"}</span></div>
+  <div class="kv"><span class="k">Frozen simulated players</span><span class="v">${frozenBots} of ${(S.bots||[]).length}</span></div>
+  <div class="kv"><span class="k">Last session sample</span><span class="v">${last?new Date(last.t).toLocaleTimeString()+" · net "+fmt(last.net||0):"No session samples yet"}</span></div>
+  <div class="kv"><span class="k">Last ledger movement</span><span class="v">${(S.ledger&&S.ledger[0])?new Date(S.ledger[0].t).toLocaleTimeString()+" · "+S.ledger[0].type+" "+fmt(S.ledger[0].delta):"No ledger rows yet"}</span></div>
+  <div class="row" style="margin-top:10px">
+    <button class="btn ${frozenYou?'btn-green':'btn-danger'} btn-sm" id="adminFreezePlayer">${frozenYou?'❄️ Unfreeze player account':'⛔ Freeze player account'}</button>
+    <button class="btn btn-ghost btn-sm" id="adminPlayerHistoryBtn">🕘 Player bet history</button>
+  </div>`;
+  const fb=$("adminFreezePlayer");
+  if(fb)fb.onclick=()=>adminSetFreeze("__player__",!frozenYou);
+  const hb=$("adminPlayerHistoryBtn");
+  if(hb)hb.onclick=()=>adminPlayerHistory(S.playerName||"Player");
+}
+
+/* ── Player management: freeze / unfreeze / bet history ──────────────────── */
+function adminSetFreeze(name,frozen){
+  const reason=frozen?(prompt("Reason for freezing this account?")||"Admin review"):"";
+  if(name==="__player__"){
+    S.frozen=S.frozen||{you:false,reason:"",at:0,by:""};
+    S.frozen.you=!!frozen;S.frozen.reason=reason;S.frozen.at=Date.now();S.frozen.by="admin";
+  }else{
+    const b=(S.bots||[]).find(x=>x.name===name);
+    if(!b){toast("Player not found.");return;}
+    b.frozen=!!frozen;b.frozenReason=reason;b.frozenAt=Date.now();
+  }
+  audit(frozen?"freeze-player":"unfreeze-player",name==="__player__"?"Demo player":name);
+  save();render();toast((frozen?"Frozen ":"Unfrozen ")+(name==="__player__"?"the demo player account":name)+".");
+}
+function adminPlayerHistory(name){
+  const isPlayer=name==="__player__"||name===(S.playerName||"Player");
+  const coinGames=(S.games||[]).filter(g=>isPlayer||g.oppName===name);
+  const catalogRows=(S.catalogLog||[]).filter(x=>!isPlayer&&(x.playerA===name||x.playerB===name));
+  const rows=[
+    ...coinGames.map(g=>({t:g.t,game:g.game||"Coin Toss",detail:`vs ${g.oppName||""} · ${g.result}`,amount:g.delta,stake:g.stake})),
+    ...catalogRows.map(x=>({t:x.t,game:x.game,detail:`${x.playerA} [${x.pickA}] vs ${x.playerB} [${x.pickB}] · ${x.result}`,amount:null,stake:x.stake})),
+  ].sort((a,b)=>(b.t||0)-(a.t||0)).slice(0,40);
+  const body=rows.length?`<table><thead><tr><th>When</th><th>Game</th><th>Match</th><th>Stake</th><th>Δ</th></tr></thead><tbody>${
+    rows.map(r=>`<tr><td>${new Date(r.t||0).toLocaleString()}</td><td>${r.game}</td><td>${r.detail}</td><td>${fmt(r.stake||0)}</td><td style="color:${(r.amount||0)>=0?"var(--green)":"var(--red)"}">${r.amount==null?"—":((r.amount>=0?"+":"")+fmt(r.amount))}</td></tr>`).join("")
+  }</tbody></table>`:'<div class="muted">No settled bets for this player yet.</div>';
+  const drawer=$("adminDrawer");if(drawer&&typeof openDrawer==="function"){
+    $("drawerTitle").textContent="Bet history · "+(isPlayer?(S.playerName||"Player"):name);
+    $("drawerContent").innerHTML=`<div class="grid4" style="margin-bottom:12px">
+      <div class="stat-tile"><div class="v">${rows.length}</div><div class="k">Records</div></div>
+      <div class="stat-tile blue"><div class="v">${fmt(rows.reduce((n,r)=>n+(r.stake||0),0))}</div><div class="k">Staked</div></div>
+      <div class="stat-tile ${rows.reduce((n,r)=>n+(r.amount||0),0)>=0?'green':'red'}"><div class="v">${fmt(rows.reduce((n,r)=>n+(r.amount||0),0))}</div><div class="k">Net</div></div>
+      <div class="stat-tile purple"><div class="v">${fmt(coinGames.filter(g=>g.winner==="you").length)}</div><div class="k">Wins vs player</div></div>
+    </div>${body}`;
+    openDrawer();
+  }else toast("Drawer unavailable.");
+}
+
+function renderRates(){
+  const c=cfg();
+  $("rngFee").value=c.feePct;$("lblFee").textContent=c.feePct+"%";
+  $("rngCup").value=c.cupRakePct;$("lblCup").textContent=c.cupRakePct+"%";
+  $("rngTrny").value=c.trnyRakePct;$("lblTrny").textContent=c.trnyRakePct+"%";
+  $("rngXf").value=c.transferFee;$("lblXf").textContent=c.transferFee+"%";
+  $("rngJpFund").value=c.jpFundPct;$("lblJpFund").textContent=c.jpFundPct+"%";
+  $("rngJpFloor").value=c.jpFloor;$("lblJpFloor").textContent=c.jpFloor;
+  $("rngJpArm").value=c.jpArm;$("lblJpArm").textContent=c.jpArm;
+  $("rngJpPay").value=c.jpPayPct;$("lblJpPay").textContent=c.jpPayPct+"%";
+  $("cfgCap").value=c.nonMainCapPct;$("cfgXfCap").value=c.transferCap;$("cfgXfMin").value=c.transferMin;
+  $("cfgWdMin").value=c.wdMin??3000;$("cfgWdMax").value=c.wdMax??5000;$("cfgWdChance").value=c.wdTickChance??0.35;$("cfgArcadeTick").value=c.botArcadePerTick??2;$("cfgSeason").value=c.seasonNumber||1;$("cfgHouseCap").value=c.house.capital||0;
+}
+
+function renderOps(){
+  const c=cfg();
+  $("togMaint").checked=!!c.features.maintenance;
+  $("togTopupPromo").checked=c.features.topupPromo!==false;
+  $("togAuto").checked=!!c.features.autoMatch;
+  $("togBots").checked=!!c.features.bots;$("togBotGrowth").checked=c.features.botGrowth!==false;
+  $("botTopupThreshold").value=c.botTopupThreshold??500;$("botGrowthMax").value=c.botGrowthMax??250;$("botGrowthInterval").value=c.botGrowthIntervalSec??15;$("botGrowthBatch").value=c.botGrowthBatch??1;const botReadyCount=S.bots.filter(b=>b.firstTopupDone).length,botPendingCount=S.bots.length-botReadyCount;$("botGrowthStatus").textContent=`${S.bots.length+1} total players · ${botReadyCount} top-up ready · ${botPendingCount} blocked · ${(S.botActivity?.createdBots||0)} auto-created`;$("botFirstTopupStatus").innerHTML=[[fmt(botReadyCount),'First top-up complete','green'],[fmt(botPendingCount),'Blocked before play',botPendingCount?'red':'green'],[fmt(S.bots.reduce((n,b)=>n+(b.topupCount||0),0)),'All bot top-ups','purple'],[fmt(S.bots.reduce((n,b)=>n+(b.balance||0),0)),'Bot MAIN balance','blue'],[fmt(S.bots.reduce((n,b)=>n+(b.bonusBalance||0),0)),'Bot BONUS balance','purple']].map(x=>`<div class="stat-tile ${x[2]}"><div class="v">${x[0]}</div><div class="k">${x[1]}</div></div>`).join('');$("botTopupHeading").textContent=`Recent bot top-ups (first top-up required · later trigger below ${fmt(c.botTopupThreshold??500)})`;
+  $("togQuests").checked=!!c.features.quests;
+  $("togLogin").checked=!!c.features.dailyLogin;
+  $("togX2").checked=true;
+  $("plLvl").textContent=S.level+" ("+fmt(S.xp)+" XP)";
+  let vipT=c.vip[0];for(const tier of c.vip)if(S.monthWagered>=tier.wagered)vipT=tier;
+  const maxVip=c.vip.find(v=>v.tier===(S.vipUnlockedTier||vipT.tier))||vipT;
+  $("plVip").innerHTML=`<span class="vip-dot" style="background:${vipT.color}"></span>${vipT.name} (${vipT.rakeback}%) · highest ${maxVip.name}<br><span class="muted">${VIP_BENEFIT_LABELS[vipT.tier]||''}</span>`;
+  $("plWager").textContent=fmt(S.monthWagered);
+  $("plNet2").textContent=(S.stats.net>=0?'+':'')+fmt(S.stats.net);
+  renderFlags();
+  $("qaDepth").textContent=S.waiting.length;
+  $("qaEscrow").textContent=fmt(S.waiting.reduce((a,b)=>a+(b.stake||0),0));
+  $("qaBots").textContent=S.bots.length;
+  const qv=VIEWS.queue,qq=qv.filter.toLowerCase();let qw=[...S.waiting];const qgame=b=>b.gameName||((b.kind||'toss')==='toss'?'Coin Toss':b.kind);if(qq)qw=qw.filter(b=>`${qgame(b)} ${b.name||b.owner} ${b.pick??b.side??'AUTO'}`.toLowerCase().includes(qq));qw.sort((a,b)=>qv.sort==="stake-desc"?(b.stake||0)-(a.stake||0):qv.sort==="game-asc"?qgame(a).localeCompare(qgame(b)):(b.wait||0)-(a.wait||0));const qp=pageRows(qw,qv);setPager("queue",qv,qp);$("qaList").innerHTML=qp.rows.length?`<table><thead><tr><th>Game</th><th>Player</th><th>Pick</th><th>Stake</th><th>Wait</th></tr></thead><tbody>${qp.rows.map(b=>`<tr><td>${qgame(b)}</td><td>${b.name||b.owner}</td><td>${b.pick??b.side??'AUTO'}</td><td>${fmt(b.stake||0)}</td><td>${b.wait||0}s</td></tr>`).join('')}</tbody></table>`:'<div class="muted">Queue is empty.</div>';
+  const xv=VIEWS.transfers,xq=xv.filter.toLowerCase();let bt=[...(S.botTransfers||[])];if(xq)bt=bt.filter(x=>`${x.from} ${x.to}`.toLowerCase().includes(xq));bt.sort((a,b)=>xv.sort==="time-asc"?a.t-b.t:xv.sort==="amount-desc"?(b.received||0)-(a.received||0):xv.sort==="fee-desc"?(b.fee||0)-(a.fee||0):b.t-a.t);const bx=pageRows(bt,xv);setPager("botXf",xv,bx);$("botTransferList").innerHTML=bx.rows.length?`<table><thead><tr><th>When</th><th>From</th><th>To</th><th>Sent</th><th>Fee</th></tr></thead><tbody>${bx.rows.map(x=>`<tr><td>${new Date(x.t).toLocaleTimeString()}</td><td>${x.from}</td><td>${x.to}</td><td>${fmt(x.received)}</td><td>${fmt(x.fee)}</td></tr>`).join('')}</tbody></table>`:'<div class="muted">No bot transfers match.</div>';
+  const uv=VIEWS.topups,uq=uv.filter.toLowerCase();let bu=[...(S.botTopups||[])];if(uq)bu=bu.filter(x=>`${x.bot} ${x.reason}`.toLowerCase().includes(uq));bu.sort((a,b)=>uv.sort==="time-asc"?a.t-b.t:uv.sort==="total-desc"?(b.total||0)-(a.total||0):uv.sort==="promo-desc"?(b.bonus||0)-(a.bonus||0):b.t-a.t);const up=pageRows(bu,uv);setPager("botTopup",uv,up);$("botTopupList").innerHTML=up.rows.length?`<table><thead><tr><th>When</th><th>Bot</th><th>MAIN top-up</th><th>Starting BONUS</th><th>Promo BONUS</th><th>Wallet credit</th><th>Reason</th></tr></thead><tbody>${up.rows.map(x=>`<tr><td>${new Date(x.t).toLocaleTimeString()}</td><td>${x.bot}</td><td>${fmt(x.base)}</td><td>${x.startingBonus?`+${fmt(x.startingBonus)}`:'—'}</td><td>${x.bonus?`+${fmt(x.bonus)}`:'—'}</td><td>${fmt(x.walletCredit??((x.total||0)+(x.startingBonus||0)))}</td><td>${x.reason}</td></tr>`).join('')}</tbody></table>`:'<div class="muted">No bot top-ups match.</div>';
+  // audit
+  renderAudit();
+  renderGameHistory();renderCatalogHistory();
+  save();}
+/* ── Targeted Admin rendering ────────────────────────────────────────────── */
+let adminActiveTab="dash";
+function setAdminActiveTab(tab){adminActiveTab=tab;}
+const ADMIN_TAB_RENDERERS={
+  dash:()=>renderDash(),
+  ops:()=>renderOps(),
+  people:()=>renderPeople(),
+  features:()=>renderFeatureAdmin(),
+  directory:()=>renderFeatureDirectory(),
+  rates:()=>{renderRates();renderGameParams();renderSessionMonitor();},
+  econ:()=>renderEcon(),
+  revenue:()=>renderRevenue(),
+  topups:()=>renderTopupAnalytics(),
+  withdraw:()=>renderWithdrawals(),
+  promo:()=>renderPromo(),
+  vip:()=>{renderVip();renderLevels();},
+  trny:()=>renderTrny(),
+  audit:()=>{renderAudit();renderGameHistory();renderCatalogHistory();},
+  trust:()=>renderTrust(),
+};
+/** Render only the active Admin screen (no monolithic repaint). */
+function renderAdminTab(tab){
+  const key=tab||adminActiveTab,fn=ADMIN_TAB_RENDERERS[key];
+  if(!fn)return false;
+  try{fn();}catch(e){console.warn("renderAdminTab("+key+") error:",e);}
+  return true;
+}
+/** Periodic refresh: chrome + the active Admin screen only. */
+function renderAdminTick(){renderAdminChrome();renderAdminTab();}
 
 export function bind(){
   "use strict";
@@ -572,6 +794,13 @@ export function bind(){
   $("adminCommandBg").onclick=e=>{if(e.target===$("adminCommandBg"))closeAdminCommand();};
   $("adminCommandSearch").oninput=e=>renderAdminCommand(e.target.value);
   $("adminCommandList").onclick=e=>{const b=e.target.closest('[data-command-admin],[data-command-player]');if(!b)return;closeAdminCommand();if(b.dataset.commandPlayer)window.open(`index.html?tab=${b.dataset.commandPlayer}&feature=${b.dataset.commandFeature}`,'_blank');else goAdminTab(b.dataset.commandAdmin);};
+  const peopleList=$("peopleList");
+  if(peopleList)peopleList.addEventListener("click",e=>{
+    const b=e.target.closest("[data-freeze],[data-unfreeze],[data-history]");if(!b)return;
+    if(b.dataset.freeze)adminSetFreeze(b.dataset.freeze,true);
+    else if(b.dataset.unfreeze)adminSetFreeze(b.dataset.unfreeze,false);
+    else if(b.dataset.history)adminPlayerHistory(b.dataset.history);
+  });
   $("adminNavSearch").oninput=e=>filterAdminNavigation(e.target.value);
   $("adminNavJump").onchange=e=>{if(e.target.value)goAdminTab(e.target.value);};
   $("adminQuickDock").onclick=e=>{const b=e.target.closest('[data-admin-tab]');if(b)goAdminTab(b.dataset.adminTab);};
@@ -580,6 +809,7 @@ export function bind(){
 
 
 /* expose top-level symbols to globalThis so legacy inline handlers and the shared theme engine can resolve them */
-Object.assign(globalThis,{$,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,drawRng,filterAdminNavigation,fmt,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderFeatureDirectory,renderFlags,renderGameHistory,renderLevels,renderPeople,renderPromo,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,save,sendAdminBotPulse,setPager,syncAdminNavigation,toast,topupAnalytics});
+Object.assign(globalThis,{$,ADMIN_TAB_RENDERERS,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,drawRng,filterAdminNavigation,fmt,downloadFile,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderAdminTab,renderAdminTick,renderFeatureDirectory,renderFlags,renderGameParams,renderOps,renderRates,renderRevenue,renderSessionMonitor,renderGameHistory,renderLevels,renderPeople,renderPromo,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics});
 
-export {$,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,drawRng,filterAdminNavigation,fmt,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderFeatureDirectory,renderFlags,renderGameHistory,renderLevels,renderPeople,renderPromo,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,save,sendAdminBotPulse,setPager,syncAdminNavigation,toast,topupAnalytics};
+export {$,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_TAB_RENDERERS,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,downloadFile,drawRng,filterAdminNavigation,fmt,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAdminTab,renderAdminTick,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderFeatureDirectory,renderFlags,renderGameHistory,renderGameParams,renderLevels,renderOps,renderPeople,renderPromo,renderRates,renderRevenue,renderSessionMonitor,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics};
+

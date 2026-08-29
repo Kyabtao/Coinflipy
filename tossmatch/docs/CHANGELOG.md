@@ -1,5 +1,51 @@
 # TossMatch Changelog
 
+## v13.0 — Admin Alignment, Ledger Audit & Cleanup (Phases 2–6)
+
+- **Safe money math** — new shared module `js/shared/money.js` (built on the
+  `src/js/utils/math.js` subunit primitives). Every fee, rake, payout, escrow,
+  refund, deposit, withdrawal, vault move, transfer and Admin adjustment now
+  runs through integer-subunit math that rounds exactly once, and through
+  `debitWallet()` / `creditWallet()` / `debitBot()` / `creditBot()`.
+- **Ledger invariants** — `ledgerAudit()` verifies non-negative whole-coin
+  balances, escrow integrity, duplicate-settlement detection, well-formed ledger
+  rows and the reconciliation formula
+  `net profit = gross revenue − promo cost − comps`. `enforceWalletInvariants()`
+  repairs drift on boot and on every reconcile.
+- **Concurrency** — `withWalletLock()` serialises wallet-critical sections, so
+  rapid clicks and overlapping bot ticks can never double-spend.
+- **Admin ↔ Player alignment** — new *Game parameters* panel (minimum stake,
+  stake ceiling, payout cap, house edge, flip animation speed, Auto Bet stop)
+  that the player app reads live; freeze/unfreeze for the demo player and every
+  simulated player; per-player bet history in the record drawer; live player
+  session monitor.
+- **Revenue dashboard** — new *Commercial → Revenue* screen with volume/NGR
+  tiles, daily and weekly SVG charts, a reconciliation readout, and CSV + JSON
+  exports of the merged transaction log.
+- **Component library wired** — `src/components` (button, card, modal, badge,
+  input) and `src/css/variables.css` are now used by the app; the Revenue screen
+  builds its tiles and buttons from them.
+- **Targeted rendering** — `renderChrome()` / `renderTab()` / `renderTick()`
+  (player) and `renderAdminChrome()` / `renderAdminTab()` / `renderAdminTick()`
+  (admin). Tab switches and background bot ticks now repaint only the active
+  screen.
+- **Human labels** — internal codes (`B1–B4`, `UX1–UX4`, `G21–G23`,
+  `CAT18–CAT33`, `E6–E9`, `S1–S7`) removed from every user-visible string; the
+  Feature Directory shows the human category and its search index ignores codes.
+- **Navigation redesign** — icon chips, gold/purple active accent bars with
+  glow, gradient header hairline, hover polish, `:focus-visible` rings and
+  `min-width` guards for the horizontal mobile tab bar.
+- **Cleanup** — 29 paths (~7.9 MB) deleted: the `old data/` workspace archives,
+  the superseded single-file prototypes and mock data under `docs/legacy/`, and
+  the unreferenced duplicate component stylesheets. Full register in
+  `doc/CLEANUP_AND_ARCHITECTURE.md`.
+- **Audit** — `tools/audit.js` extended (targeted rendering, component wiring,
+  human labels, Admin ↔ Player alignment, repository hygiene) and two new
+  harnesses added: `tools/ledger-simulation.mjs` (money math, concurrency,
+  invariants) and `tools/boot-smoke.mjs` (headless jsdom boot + screen walk).
+  `tossmatch/docs/audit-loop-v13.0.log` records **20/20 clean passes** —
+  157 checks per pass, 3,140 assertions, 0 failures.
+
 ## v12.0 — Modular Code Structure
 
 - Restructured the two single-file apps (`index.html`, `admin.html`) into reusable **native ES modules** (`<script type="module">` + `import`/`export`).
