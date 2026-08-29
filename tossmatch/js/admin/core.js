@@ -48,6 +48,9 @@ const FEATURE_DIRECTORY=[
  {cat:'Core Games',code:'CAT31',name:'Last Digit Duel',desc:'Different 0–9 picks compete against a proof number last digit; unclaimed digits carry.',status:'Implemented',tab:'games',feature:'lastdigit'},
  {cat:'Core Games',code:'CAT32',name:'Binary Code Duel',desc:'Different three-bit codes compete by Hamming distance to the proof code; equal distance splits.',status:'Implemented',tab:'games',feature:'binaryduel'},
  {cat:'Core Games',code:'CAT33',name:'Coin Balance Battle',desc:'Distinct predictions compete on the number of HEADS in ten proof flips; equal distance splits.',status:'Implemented',tab:'games',feature:'coinbalance'},
+ {cat:'Core Games',code:'CAT34',name:'Byte War',desc:'Each side reads three proof bytes; the higher byte-sum wins, equal sums split the pot.',status:'Implemented',tab:'games',feature:'bytewar'},
+ {cat:'Core Games',code:'CAT35',name:'Sum Four',desc:'Entrants predict a 0–1020 total; closest to the sum of four proof bytes wins, equal distance splits.',status:'Implemented',tab:'games',feature:'sumfour'},
+ {cat:'Core Games',code:'CAT36',name:'High Card Duel',desc:'Each side takes a proof-derived card 2–A; the higher rank wins, equal ranks split.',status:'Implemented',tab:'games',feature:'highcard'},
  {cat:'Arcade Zone',code:'G7',name:'Plinko Drop',desc:'Drop a chip through a proof-derived peg path into prize multiplier slots.',status:'Implemented',tab:'newgames',feature:'plinko'},
  {cat:'Arcade Zone',code:'G8',name:'Mini Slots',desc:'Three proof-derived reels with transparent symbol odds, paylines and capped prizes.',status:'Implemented',tab:'newgames',feature:'slots'},
  {cat:'Arcade Zone',code:'G9',name:'Quick Keno',desc:'Pick numbers from a compact board and compare them with proof-derived draws.',status:'Implemented',tab:'newgames',feature:'keno'},
@@ -65,11 +68,14 @@ const FEATURE_DIRECTORY=[
  {cat:'Arcade Zone',code:'G21',name:'Crash',desc:'Restored classic: cash out before the proof-derived bust point; published 97% RTP curve with auto cash-out.',status:'Implemented',tab:'newgames',feature:'crash'},
  {cat:'Arcade Zone',code:'G22',name:'Hi-Lo',desc:'Restored classic: build a higher-or-lower card streak at 1.7× per correct guess and bank at any time.',status:'Implemented',tab:'newgames',feature:'hilo'},
  {cat:'Arcade Zone',code:'G23',name:'Mines',desc:'Restored classic: reveal gems on a 5×5 board while avoiding proof-placed mines; multiplier rises per gem.',status:'Implemented',tab:'newgames',feature:'mines'},
+ {cat:'Arcade Zone',code:'G24',name:'Roulette',desc:'Bet RED, BLACK or GREEN on a proof-rolled 16-pocket wheel; colours pay 2×, green pays 15×, pocket zero voids.',status:'Implemented',tab:'newgames',feature:'roulette'},
+ {cat:'Arcade Zone',code:'G25',name:'Blackjack',desc:'One-shot HIT or STAND on a two-card proof deal; natural pays 3×, win 2×, push 1×, bust/lose 0×.',status:'Implemented',tab:'newgames',feature:'blackjack'},
  {cat:'Progression',code:'P1',name:'Battle Pass',desc:'Monthly free/premium XP milestones and reward claims.',status:'Implemented',tab:'progressionplus',feature:'pass'},
  {cat:'Progression',code:'P2',name:'7-Day Login Calendar',desc:'Escalating automatic rewards with day-7 cosmetic and BONUS.',status:'Implemented',tab:'progressionplus',feature:'calendar'},
  {cat:'Progression',code:'P3',name:'Weekly Challenges',desc:'Wins, game variety and streak goals with larger rewards.',status:'Implemented',tab:'progressionplus',feature:'weekly'},
  {cat:'Progression',code:'P4',name:'Prestige',desc:'Level reset for permanent XP boost, badge and Rainbow frame.',status:'Implemented',tab:'progressionplus',feature:'prestige'},
  {cat:'Progression',code:'P5',name:'Skill Matchmaking',desc:'Five skill tiers and preferred peer-bot matching with fallback.',status:'Implemented',tab:'progressionplus',feature:'skill'},
+ {cat:'Progression',code:'P6',name:'Career Milestones',desc:'Twelve lifetime goals (games, wins, wager, jackpots, level, achievements) with one-time BONUS rewards that survive Prestige.',status:'Implemented',tab:'progressionplus',feature:'milestones'},
  {cat:'Economy+',code:'E1',name:'Mystery Crates',desc:'Four tiers with 1–3 cosmetics and a guaranteed rarity floor.',status:'Implemented',tab:'economyplus',feature:'crates'},
  {cat:'Economy+',code:'E2',name:'Trading Post',desc:'Bot listings, player sales and a 10% house transaction fee.',status:'Implemented',tab:'economyplus',feature:'trade'},
  {cat:'Economy+',code:'E3',name:'Staking Vault',desc:'Flexible staking with completed-week 1% interest and claim cap.',status:'Implemented',tab:'economyplus',feature:'staking'},
@@ -79,6 +85,7 @@ const FEATURE_DIRECTORY=[
  {cat:'Economy+',code:'E7',name:'Event Ticket Packs',desc:'Buy persistent non-payout demo utility tickets in 1, 3 or 7-ticket packs.',status:'Implemented',tab:'economyplus',feature:'utility'},
  {cat:'Economy+',code:'E8',name:'Clan Treasury',desc:'Non-withdrawable MAIN contributions create clan utility resources and levels without wagering advantage.',status:'Implemented',tab:'economyplus',feature:'utility'},
  {cat:'Economy+',code:'E9',name:'Private Room Upgrades',desc:'Unlock persistent Basic, Neon, Royal or Cosmic visual room tiers with no gameplay advantage.',status:'Implemented',tab:'economyplus',feature:'utility'},
+ {cat:'Economy+',code:'E10',name:'Auction House',desc:'Three weekly cosmetic lots with autonomous bot bidding; winner pays at the hammer and the house keeps a 10% hammer fee recognised as auction revenue.',status:'Implemented',tab:'economyplus',feature:'auction'},
  {cat:'Player & Retention',code:'RET-1',name:'8-Tier VIP',desc:'Monthly wager tiers, rakeback, permanent rewards, discounts and priority.',status:'Implemented',tab:'season',admin:'vip'},
  {cat:'Player & Retention',code:'RET-2',name:'Achievements & Levels',desc:'Forty-nine achievements, configurable rewards through level 50 and milestone cosmetics.',status:'Implemented',tab:'season',admin:'vip'},
  {cat:'Player & Retention',code:'RET-3',name:'Player History',desc:'Nine categories, search, sorting, pagination, details and export.',status:'Implemented',tab:'history'},
@@ -112,9 +119,12 @@ const FEATURE_DIRECTORY=[
  {cat:'UX & Accessibility',code:'UX2',name:'Customizable Dashboard',desc:'Player-selected and reordered Home KPI cards and sections with reset and persistence.',status:'Implemented',tab:'services',feature:'ux'},
  {cat:'UX & Accessibility',code:'UX3',name:'Saved Bet & Game Presets',desc:'Up to 20 named Coin/Catalog/Arcade presets that fill controls without auto-wagering and retain RG checks.',status:'Implemented',tab:'services',feature:'ux'},
  {cat:'UX & Accessibility',code:'UX4',name:'Smart Game Discovery',desc:'Explainable favorite, variety, current-game, daily and collection recommendations with exact links.',status:'Implemented',tab:'services',feature:'ux'},
- {cat:'Suggested — LiveOps & Social',code:'LIVE1',name:'Event Calendar & Scheduled Play',desc:'Upcoming tournaments, Cups, promotions and reminders in one calendar with timezone support.',status:'Suggested'},
+ {cat:'Suggested — LiveOps & Social',code:'LIVE1',name:'Event Calendar & Scheduled Play',desc:'Community Events tab: daily trivia, weekly raffle, live auto-tournaments, season/VIP resets and active campaigns in one timezone-aware calendar with persisted reminders.',status:'Implemented (demo)',tab:'community',feature:'events'},
  {cat:'Suggested — LiveOps & Social',code:'LIVE2',name:'Match Replay & Shareable Proof',desc:'Step-by-step replay, share link and redacted proof package for games and tournaments.',status:'Suggested'},
  {cat:'Suggested — LiveOps & Social',code:'LIVE3',name:'Clan Seasons & Cooperative Quests',desc:'Season divisions, shared clan goals, contribution ledger, rewards and archived standings.',status:'Suggested'},
+ {cat:'Admin Console',code:'ADM-1',name:'Admin Login & RBAC',desc:'Session-gated sign-in (admin/flip2026) with role-based screen access for Super Admin, Finance, Operations and Support, 2FA demo code 246810, header profile and logout; sessions persist per browser tab.',status:'Implemented',admin:'settings'},
+ {cat:'Admin Console',code:'ADM-2',name:'Approvals & Review Queue',desc:'KYC verification with player approve/reset plus a simulated bot request queue, automated review-flag triage (clear/escalate), freeze controls and a persistent exclusion list — all audit-logged with nav badges.',status:'Implemented',admin:'approvals'},
+ {cat:'Admin Console',code:'ADM-3',name:'Admin Settings',desc:'House economics (fees, rakes, jackpot arm/pay, stake range), administrator role switching, maintenance mode, engine speed and factory reset with audit logging.',status:'Implemented',admin:'settings'},
  {cat:'Suggested — Trust & Compliance',code:'TRUST1',name:'Identity, Age & Jurisdiction Checks',desc:'Age gate, KYC status, geofencing and jurisdiction-specific feature eligibility.',status:'Suggested'},
  {cat:'Suggested — Trust & Compliance',code:'TRUST2',name:'Privacy & Data Rights Center',desc:'Consent history, data export, correction and deletion requests with retention status.',status:'Suggested'},
  {cat:'Suggested — Trust & Compliance',code:'TRUST3',name:'Dispute & Support Case Center',desc:'Open cases from a game or transaction, attach proof, track SLA and record resolution.',status:'Suggested'},
@@ -139,7 +149,7 @@ function load(){
     levelRewards:Object.fromEntries(Array.from({length:49},(_,n)=>[n+2,(n+2)*50])),
     features:{autoMatch:true,quests:true,dailyLogin:true,bots:true,botGrowth:true,maintenance:false,topupPromo:true},
     broadcast:"",promotions:[],seasonNumber:1,seasonEnds:0,
-    house:{capital:100000,fees:0,catalogFees:0,cupRakes:0,trnyRakes:0,shop:0,promoCost:0,comps:0,withdrawals:0,playerWithdrawals:0,deposits:0,botDeposits:0,netRevenue:0,netCash:0,xfFees:0},
+    house:{capital:100000,fees:0,catalogFees:0,cupRakes:0,trnyRakes:0,shop:0,promoCost:0,comps:0,withdrawals:0,playerWithdrawals:0,deposits:0,botDeposits:0,netRevenue:0,netCash:0,xfFees:0,auctionFees:0,rakebackPaid:0,referralCost:0},
     taps:0,sinks:0,audit:[],reviewFlags:[]},
     wallet:{main:1000,bonus:250,referral:50,rakeback:0,bank:0},
     level:1,xp:0,monthWagered:0,accruedRakeback:0,vipMonthKey:new Date().toISOString().slice(0,7),vipUnlockedTier:1,vipBenefits:{unlockedAt:{1:Date.now()},birthdayEligible:false},streak:0,bestStreak:0,
@@ -189,8 +199,8 @@ function load(){
   S=d;reconcileHouse();
 }
 function cfg(){return S.config;}
-function houseGross(){const h=cfg().house;return (h.fees||0)+(h.catalogFees||0)+(h.cupRakes||0)+(h.trnyRakes||0)+(h.shop||0)+(h.xfFees||0);}
-function houseNet(){const h=cfg().house;return houseGross()-(h.promoCost||0)-(h.comps||0);}
+function houseGross(){const h=cfg().house;return (h.fees||0)+(h.catalogFees||0)+(h.cupRakes||0)+(h.trnyRakes||0)+(h.shop||0)+(h.xfFees||0)+(h.auctionFees||0);}
+function houseNet(){const h=cfg().house;return houseGross()-(h.promoCost||0)-(h.comps||0)-(h.rakebackPaid||0)-(h.referralCost||0);}
 function houseCashIn(){const h=cfg().house;return (h.deposits||0)+(h.botDeposits||0);}
 function houseCashOut(){const h=cfg().house;return (h.withdrawals||0)+(h.playerWithdrawals||0);}
 function houseNetCash(){return houseCashIn()-houseCashOut();}
@@ -231,17 +241,17 @@ function renderAdminChrome(){
 }
 function renderFeatureAdmin(){
   const social=S.social||{},fg=S.featureGames||{},ba=S.botActivity||{},eng=S.engagement||{},ep=S.economyPlus||{},sub=ep.subscription||{},stake=ep.staking||{},boost=ep.boosters||{},utility=ep.utility||{};
-  const socialCount=(social.friends||[]).length+(social.chat||[]).length+(social.privateRooms||[]).length+(ba.socialActions||0);
+  const socialCount=(social.friends||[]).length+(social.chat||[]).length+(social.privateRooms||[]).length+(ba.socialActions||0)+Object.keys(social.eventReminders||{}).filter(k=>social.eventReminders[k]).length;
   const arcadeCount=(fg.wheel?.spins||0)+(fg.dice?.length||0)+(fg.scratch?.length||0)+(fg.ladder?.length||0)+(fg.war?.length||0)+(fg.extended?.plays?.length||0)+(ba.arcadePlays||0);
-  const progress=(eng.battlePass?.xp||0)+(eng.prestige||0)*1000;
-  const economy=(ep.cratesOpened||0)+(ep.tradingListings?.length||0)+(stake.balance||0)+(utility.crafts?.length||0)+(utility.ticketPurchases?.length||0)+(utility.clanTreasury||0)+(utility.roomPurchases?.length||0);
+  const progress=(eng.battlePass?.xp||0)+(eng.prestige||0)*1000+Object.keys(eng.milestones?.claimed||{}).length*10;
+  const economy=(ep.cratesOpened||0)+(ep.tradingListings?.length||0)+(stake.balance||0)+(utility.crafts?.length||0)+(utility.ticketPurchases?.length||0)+(utility.clanTreasury||0)+(utility.roomPurchases?.length||0)+(ep.auction?.history?.length||0);
   $("featureTiles").innerHTML=[['🤝',socialCount,'Social actions'],['🎮',arcadeCount,'Arcade sessions'],['🚀',progress,'Progress score'],['💼',economy,'Economy+ activity']].map(x=>`<div class="stat-tile"><div style="font-size:22px">${x[0]}</div><div class="v">${fmt(x[1])}</div><div class="k">${x[2]}</div></div>`).join('');
-  $("communityMetrics").innerHTML=`<div class="kv"><span class="k">Friends</span><b>${(social.friends||[]).length}</b></div><div class="kv"><span class="k">Chat messages</span><b>${(social.chat||[]).length}</b></div><div class="kv"><span class="k">Private rooms</span><b>${(social.privateRooms||[]).length}</b></div><div class="kv"><span class="k">Clan</span><b>${social.clan?`[${social.clan.tag}] ${social.clan.name}`:'None'}</b></div><div class="kv"><span class="k">Gifts</span><b>${(social.gifts||[]).length}</b></div><div class="kv"><span class="k">Autonomous bot social actions</span><b>${ba.socialActions||0}</b></div><div class="kv"><span class="k">Incoming bot requests</span><b>${(social.friendRequests||[]).length}</b></div>`;
+  $("communityMetrics").innerHTML=`<div class="kv"><span class="k">Friends</span><b>${(social.friends||[]).length}</b></div><div class="kv"><span class="k">Chat messages</span><b>${(social.chat||[]).length}</b></div><div class="kv"><span class="k">Private rooms</span><b>${(social.privateRooms||[]).length}</b></div><div class="kv"><span class="k">Clan</span><b>${social.clan?`[${social.clan.tag}] ${social.clan.name}`:'None'}</b></div><div class="kv"><span class="k">Gifts</span><b>${(social.gifts||[]).length}</b></div><div class="kv"><span class="k">Autonomous bot social actions</span><b>${ba.socialActions||0}</b></div><div class="kv"><span class="k">Incoming bot requests</span><b>${(social.friendRequests||[]).length}</b></div><div class="kv"><span class="k">Event reminders on</span><b>${Object.keys(social.eventReminders||{}).filter(k=>social.eventReminders[k]).length}</b></div>`;
   $("arcadeMetrics").innerHTML=`<div class="kv"><span class="k">Wheel spins</span><b>${fg.wheel?.spins||0}</b></div><div class="kv"><span class="k">Dice sessions</span><b>${fg.dice?.length||0}</b></div><div class="kv"><span class="k">Raffle tickets</span><b>${fg.raffle?.playerTickets||0}</b></div><div class="kv"><span class="k">Scratch history</span><b>${fg.scratch?.length||0}</b></div><div class="kv"><span class="k">Last wheel prize</span><b>${fg.wheel?.lastPrize||'—'}</b></div><div class="kv"><span class="k">Extended Arcade Zone sessions</span><b>${fg.extended?.plays?.length||0}</b></div><div class="kv"><span class="k">Autonomous bot Arcade Zone plays</span><b>${ba.arcadePlays||0}</b></div>`;
-  $("progressMetrics").innerHTML=`<div class="kv"><span class="k">Battle Pass</span><b>${eng.battlePass?.premium?'Premium':'Free'} · ${fmt(eng.battlePass?.xp||0)} XP</b></div><div class="kv"><span class="k">Prestige</span><b>${eng.prestige||0}</b></div><div class="kv"><span class="k">Skill-only matching</span><b>${eng.skillOnly?'Enabled':'Off'}</b></div><div class="kv"><span class="k">Weekly wins</span><b>${eng.weekly?.wins||0}</b></div>`;
-  $("economyPlusMetrics").innerHTML=`<div class="kv"><span class="k">Crates opened</span><b>${ep.cratesOpened||0}</b></div><div class="kv"><span class="k">Trading listings</span><b>${ep.tradingListings?.length||0}</b></div><div class="kv"><span class="k">Staked coins</span><b>${fmt(stake.balance||0)}</b></div><div class="kv"><span class="k">Subscription</span><b>${sub.expires>Date.now()?sub.tier:'None'}</b></div><div class="kv"><span class="k">XP / rake boosters</span><b>${boost.xpUntil>Date.now()?'XP active':'—'} / ${boost.rakeUntil>Date.now()?'Rake active':'—'}</b></div><div class="kv"><span class="k">Crafts / event tickets</span><b>${utility.crafts?.length||0} / ${utility.eventTickets||0}</b></div><div class="kv"><span class="k">Clan treasury / room tier</span><b>${fmt(utility.clanTreasury||0)} / ${utility.roomUpgrade||'basic'}</b></div>`;
+  $("progressMetrics").innerHTML=`<div class="kv"><span class="k">Battle Pass</span><b>${eng.battlePass?.premium?'Premium':'Free'} · ${fmt(eng.battlePass?.xp||0)} XP</b></div><div class="kv"><span class="k">Prestige</span><b>${eng.prestige||0}</b></div><div class="kv"><span class="k">Skill-only matching</span><b>${eng.skillOnly?'Enabled':'Off'}</b></div><div class="kv"><span class="k">Weekly wins</span><b>${eng.weekly?.wins||0}</b></div><div class="kv"><span class="k">Milestones claimed</span><b>${Object.keys(eng.milestones?.claimed||{}).length}/12</b></div>`;
+  $("economyPlusMetrics").innerHTML=`<div class="kv"><span class="k">Crates opened</span><b>${ep.cratesOpened||0}</b></div><div class="kv"><span class="k">Trading listings</span><b>${ep.tradingListings?.length||0}</b></div><div class="kv"><span class="k">Staked coins</span><b>${fmt(stake.balance||0)}</b></div><div class="kv"><span class="k">Subscription</span><b>${sub.expires>Date.now()?sub.tier:'None'}</b></div><div class="kv"><span class="k">XP / rake boosters</span><b>${boost.xpUntil>Date.now()?'XP active':'—'} / ${boost.rakeUntil>Date.now()?'Rake active':'—'}</b></div><div class="kv"><span class="k">Crafts / event tickets</span><b>${utility.crafts?.length||0} / ${utility.eventTickets||0}</b></div><div class="kv"><span class="k">Clan treasury / room tier</span><b>${fmt(utility.clanTreasury||0)} / ${utility.roomUpgrade||'basic'}</b></div><div class="kv"><span class="k">Auction hammers / fees</span><b>${(ep.auction?.history||[]).length} · ${fmt(cfg().house.auctionFees||0)}</b></div>`;
 }
-function adminAntiCheatScan(){const svc=S.services,findings=[],st=S.stats||{},wr=st.games?st.wins/st.games:0;if(st.games>=20&&wr>.8)findings.push({severity:'high',rule:'AC-WINRATE',detail:`Player win rate ${(wr*100).toFixed(1)}% over ${st.games} games`});if(!Object.values(S.wallet||{}).every(x=>Number.isFinite(x)&&x>=0)||!(S.bots||[]).every(b=>Number.isFinite(b.balance)&&b.balance>=0))findings.push({severity:'high',rule:'AC-BALANCE',detail:'Invalid or negative balance detected'});const proofs=(S.games||[]).map(g=>g.proof?.finalHash||g.proof?.h).filter(Boolean);if(proofs.some((x,i)=>proofs.indexOf(x)!==i))findings.push({severity:'medium',rule:'AC-PROOF',detail:'Duplicate proof hash detected'});if((S.games||[]).some(g=>!Number.isFinite(g.delta)||Math.abs(g.delta||0)>10000000))findings.push({severity:'high',rule:'AC-PAYOUT',detail:'Malformed or extreme payout record'});if((S.turbo||1)>=1000)findings.push({severity:'medium',rule:'AC-TURBO',detail:'1000× stress mode active'});if(!findings.length)findings.push({severity:'low',rule:'AC-PASS',detail:'No local anomaly detected'});const score=Math.min(100,findings.reduce((n,x)=>n+(x.severity==='high'?40:x.severity==='medium'?20:0),0));svc.antiCheat={lastScan:Date.now(),score,findings};findings.filter(x=>x.severity==='high').forEach(x=>cfg().reviewFlags.unshift({t:Date.now(),game:'account',type:'anti-cheat',amount:0,detail:x.detail}));audit('anti-cheat-scan',`risk ${score}`);return svc.antiCheat;}
+function adminAntiCheatScan(){const svc=S.services,findings=[],st=S.stats||{},wr=st.games?st.wins/st.games:0;if(st.games>=20&&wr>.8)findings.push({severity:'high',rule:'Extreme win rate',detail:`Player win rate ${(wr*100).toFixed(1)}% over ${st.games} games`});if(!Object.values(S.wallet||{}).every(x=>Number.isFinite(x)&&x>=0)||!(S.bots||[]).every(b=>Number.isFinite(b.balance)&&b.balance>=0))findings.push({severity:'high',rule:'Invalid or negative balance',detail:'Invalid or negative balance detected'});const proofs=(S.games||[]).map(g=>g.proof?.finalHash||g.proof?.h).filter(Boolean);if(proofs.some((x,i)=>proofs.indexOf(x)!==i))findings.push({severity:'medium',rule:'Duplicate proof hash',detail:'Duplicate proof hash detected'});if((S.games||[]).some(g=>!Number.isFinite(g.delta)||Math.abs(g.delta||0)>10000000))findings.push({severity:'high',rule:'Malformed or extreme payout',detail:'Malformed or extreme payout record'});if((S.turbo||1)>=1000)findings.push({severity:'medium',rule:'Stress-test speed active',detail:'1000× stress mode active'});if(!findings.length)findings.push({severity:'low',rule:'No anomaly detected',detail:'No local anomaly detected'});const score=Math.min(100,findings.reduce((n,x)=>n+(x.severity==='high'?40:x.severity==='medium'?20:0),0));svc.antiCheat={lastScan:Date.now(),score,findings};findings.filter(x=>x.severity==='high').forEach(x=>cfg().reviewFlags.unshift({t:Date.now(),game:'account',type:'anti-cheat',amount:0,detail:x.detail}));audit('anti-cheat-scan',`risk ${score}`);return svc.antiCheat;}
 function renderTrust(){const svc=S.services||{},rg=S.rg||{},an=S.analytics||{samples:[]},samples=an.samples||[],last=samples[samples.length-1]||{},ac=svc.antiCheat||{findings:[]},claims=Object.keys(svc.promoClaims||{}).length,dep=(rg.deposits||[]),since=ms=>dep.filter(x=>x.t>=Date.now()-ms).reduce((n,x)=>n+x.amount,0),max=Math.max(1,...samples.map(x=>x.games||0));
  $("trustTiles").innerHTML=[["🌐",S.bots.length+1,'Visible players'],["🎮",last.games||S.global.totalGames,'Games sampled'],["🛡️",ac.score||0,'Anti-cheat risk'],["📄",(svc.statements||[]).length,'Statements']].map(x=>`<div class="stat-tile"><div style="font-size:20px">${x[0]}</div><div class="v">${fmt(x[1])}</div><div class="k">${x[2]}</div></div>`).join('');
  $("analyticsMetrics").innerHTML=`<div class="kv"><span class="k">Samples</span><b>${samples.length}</b></div><div class="kv"><span class="k">Players / queue</span><b>${last.players||S.bots.length+1} / ${last.queue??S.waiting.length}</b></div><div class="kv"><span class="k">Gross revenue</span><b>${fmt(last.gross||0)}</b></div><div class="kv"><span class="k">Net revenue (NGR)</span><b>${fmt(last.net??houseNet())}</b></div><div class="kv"><span class="k">Cash in / out</span><b>+${fmt(houseCashIn())} / −${fmt(houseCashOut())}</b></div><div class="kv"><span class="k">Bot social / Arcade</span><b>${last.social||0} / ${last.arcade||0}</b></div>`;$("analyticsChart").innerHTML=`<div class="analytics-bars">${samples.slice(-60).map(x=>`<i style="height:${Math.max(3,(x.games||0)/max*100)}%" title="${x.games||0} games · net ${x.net??0}"></i>`).join('')}</div>`;
@@ -260,6 +270,7 @@ function render(){
   const c=cfg(),h=reconcileHouse();
   applyTheme();
   renderAdminChrome();renderFeatureAdmin();renderFeatureDirectory();renderTrust();
+  renderApprovals();renderSettings();applyAdminNavGroups();updateAdminNavBadges();renderAdminProfile();applyAdminRbac();
   // header
   $("hNet").textContent=fmt(h.netRevenue);
   $("hTopups").textContent=fmt(topupAnalytics().combined.base);
@@ -314,8 +325,9 @@ function renderDash(){
   ];
   $("dashTiles").innerHTML=tiles.map(t=>`<div class="stat-tile ${t.cls||''}"><div class="v">${t.v}</div><div class="k">${t.k}</div></div>`).join("");
   $("plFees").textContent=fmt(h.fees||0);$("plCatalog").textContent=fmt(h.catalogFees||0);$("plCup").textContent=fmt(h.cupRakes);$("plTrny").textContent=fmt(h.trnyRakes);
-  $("plShop").textContent=fmt(h.shop);$("plXf").textContent=fmt(h.xfFees||0);
+  $("plShop").textContent=fmt(h.shop);$("plXf").textContent=fmt(h.xfFees||0);if($("plAuction"))$("plAuction").textContent=fmt(h.auctionFees||0);
   $("plGross").textContent=fmt(gross);$("plPromo").textContent=fmt(h.promoCost);$("plComp").textContent=fmt(h.comps);
+  if($("plRakeback"))$("plRakeback").textContent=fmt(h.rakebackPaid||0);if($("plReferral"))$("plReferral").textContent=fmt(h.referralCost||0);
   $("plNet").textContent=fmt(net);$("plCap").textContent=fmt(h.capital+net);
   $("jpPool").textContent=fmt(S.jackpot);
   $("jpArmed").innerHTML=S.jackpot>=c.jpArm?'<span class="tag on">ARMED</span>':'<span class="tag off">not armed</span>';
@@ -453,7 +465,7 @@ function renderWithdrawals(){
   ].map(t=>`<div class="stat-tile ${t.cls||''}"><div class="v">${t.v}</div><div class="k">${t.k}</div></div>`).join("");
   $("wdSummary").innerHTML=[["Requests paid",fmt(w.count||0)+" / "+fmt(unique)+" bots"],["Average / largest",fmt(avg)+" / "+fmt(largest)],["Last 7 days",fmt(d7)],["Coins removed (sinks)",fmt(w.amount||0)]].map(x=>`<div class="kv"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join("");
   const h=cfg().house,gross=houseGross(),net=houseNet(),cin=houseCashIn(),cout=houseCashOut(),ncash=houseNetCash();
-  $("wdPnl").innerHTML=[["Gross revenue",fmt(gross)],["Promo cost","−"+fmt(h.promoCost||0)],["Comps paid","−"+fmt(h.comps||0)],["Net revenue (NGR)",fmt(net),net>=0?"g":"r"],["Cash in — player deposits","+"+fmt(h.deposits||0)],["Cash in — bot deposits","+"+fmt(h.botDeposits||0)],["Cash in total","+"+fmt(cin)],["Cash out — bot withdrawals","−"+fmt(h.withdrawals||0)],["Cash out — player withdrawals","−"+fmt(h.playerWithdrawals||0)],["Cash out total","−"+fmt(cout)],["Net cash flow",fmt(ncash),ncash>=0?"g":"r"]].map(x=>`<div class="kv"><span class="k">${x[0]}</span><span class="v ${x[2]||''}">${x[1]}</span></div>`).join("");
+  $("wdPnl").innerHTML=[["Gross revenue",fmt(gross)],["Promo cost","−"+fmt(h.promoCost||0)],["Comps paid","−"+fmt(h.comps||0)],["Rakeback paid","−"+fmt(h.rakebackPaid||0)],["Referral payouts","−"+fmt(h.referralCost||0)],["Net revenue (NGR)",fmt(net),net>=0?"g":"r"],["Cash in — player deposits","+"+fmt(h.deposits||0)],["Cash in — bot deposits","+"+fmt(h.botDeposits||0)],["Cash in total","+"+fmt(cin)],["Cash out — bot withdrawals","−"+fmt(h.withdrawals||0)],["Cash out — player withdrawals","−"+fmt(h.playerWithdrawals||0)],["Cash out total","−"+fmt(cout)],["Net cash flow",fmt(ncash),ncash>=0?"g":"r"]].map(x=>`<div class="kv"><span class="k">${x[0]}</span><span class="v ${x[2]||''}">${x[1]}</span></div>`).join("");
   let rows=log.slice();
   if(q)rows=rows.filter(x=>`${x.name} ${x.amount}`.toLowerCase().includes(q));
   rows.sort((a,b)=>v.sort==="time-asc"?(a.t||0)-(b.t||0):v.sort==="amount-desc"?(b.amount||0)-(a.amount||0):(b.t||0)-(a.t||0));
@@ -535,15 +547,161 @@ const ADMIN_NAV_META=[
  ['Engagement','vip','💎','VIP & Levels','Eight VIP tiers and paginated level rewards','progression'],['Engagement','trny','🏟','Tournaments','Create and inspect bot and player brackets','competition'],
  ['Governance','audit','🧾','Audit & Data','Audit trail, histories, proofs and exports','compliance records'],['Governance','trust','🛡️','Trust Center','Analytics, anti-cheat, RG, PWA, API, 2FA and statements','security safety']
 ].map(x=>({group:x[0],tab:x[1],icon:x[2],name:x[3],desc:x[4],keys:x[5]}));
-const ADMIN_CATALOG_GAMES=[['overunder','Over / Under'],['speed','Speed Round'],['tug','Tug of War'],['evenodd','Even / Odd Sum'],['closest','Closest Number'],['luckybattle','Lucky Number Battle'],['sumpredict','Sum Prediction'],['higherbyte','Higher Byte'],['patternrace','Pattern Race'],['parlayduel','Parlay Duel'],['prediction','Prediction Streak'],['blind','Blind Pick'],['rangewar','Range War'],['bullseye','Bullseye'],['chain','Chain Reaction'],['ladder','Elimination Ladder'],['mirrored','Mirrored Coins'],['rps','Rock Paper Scissors'],['closest21','Closest to 21'],['triplecoin','Triple Coin Majority'],['sequencebuilder','Sequence Builder'],['dicesumduel','Dice Sum Duel'],['colourspectrum','Colour Spectrum'],['primecomposite','Prime vs Composite'],['medianbattle','Median Battle'],['streaksurvivor','Streak Survivor'],['territory','Territory Capture'],['modulo4','Modulo Four'],['pokerhigh','Poker High'],['threedicepoker','Three Dice Poker'],['lastdigit','Last Digit Duel'],['binaryduel','Binary Code Duel'],['coinbalance','Coin Balance Battle']];
-const ADMIN_ARCADE_GAMES=[['wheel','Lucky Wheel'],['scratch','Scratch Cards'],['dice','Dice Roll'],['raffle','Weekly Raffle'],['ladder','Multiplier Ladder'],['war','War Card'],['plinko','Plinko'],['slots','Mini Slots'],['keno','Quick Keno'],['bingo','Bingo Rush'],['treasure','Treasure Hunt'],['memory','Memory Match'],['dropball','Drop Ball'],['trivia','Daily Trivia'],['fishing','Fishing Reel'],['penalty','Penalty Shootout'],['coinpusher','Coin Pusher'],['tower','Tower Builder'],['match3','Match-3 Rush'],['vault','Mystery Vault']];
+const ADMIN_CATALOG_GAMES=[['overunder','Over / Under'],['speed','Speed Round'],['tug','Tug of War'],['evenodd','Even / Odd Sum'],['closest','Closest Number'],['luckybattle','Lucky Number Battle'],['sumpredict','Sum Prediction'],['higherbyte','Higher Byte'],['patternrace','Pattern Race'],['parlayduel','Parlay Duel'],['prediction','Prediction Streak'],['blind','Blind Pick'],['rangewar','Range War'],['bullseye','Bullseye'],['chain','Chain Reaction'],['ladder','Elimination Ladder'],['mirrored','Mirrored Coins'],['rps','Rock Paper Scissors'],['closest21','Closest to 21'],['triplecoin','Triple Coin Majority'],['sequencebuilder','Sequence Builder'],['dicesumduel','Dice Sum Duel'],['colourspectrum','Colour Spectrum'],['primecomposite','Prime vs Composite'],['medianbattle','Median Battle'],['streaksurvivor','Streak Survivor'],['territory','Territory Capture'],['modulo4','Modulo Four'],['pokerhigh','Poker High'],['threedicepoker','Three Dice Poker'],['lastdigit','Last Digit Duel'],['binaryduel','Binary Code Duel'],['coinbalance','Coin Balance Battle'],['bytewar','Byte War'],['sumfour','Sum Four'],['highcard','High Card Duel']];
+const ADMIN_ARCADE_GAMES=[['wheel','Lucky Wheel'],['scratch','Scratch Cards'],['dice','Dice Roll'],['raffle','Weekly Raffle'],['ladder','Multiplier Ladder'],['war','War Card'],['plinko','Plinko'],['slots','Mini Slots'],['keno','Quick Keno'],['bingo','Bingo Rush'],['treasure','Treasure Hunt'],['memory','Memory Match'],['dropball','Drop Ball'],['trivia','Daily Trivia'],['fishing','Fishing Reel'],['penalty','Penalty Shootout'],['coinpusher','Coin Pusher'],['tower','Tower Builder'],['match3','Match-3 Rush'],['vault','Mystery Vault'],['roulette','Roulette'],['blackjack','Blackjack']];
 function goAdminTab(name){document.querySelector(`.tab[data-tab="${name}"]`)?.click();}
-function adminCommandEntries(){return [...ADMIN_NAV_META.map(x=>({...x,playerTab:'',feature:''})),...ADMIN_CATALOG_GAMES.map(x=>({group:'Player · Catalog Games',playerTab:'games',feature:x[0],icon:'🎲',name:x[1],desc:'Open exact P2P Games game',keys:'player game'})),...ADMIN_ARCADE_GAMES.map(x=>({group:'Player · Arcade Zone Games',playerTab:'newgames',feature:x[0],icon:'🎮',name:x[1],desc:'Open exact Arcade Zone game',keys:'player arcade'}))];}
+function adminCommandEntries(){const nav=ADMIN_NAV_META.filter(x=>!adminRbacAllowed.length||adminRbacAllowed.includes(x.tab)).map(x=>({...x,playerTab:'',feature:''}));return [...nav,...ADMIN_CATALOG_GAMES.map(x=>({group:'Player · Catalog Games',playerTab:'games',feature:x[0],icon:'🎲',name:x[1],desc:'Open exact P2P Games game',keys:'player game'})),...ADMIN_ARCADE_GAMES.map(x=>({group:'Player · Arcade Zone Games',playerTab:'newgames',feature:x[0],icon:'🎮',name:x[1],desc:'Open exact Arcade Zone game',keys:'player arcade'}))];}
 function renderAdminCommand(q=''){q=q.trim().toLowerCase();const rows=adminCommandEntries().filter(x=>!q||`${x.name} ${x.desc} ${x.keys} ${x.group}`.toLowerCase().includes(q));let group='';$("adminCommandList").innerHTML=rows.map((x,i)=>{const head=x.group!==group?(group=x.group,`<div class="admin-command-group">${x.group}</div>`):'';return `${head}<button class="admin-command-item" ${x.playerTab?`data-command-player="${x.playerTab}" data-command-feature="${x.feature}"`:`data-command-admin="${x.tab}"`}><span class="ci">${x.icon}</span><span><b>${x.name}</b><small>${x.desc}</small></span><kbd>${i+1<10?i+1:''}</kbd></button>`;}).join('')||'<div class="muted" style="padding:18px">No matching Admin screens or games.</div>';}
 function openAdminCommand(q=''){const bg=$("adminCommandBg");bg.classList.add('show');bg.setAttribute('aria-hidden','false');$("adminCommandSearch").value=q;renderAdminCommand(q);setTimeout(()=>$("adminCommandSearch").focus(),0);}
 function closeAdminCommand(){$("adminCommandBg").classList.remove('show');$("adminCommandBg").setAttribute('aria-hidden','true');}
-function filterAdminNavigation(q){q=q.trim().toLowerCase();let shown=0;document.querySelectorAll('#tabs .tab[data-tab]').forEach(b=>{const meta=ADMIN_NAV_META.find(x=>x.tab===b.dataset.tab),match=!q||`${b.textContent} ${meta?.name||''} ${meta?.desc||''} ${meta?.keys||''}`.toLowerCase().includes(q);b.style.display=match?'':'none';if(match)shown++;});document.querySelectorAll('#tabs .admin-nav-label').forEach(x=>x.style.display=q?'none':'');$("adminNavEmpty").style.display=shown?'none':'block';}
+function filterAdminNavigation(q){q=q.trim().toLowerCase();let shown=0;document.querySelectorAll('#tabs .tab[data-tab]').forEach(b=>{if(adminRbacAllowed.length&&!adminRbacAllowed.includes(b.dataset.tab))return;const meta=ADMIN_NAV_META.find(x=>x.tab===b.dataset.tab),match=!q||`${b.textContent} ${meta?.name||''} ${meta?.desc||''} ${meta?.keys||''}`.toLowerCase().includes(q);b.style.display=match?'':'none';if(match)shown++;});applyAdminNavGroups();$("adminNavEmpty").style.display=shown?'none':'block';}
 function syncAdminNavigation(tab){$("adminNavJump").value=tab;document.querySelectorAll('#adminQuickDock [data-admin-tab]').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tab));}
+
+/* ── Admin access control (v13): login gate, RBAC roles, session, badges ── */
+const ADMIN_SESSION_KEY="fa_admin_session";
+const ADMIN_ROLES={
+ 'Super Admin':['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','approvals','audit','trust','settings'],
+ 'Finance':['dash','econ','revenue','topups','withdraw','promo','audit'],
+ 'Operations':['dash','ops','people','features','directory','vip','trny','approvals','promo'],
+ 'Support':['dash','people','approvals','trust']
+};
+const ADMIN_ROLE_DESC={'Super Admin':'Full access to every console screen','Finance':'Revenue, economy, liquidity and audit','Operations':'Live ops, players, engagement and approvals','Support':'Player lookups, approvals and trust tools'};
+function adminSession(){try{const x=JSON.parse(sessionStorage.getItem(ADMIN_SESSION_KEY)||'null');return x&&x.user&&x.role?x:null;}catch(e){return null;}}
+function renderAdminProfile(){
+  const ses=adminSession(),av=$("adminProfileAvatar"),nm=$("adminProfileName"),rl=$("adminProfileRole"),out=$("adminLogoutBtn");
+  if(!ses){av.textContent="–";nm.textContent="Sign in required";rl.textContent="No session";if(out)out.hidden=true;return;}
+  av.textContent=ses.user.slice(0,2).toUpperCase();nm.textContent=ses.user;rl.textContent=ses.role;if(out)out.hidden=false;
+  $("adminLoginOverlay").hidden=true;
+  document.body.classList.remove("admin-locked");
+}
+let adminRbacAllowed=[];
+function applyAdminRbac(){
+  const ses=adminSession();if(!ses)return;
+  const allowed=ADMIN_ROLES[ses.role]||ADMIN_ROLES['Super Admin'];
+  adminRbacAllowed=allowed;
+  document.querySelectorAll('#tabs .tab[data-tab]').forEach(b=>{b.style.display=allowed.includes(b.dataset.tab)?'':'none';});
+  // hide groups whose screens are all hidden
+  document.querySelectorAll('#tabs .admin-nav-group').forEach(g=>{const any=[...g.querySelectorAll('.tab[data-tab]')].some(b=>b.style.display!=='none');g.style.display=any?'':'none';});
+  // keep the jump select consistent with the role
+  const jump=$("adminNavJump");
+  if(jump){const kept=[];jump.querySelectorAll("optgroup").forEach(g=>{[...g.querySelectorAll("option")].forEach(o=>{const ok=allowed.includes(o.value);o.style.display=ok?'':'none';if(ok)kept.push(o.value);});if(![...g.querySelectorAll("option")].some(o=>o.style.display!=='none'))g.style.display='none';});}
+  // keep the active screen reachable
+  const active=document.querySelector('#tabs .tab.active');
+  if(active&&active.style.display==='none'){const first=allowed[0];document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.panel').forEach(p2=>p2.classList.remove('active'));const nb=document.querySelector('.tab[data-tab="'+first+'"]');if(nb){nb.classList.add('active');$("panel-"+first).classList.add('active');setAdminActiveTab(first);syncAdminNavigation(first);renderAdminTab(first);}}
+}
+function applyAdminNavGroups(){
+  const nav=$("tabs");if(!nav||!S)return;
+  const searching=!!(($("adminNavSearch")||{}).value||"").trim();
+  nav.classList.toggle("searching",searching);
+  const groups=S.adminNavGroups=S.adminNavGroups||{};
+  nav.querySelectorAll(".admin-nav-group").forEach(g=>{
+    const collapsed=!!groups[g.dataset.group]&&!searching;
+    g.classList.toggle("collapsed",collapsed);
+    const head=g.querySelector(".admin-nav-group-head");if(head)head.setAttribute("aria-expanded",String(!collapsed));
+  });
+}
+function updateAdminNavBadges(){
+  if(!S)return;
+  const kycPending=kycQueue().filter(x=>x.status==='pending').length,
+        flags=(cfg().reviewFlags||[]).filter(f=>!f.resolved).length,
+        approvals=kycPending+flags,
+        pendingPayouts=(S.bots||[]).filter(b=>b.trigger&&b.balance>=b.trigger-300).length,
+        campaigns=(cfg().promotions||[]).filter(p2=>p2.active!==false).length;
+  const ba=$("adminBadgeApprovals"),bw=$("adminBadgeWithdraw"),bp=$("adminBadgePromo");
+  if(ba){ba.textContent=approvals;ba.hidden=!approvals;}
+  if(bw){bw.textContent=pendingPayouts;bw.hidden=!pendingPayouts;}
+  if(bp){bp.textContent=campaigns;bp.hidden=!campaigns;}
+}
+/* deterministic simulated KYC request queue (bot identities) */
+function kycQueue(){
+  const q=cfg().kycRequests;
+  if(!Array.isArray(q)||!q.length){
+    const names=(S.bots||[]).slice(0,4).map(b=>b.name);
+    while(names.length<3)names.push(['Kiran','Dev','Asha'][names.length]);
+    cfg().kycRequests=names.slice(0,3).map((n,i)=>({id:'kyc-'+i,name:n,docType:['PAN','Passport','Aadhaar'][i%3],t:Date.now()-86400000*(i+2),status:'pending',note:'Document submitted for review'}));
+    save();
+  }
+  return cfg().kycRequests;
+}
+function adminDecideKyc(id,decision){
+  const q=kycQueue(),item=q.find(x=>x.id===id);if(!item)return;
+  item.status=decision;item.decidedAt=Date.now();
+  audit('kyc-queue',`${item.name}: ${decision} (${item.docType})`);
+  save();renderApprovals();updateAdminNavBadges();
+}
+function adminResolveFlag(t,action){
+  const all=cfg().reviewFlags||[],f=all.find(x=>x.t===t);if(!f)return;
+  f.resolved=true;f.resolution=action;f.resolvedAt=Date.now();
+  (cfg().resolvedFlags=cfg().resolvedFlags||[]).unshift({t:f.t,game:f.game,type:f.type,amount:f.amount||0,detail:f.detail,resolution:action,at:Date.now()});
+  if(cfg().resolvedFlags.length>60)cfg().resolvedFlags.length=60;
+  audit('flag-review',`${f.type} ${action}: ${f.detail}`);
+  save();renderApprovals();renderFlags();updateAdminNavBadges();
+}
+function adminAddExclusion(name){
+  name=String(name||'').trim();if(!name)return;
+  const list=cfg().exclusions=cfg().exclusions||[];
+  if(list.includes(name)){toast('Already excluded.','err');return;}
+  list.push(name);audit('exclusion',`Excluded ${name}`);save();renderApprovals();
+}
+function adminRemoveExclusion(name){
+  const list=cfg().exclusions=cfg().exclusions||[],i=list.indexOf(name);
+  if(i<0)return;list.splice(i,1);audit('exclusion',`Un-excluded ${name}`);save();renderApprovals();
+}
+function renderApprovals(){
+  if(!S)return;
+  const kyc=S.kyc||{},q=kycQueue(),flags=cfg().reviewFlags||[],resolved=cfg().resolvedFlags||[],excl=cfg().exclusions||[];
+  const pending=q.filter(x=>x.status==='pending').length,open=flags.filter(f=>!f.resolved).length;
+  $("approvalsAlerts").innerHTML=[
+    pending?{c:'warn',t:`🪪 ${pending} KYC request(s) awaiting review`}:{c:'ok',t:'🪪 KYC queue clear'},
+    open?{c:'warn',t:`⚑ ${open} unresolved review flag(s)`}:{c:'ok',t:'⚑ No unresolved flags'}
+  ].map(a=>`<div class="admin-alert ${a.c}">${a.t}</div>`).join('');
+  $("kycPlayerStatus").innerHTML=`<div class="kv-row"><span>Demo player status</span><b>${kyc.verified?'<span class="tag on">VERIFIED</span>':'<span class="tag">UNVERIFIED</span>'}</b></div>${kyc.verified?`<div class="kv-row"><span>Verified</span><b>${new Date(kyc.verifiedAt).toLocaleString()} · ${kyc.docType||'—'}</b></div>`:''}`;
+  $("kycQueue").innerHTML=q.map(x=>`<div class="friend-row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span style="font-size:16px">🪪</span><span class="grow"><b>${x.name}</b> <span class="muted">· ${x.docType}</span><br><small class="muted">Submitted ${new Date(x.t).toLocaleString()} · ${x.note}</small></span>${x.status==='pending'?`<button class="btn btn-primary btn-sm" data-approvals="kyc-approve" data-id="${x.id}">Approve</button><button class="btn btn-danger btn-sm" data-approvals="kyc-decline" data-id="${x.id}">Decline</button>`:`<span class="tag ${x.status==='approved'?'on':''}">${x.status.toUpperCase()}</span>`}</div>`).join('');
+  const filt=$("flagFilterSel")?$("flagFilterSel").value:'';
+  const frows=flags.filter(f=>!f.resolved).filter(f=>!filt||f.type===filt).slice(0,12);
+  $("flagQueue").innerHTML=frows.length?frows.map(f=>`<div class="friend-row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span style="font-size:16px">⚑</span><span class="grow"><b>${f.type}</b> <span class="muted">· ${f.game||'—'}${f.amount?` · ${fmt(f.amount)}`:''}</span><br><small class="muted">${new Date(f.t).toLocaleString()} · ${f.detail||''}</small></span><button class="btn btn-primary btn-sm" data-approvals="flag-clear" data-t="${f.t}">Clear</button><button class="btn btn-danger btn-sm" data-approvals="flag-escalate" data-t="${f.t}">Escalate</button></div>`).join(''):'<div class="empty">No unresolved flags in this view.</div>';
+  const bots=(S.bots||[]).slice(0,40);
+  $("restrictBotSel").innerHTML=bots.map(b=>`<option value="${b.name}" ${S.frozen[b.name]?'selected':''}>${b.name} ${S.frozen[b.name]?'(frozen)':''}</option>`).join('');
+  $("exclusionList").innerHTML=excl.length?excl.map(n=>`<div class="friend-row" style="padding:6px 0"><span>🚫</span><span class="grow">${n}</span><button class="btn btn-ghost btn-sm" data-approvals="excl-remove" data-name="${n}">Remove</button></div>`).join(''):'<div class="empty">No active exclusions.</div>';
+  const hist=(cfg().approvalsHistory=cfg().approvalsHistory||[]);
+  $("approvalsHistory").innerHTML=hist.length?hist.slice(0,10).map(h=>`<div class="kv-row"><span>${new Date(h.t).toLocaleString()}</span><b>${h.who}: ${h.what}</b></div>`).join(''):'<div class="empty">Decisions you make appear here.</div>';
+}
+function renderSettings(){
+  if(!S)return;
+  const c=cfg(),ses=adminSession();
+  $("setFeePct").value=c.feePct;$("setCupRake").value=c.cupRakePct;$("setTrnyRake").value=c.trnyRakePct;
+  $("setJpArm").value=c.jpArm;$("setJpPay").value=c.jpPayPct;$("setStakeRange").value=c.stakeMin+" , "+c.stakeMax;
+  $("setAccountRow").innerHTML=`<span>Signed in</span><b>${ses?ses.user+' · '+ses.role:'—'}</b><div style="width:100%"></div><span>Session started</span><b>${ses?new Date(ses.t).toLocaleString():'—'}</b><div style="width:100%"></div><span>Role scope</span><b>${ses?(ADMIN_ROLES[ses.role]||[]).length+' screens':'—'}</b>`;
+  $("setRoleSel").value=ses?ses.role:'Super Admin';
+  $("setBotCount").textContent=(S.bots||[]).length+' simulated players';
+  $("setTurboState").textContent=(S.turbo&&S.turbo>1)?`${S.turbo}× stress`:'Normal (1×)';
+  $("setMaintState").innerHTML=c.features.maintenance?'<span class="tag">ACTIVE</span>':'<span class="tag on">OFF</span>';
+}
+function adminLogin(){
+  const user=$("adminLoginUser").value.trim(),pass=$("adminLoginPass").value,role=$("adminLoginRole").value,tfa=$("adminLoginTfa").value.trim();
+  const errEl=$("adminLoginError");
+  const fail=m=>{errEl.textContent=m;errEl.hidden=false;};
+  if(user.toLowerCase()!=='admin'||pass!=='flip2026')return fail('Invalid credentials. Demo login is admin / flip2026.');
+  if(!/^\d{6}$/.test(tfa))return fail('Enter the 6-digit 2FA code (demo: 246810).');
+  if(tfa!=='246810')return fail('2FA code does not match (demo: 246810).');
+  sessionStorage.setItem(ADMIN_SESSION_KEY,JSON.stringify({user,role,t:Date.now()}));
+  errEl.hidden=true;
+  renderAdminProfile();applyAdminNavGroups();applyAdminRbac();updateAdminNavBadges();
+  audit('admin-login',`${user} signed in as ${role}`);save();render();
+}
+function adminLogout(){
+  const ses=adminSession();
+  sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  if(ses)audit('admin-logout',`${ses.user} signed out`);
+  save();
+  $("adminLoginOverlay").hidden=false;
+  $("adminLoginPass").value='';$("adminLoginTfa").value='';
+  document.querySelectorAll('#tabs .tab[data-tab]').forEach(b=>b.style.display='');
+  document.querySelectorAll('#tabs .admin-nav-group').forEach(g=>g.style.display='');
+  const jump=$("adminNavJump");
+  if(jump){jump.querySelectorAll("optgroup").forEach(g=>g.style.display='');jump.querySelectorAll("option").forEach(o=>o.style.display='');}
+  renderAdminProfile();
+}
 
 
 /* ── Revenue dashboard (Admin ↔ player ledger, integer-subunit math) ─────── */
@@ -560,9 +718,45 @@ function renderRevenue(){
   root.appendChild(createStatGrid([
     {icon:"🎯",value:fmt(v.lifetime||0),label:"Lifetime wagered volume",color:"blue"},
     {icon:"📈",value:fmt(r.gross),label:"Gross revenue",color:"green"},
-    {icon:"💰",value:fmt(r.net),label:"Net platform profit",color:r.net>=0?"green":"red"},
-    {icon:"🎁",value:fmt((r.promoCost||0)+(r.comps||0)),label:"Promo cost + comps",color:"purple"},
+    {icon:"💰",value:fmt(r.net),label:"Net platform profit (NGR)",color:r.net>=0?"green":"red"},
+    {icon:"🎁",value:fmt(r.costs||0),label:"Total costs (promo + comps + rakeback + referral)",color:"purple"},
   ]));
+
+  /* ── Complete fund-source register: every source of money in or out of the
+       platform, classified so finance can never mistake funding for revenue. ── */
+  const srcCard=createCard({title:"🧾 Complete fund-source register"});
+  const srcMeta=document.createElement("p");srcMeta.className="muted";
+  srcMeta.textContent="Every stream that touches the platform economy, tagged by its accounting treatment. REVENUE = recognised in NGR · COST = reduces NGR · FUNDING = cash-in (liability, never revenue) · CASH-OUT = cash-out (never an expense) · LIABILITY = owed to players.";
+  srcCard.appendChild(srcMeta);
+  const pctOf=(x,base)=>base>0?(x/base*100).toFixed(1)+"%":"—";
+  const fundRows=[
+    {tag:"REVENUE",t:"Coin Toss fees (5% pot fee − jackpot funding)",x:r.fees,share:pctOf(r.fees,r.gross),note:"Fee recognised net of the jackpot contribution held in pool."},
+    {tag:"REVENUE",t:"P2P Games fees (catalog, ladder, war, rooms, friends)",x:r.catalogFees,share:pctOf(r.catalogFees,r.gross),note:"Same fee engine as Coin Toss, per settled match."},
+    {tag:"REVENUE",t:"Series Cup rake",x:r.cupRakes,share:pctOf(r.cupRakes,r.gross),note:"Admin-set rake on every Cup pot."},
+    {tag:"REVENUE",t:"Tournament rake",x:r.trnyRakes,share:pctOf(r.trnyRakes,r.gross),note:"Admin-set rake on every bracket pool."},
+    {tag:"REVENUE",t:"Shop & commerce",x:r.shop,share:pctOf(r.shop,r.gross),note:"Cosmetics, arcade stakes, crates, subscriptions, boosters, trading fees, raffle cut, crafts, tickets, room upgrades, wheel spins."},
+    {tag:"REVENUE",t:"Transfer & gifting fees",x:r.xfFees,share:pctOf(r.xfFees,r.gross),note:"2% on every MAIN transfer and coin gift."},
+    {tag:"REVENUE",t:"Auction house fees (10% of winning bid)",x:r.auctionFees,share:pctOf(r.auctionFees,r.gross),note:"Weekly cosmetic auctions; the hammer fee is the only house take."},
+    {tag:"COST",t:"Promotional cost (deposit bonuses, cash drops, wheel/scratch prizes, arcade payouts, staking interest)",x:r.promoCost,share:pctOf(r.promoCost,r.gross),note:"Coins created by offers and house-funded rewards."},
+    {tag:"COST",t:"Comps paid (goodwill credits)",x:r.comps,share:pctOf(r.comps,r.gross),note:"Funded strictly from accumulated net revenue."},
+    {tag:"COST",t:"Rakeback paid to players",x:r.rakebackPaid,share:pctOf(r.rakebackPaid,r.gross),note:"Tier% × half-fee claimed into RAKEBACK balance."},
+    {tag:"COST",t:"Referral program payouts (5% of referred players' fees)",x:r.referralCost,share:pctOf(r.referralCost,r.gross),note:"External referrer share + demo player's referred-bot share."},
+    {tag:"FUNDING",t:"Player deposits (top-ups)",x:coin((cfg().house.deposits||0)),share:"—",note:"Cash-in. Liability until withdrawn — never recognised as revenue."},
+    {tag:"FUNDING",t:"Bot deposits (simulation liquidity)",x:coin((cfg().house.botDeposits||0)),share:"—",note:"Demo liquidity injections. Never recognised as revenue."},
+    {tag:"CASH-OUT",t:"Player withdrawals",x:coin((cfg().house.playerWithdrawals||0)),share:"—",note:"Cash-out of player funding. Never an expense."},
+    {tag:"CASH-OUT",t:"Bot withdrawals (cash-out triggers)",x:coin((cfg().house.withdrawals||0)),share:"—",note:"Coin sink + cash-out, deducted as cash-flow not expense."},
+    {tag:"LIABILITY",t:"Jackpot pool (owed to the byte-00 winner)",x:coin(S.jackpot||0),share:"—",note:"Held from fees; 50% pays on hit, remainder rolls over."},
+  ];
+  const tbl=document.createElement("table");
+  tbl.innerHTML="<thead><tr><th>Treatment</th><th>Fund source</th><th>Amount</th><th>% of gross</th><th>Accounting note</th></tr></thead><tbody>"+
+    fundRows.map(x=>{const cls=x.tag==="REVENUE"?"on":x.tag==="COST"?"warn":x.tag==="FUNDING"?"blue":x.tag==="CASH-OUT"?"danger":"purple";
+      return `<tr><td><span class="tag ${cls}">${x.tag}</span></td><td><b>${x.t}</b></td><td>${fmt(x.x)}</td><td>${x.share}</td><td class="muted" style="min-width:220px">${x.note}</td></tr>`;}).join("")+
+    `</tbody>`;
+  srcCard.appendChild(tbl);
+  const totalRow=document.createElement("div");totalRow.className="catalog-note";totalRow.style.marginTop="10px";
+  totalRow.innerHTML=`<b>Gross revenue</b> ${fmt(r.gross)} − <b>total costs</b> ${fmt(r.costs||0)} = <b style="color:var(--gold)">Net revenue (NGR) ${fmt(r.net)}</b> · Net cash flow ${fmt(r.netCash)}`;
+  srcCard.appendChild(totalRow);
+  root.appendChild(srcCard);
   const unit=REVENUE_VIEW.range==="week"?"week":"day";
   const series=revenueSeries(unit,unit==="week"?8:14);
   const chartCard=createCard({title:`📊 ${unit==="week"?"Weekly":"Daily"} volume`});
@@ -596,7 +790,7 @@ function renderRevenue(){
     toast("Transaction log JSON exported.");audit("export-transactions-json",rows.length+" rows");
   }}));
   btnRow.appendChild(createButton({label:"🧾 Revenue summary CSV",variant:"ghost",size:"sm",onclick:()=>{
-    const csv=[["Metric","Value"],["Gross revenue",r.gross],["Net platform profit",r.net],["Promo cost",r.promoCost],["Comps",r.comps],["Cash in",r.cashIn],["Cash out",r.cashOut],["Net cash flow",r.netCash],["Lifetime wagered",v.lifetime],["Settled games",v.games],["Taps",r.taps],["Sinks",r.sinks],["House bankroll",r.bankroll]]
+    const csv=[["Metric","Value","Treatment"],["Coin Toss fees",r.fees,"REVENUE"],["P2P Games fees",r.catalogFees,"REVENUE"],["Series Cup rake",r.cupRakes,"REVENUE"],["Tournament rake",r.trnyRakes,"REVENUE"],["Shop & commerce",r.shop,"REVENUE"],["Transfer & gifting fees",r.xfFees,"REVENUE"],["Auction house fees",r.auctionFees,"REVENUE"],["Gross revenue",r.gross,"REVENUE"],["Promotional cost",r.promoCost,"COST"],["Comps paid",r.comps,"COST"],["Rakeback paid",r.rakebackPaid,"COST"],["Referral payouts",r.referralCost,"COST"],["Total costs",r.costs||0,"COST"],["Net revenue (NGR)",r.net,"NGR"],["Player deposits",coin(cfg().house.deposits||0),"FUNDING"],["Bot deposits",coin(cfg().house.botDeposits||0),"FUNDING"],["Cash in total",r.cashIn,"FUNDING"],["Player withdrawals",coin(cfg().house.playerWithdrawals||0),"CASH-OUT"],["Bot withdrawals",coin(cfg().house.withdrawals||0),"CASH-OUT"],["Cash out total",r.cashOut,"CASH-OUT"],["Net cash flow",r.netCash,"CASH-FLOW"],["Jackpot pool",coin(S.jackpot||0),"LIABILITY"],["Lifetime wagered",v.lifetime,"VOLUME"],["Settled games",v.games,"VOLUME"],["Taps (created)",r.taps,"ECONOMY"],["Sinks (removed)",r.sinks,"ECONOMY"],["House bankroll",r.bankroll,"ECONOMY"]]
       .map(r=>r.map(q).join(",")).join("\n");
     downloadFile("fliparena-revenue-summary.csv",csv,"text/csv");toast("Revenue summary CSV exported.");
   }}));
@@ -606,8 +800,10 @@ function renderRevenue(){
   const recon=$("revenueRecon");if(recon){
     const check=(label,value,expected,good)=>`<div class="kv"><span class="k">${label}</span><span class="v" style="color:${good?"var(--green)":"var(--red)"}">${fmt(value)}${expected!=null?` <span class="muted">(expected ${fmt(expected)})</span>`:""}</span></div>`;
     recon.innerHTML=
-      check("Coin Toss fees + P2P fees + rakes + shop + transfer fees = Gross revenue",r.gross,null,true)+
-      check("Gross revenue − promo cost − comps = Net platform profit",r.net,sub(r.gross,(r.promoCost||0)+(r.comps||0)),r.net===sub(r.gross,(r.promoCost||0)+(r.comps||0)))+
+      check("Coin Toss fees + P2P fees + rakes + shop + transfer fees + auction fees = Gross revenue",r.gross,null,true)+
+      check("Gross revenue − promo cost − comps − rakeback − referral payouts = Net platform profit",r.net,sub(r.gross,r.costs||0),r.net===sub(r.gross,r.costs||0))+
+      `<div class="kv"><span class="k">Rakeback paid (cost)</span><span class="v" style="color:var(--red)">−${fmt(r.rakebackPaid||0)}</span></div>`+
+      `<div class="kv"><span class="k">Referral payouts (cost)</span><span class="v" style="color:var(--red)">−${fmt(r.referralCost||0)}</span></div>`+
       `<div class="kv"><span class="k">Cash in (top-ups / deposits)</span><span class="v">${fmt(r.cashIn)}</span></div>`+
       `<div class="kv"><span class="k">Cash out (withdrawals)</span><span class="v">${fmt(r.cashOut)}</span></div>`+
       `<div class="kv"><span class="k">Net cash flow</span><span class="v">${fmt(r.netCash)}</span></div>`+
@@ -758,6 +954,8 @@ let adminActiveTab="dash";
 function setAdminActiveTab(tab){adminActiveTab=tab;}
 const ADMIN_TAB_RENDERERS={
   dash:()=>renderDash(),
+  approvals:()=>renderApprovals(),
+  settings:()=>renderSettings(),
   ops:()=>renderOps(),
   people:()=>renderPeople(),
   features:()=>renderFeatureAdmin(),
@@ -781,7 +979,7 @@ function renderAdminTab(tab){
   return true;
 }
 /** Periodic refresh: chrome + the active Admin screen only. */
-function renderAdminTick(){renderAdminChrome();renderAdminTab();}
+function renderAdminTick(){renderAdminChrome();updateAdminNavBadges();renderAdminTab();}
 
 export function bind(){
   "use strict";
@@ -793,6 +991,53 @@ export function bind(){
   $("adminCommandClose").onclick=closeAdminCommand;
   $("adminCommandBg").onclick=e=>{if(e.target===$("adminCommandBg"))closeAdminCommand();};
   $("adminCommandSearch").oninput=e=>renderAdminCommand(e.target.value);
+  $("adminCommandSearch").oninput=e=>renderAdminCommand(e.target.value);
+  // v13 access control + approvals + settings
+  $("adminLoginBtn").onclick=adminLogin;
+  $("adminLoginPass").addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
+  $("adminLogoutBtn").onclick=adminLogout;
+  if(!adminSession()){$("adminLoginOverlay").hidden=false;document.body.classList.add("admin-locked");}
+  document.addEventListener('click',e=>{
+    const gh=e.target.closest('[data-group-toggle]');
+    if(gh){const g=S.adminNavGroups=S.adminNavGroups||{};const name=gh.dataset.groupToggle;g[name]=!g[name];applyAdminNavGroups();save();return;}
+    const ap=e.target.closest('[data-approvals]');
+    if(ap){
+      if(ap.dataset.approvals==='kyc-approve')adminDecideKyc(ap.dataset.id,'approved');
+      else if(ap.dataset.approvals==='kyc-decline')adminDecideKyc(ap.dataset.id,'declined');
+      else if(ap.dataset.approvals==='flag-clear')adminResolveFlag(+ap.dataset.t,'Cleared — no action');
+      else if(ap.dataset.approvals==='flag-escalate')adminResolveFlag(+ap.dataset.t,'Escalated to compliance');
+      else if(ap.dataset.approvals==='excl-remove')adminRemoveExclusion(ap.dataset.name);
+      return;
+    }
+  });
+  $("kycVerifyApprove").onclick=adminVerifyKyc;
+  $("kycResetApprove").onclick=adminResetKyc;
+  $("flagRefresh").onclick=()=>renderApprovals();
+  $("flagFilterSel").onchange=()=>renderApprovals();
+  $("restrictFreeze").onclick=()=>{const n=$("restrictBotSel").value;if(n){adminSetFreeze(n,!S.frozen[n]);toast(S.frozen[n]?`Unfrozen ${n}.`:`${n} frozen.`,S.frozen[n]?'ok':'err');}};
+  $("exclusionAdd").onclick=()=>{adminAddExclusion($("exclusionInput").value);$("exclusionInput").value='';};
+  $("setEconSave").onclick=()=>{
+    const c=cfg();
+    c.feePct=Math.min(20,Math.max(0,+$("setFeePct").value||0));
+    c.cupRakePct=Math.min(20,Math.max(0,+$("setCupRake").value||0));
+    c.trnyRakePct=Math.min(20,Math.max(0,+$("setTrnyRake").value||0));
+    c.jpArm=Math.max(0,Math.round(+$("setJpArm").value||0));
+    c.jpPayPct=Math.min(100,Math.max(0,+$("setJpPay").value||0));
+    const range=String($("setStakeRange").value).split(',').map(x=>Math.round(+x.trim())).filter(x=>isFinite(x)&&x>0);
+    if(range.length===2){c.stakeMin=Math.min(range[0],range[1]);c.stakeMax=Math.max(range[0],range[1]);}
+    audit('settings-economics',`fees ${c.feePct}/${c.cupRakePct}/${c.trnyRakePct} · jp ${c.jpArm}@${c.jpPayPct}% · stake ${c.stakeMin}-${c.stakeMax}`);
+    save();render();$("setEconNote").textContent='Saved '+new Date().toLocaleTimeString();
+  };
+  $("setRoleSave").onclick=()=>{
+    const ses=adminSession();if(!ses)return;
+    const role=$("setRoleSel").value;
+    sessionStorage.setItem(ADMIN_SESSION_KEY,JSON.stringify({user:ses.user,role,t:ses.t}));
+    audit('settings-role',`${ses.user} switched role to ${role}`);
+    renderAdminProfile();applyAdminRbac();toast('Role applied: '+role,'ok');
+  };
+  $("setMaintToggle").onclick=()=>{cfg().features.maintenance=!cfg().features.maintenance;audit('settings-maintenance',cfg().features.maintenance?'Maintenance ON':'Maintenance OFF');save();render();};
+  $("setTurboCycle").onclick=()=>{S.turbo=S.turbo===1?2:S.turbo===2?100:S.turbo===100?1:1;audit('settings-turbo','Engine speed '+S.turbo+'x');save();render();};
+  $("setFactoryReset").onclick=()=>{if(confirm('Factory reset wipes ALL shared demo state. Continue?')){localStorage.removeItem(SAVE_KEY);sessionStorage.removeItem(ADMIN_SESSION_KEY);location.reload();}};
   $("adminCommandList").onclick=e=>{const b=e.target.closest('[data-command-admin],[data-command-player]');if(!b)return;closeAdminCommand();if(b.dataset.commandPlayer)window.open(`index.html?tab=${b.dataset.commandPlayer}&feature=${b.dataset.commandFeature}`,'_blank');else goAdminTab(b.dataset.commandAdmin);};
   const peopleList=$("peopleList");
   if(peopleList)peopleList.addEventListener("click",e=>{
@@ -809,7 +1054,7 @@ export function bind(){
 
 
 /* expose top-level symbols to globalThis so legacy inline handlers and the shared theme engine can resolve them */
-Object.assign(globalThis,{$,ADMIN_TAB_RENDERERS,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,drawRng,filterAdminNavigation,fmt,downloadFile,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderAdminTab,renderAdminTick,renderFeatureDirectory,renderFlags,renderGameParams,renderOps,renderRates,renderRevenue,renderSessionMonitor,renderGameHistory,renderLevels,renderPeople,renderPromo,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics});
+Object.assign(globalThis,{$,ADMIN_TAB_RENDERERS,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_ROLES,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAddExclusion,adminDecideKyc,adminLogin,adminLogout,adminRemoveExclusion,adminResolveFlag,adminSession,applyAdminRbac,applyAdminNavGroups,renderAdminProfile,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,drawRng,filterAdminNavigation,fmt,downloadFile,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderAdminTab,renderAdminTick,renderFeatureDirectory,renderFlags,renderGameParams,renderOps,renderRates,renderRevenue,renderSessionMonitor,renderGameHistory,renderLevels,renderPeople,renderPromo,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics});
 
 export {$,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_TAB_RENDERERS,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,downloadFile,drawRng,filterAdminNavigation,fmt,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAdminTab,renderAdminTick,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderFeatureDirectory,renderFlags,renderGameHistory,renderGameParams,renderLevels,renderOps,renderPeople,renderPromo,renderRates,renderRevenue,renderSessionMonitor,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics};
 

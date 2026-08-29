@@ -199,21 +199,33 @@ export function withWalletLock(fn) {
 
 /* ── Reconciliation & audit ─────────────────────────────────────────────── */
 
-/** Gross / net revenue and cash-flow reconciliation for the house account. */
+/** Gross / net revenue and cash-flow reconciliation for the house account.
+ *
+ *  Gross revenue = Coin Toss fees + P2P/catalog fees + cup rakes + tournament
+ *                  rakes + shop & commerce + transfer fees + auction fees
+ *  Costs         = promo cost + comps + rakeback paid + referral payouts
+ *  Net revenue   = Gross revenue − Costs
+ *  Cash in       = player deposits + bot deposits          (funding, never revenue)
+ *  Cash out      = bot withdrawals + player withdrawals    (cash-out, never an expense)
+ */
 export function reconciliation() {
   const S = globalThis.S;
   const h = (S && S.config && S.config.house) || {};
-  const gross = coin(coin(h.fees) + coin(h.catalogFees) + coin(h.cupRakes) + coin(h.trnyRakes) + coin(h.shop) + coin(h.xfFees));
-  const promo = coin(h.promoCost), comps = coin(h.comps);
-  const net = sub(gross, add(promo, comps));
+  const gross = coin(coin(h.fees) + coin(h.catalogFees) + coin(h.cupRakes) + coin(h.trnyRakes) + coin(h.shop) + coin(h.xfFees) + coin(h.auctionFees));
+  const promo = coin(h.promoCost), comps = coin(h.comps),
+        rakebackPaid = coin(h.rakebackPaid), referralCost = coin(h.referralCost);
+  const costs = add(add(promo, comps), add(rakebackPaid, referralCost));
+  const net = sub(gross, costs);
   const cashIn = add(coin(h.deposits), coin(h.botDeposits));
   const cashOut = add(coin(h.withdrawals), coin(h.playerWithdrawals));
   return {
     fees: coin(h.fees), catalogFees: coin(h.catalogFees), cupRakes: coin(h.cupRakes),
     trnyRakes: coin(h.trnyRakes), shop: coin(h.shop), xfFees: coin(h.xfFees),
-    gross, promoCost: promo, comps, net,
+    auctionFees: coin(h.auctionFees),
+    gross, promoCost: promo, comps, rakebackPaid, referralCost, costs, net,
     cashIn, cashOut, netCash: sub(cashIn, cashOut),
     capital: coin(h.capital), bankroll: add(coin(h.capital), net),
+    jackpotPool: coin(S && S.jackpot),
     taps: coin(S && S.config && S.config.taps), sinks: coin(S && S.config && S.config.sinks),
   };
 }
@@ -260,7 +272,7 @@ export function ledgerAudit() {
   if (!isFinite(Number(S.jackpot)) || Number(S.jackpot) < 0) issues.push("jackpot pool is negative");
 
   const r = reconciliation();
-  if (r.net !== sub(r.gross, add(r.promoCost, r.comps))) issues.push("net revenue does not equal gross − promo − comps");
+  if (r.net !== sub(r.gross, r.costs)) issues.push("net revenue does not equal gross − total costs (promo + comps + rakeback + referral)");
   if (r.taps < 0) issues.push("taps (coins created) is negative");
   if (r.sinks < 0) issues.push("sinks (coins removed) is negative");
 

@@ -10,7 +10,7 @@
 - **Ledger invariants** — `ledgerAudit()` verifies non-negative whole-coin
   balances, escrow integrity, duplicate-settlement detection, well-formed ledger
   rows and the reconciliation formula
-  `net profit = gross revenue − promo cost − comps`. `enforceWalletInvariants()`
+  `net profit = gross revenue − total costs (promo + comps + rakeback + referral)`. `enforceWalletInvariants()`
   repairs drift on boot and on every reconcile.
 - **Concurrency** — `withWalletLock()` serialises wallet-critical sections, so
   rapid clicks and overlapping bot ticks can never double-spend.
@@ -45,6 +45,40 @@
   invariants) and `tools/boot-smoke.mjs` (headless jsdom boot + screen walk).
   `tossmatch/docs/audit-loop-v13.0.log` records **20/20 clean passes** —
   157 checks per pass, 3,140 assertions, 0 failures.
+
+### Phase 7 — New features, redesigned navigation and real-world Admin console
+- **P2P catalog +3** — CAT34 Byte War, CAT35 Sum of Four and CAT36 High Card Duel
+  (36 catalog games total), with proof resolvers, groups and Admin command entries.
+- **Arcade Zone +2** — G24 Roulette (16-pocket proof wheel, 2×/2×/15×, house zero)
+  and G25 Blackjack Hit-or-Stand (natural 3×, win 2×, push 1×; 25 arcade modes).
+- **Event Calendar (LIVE1 → demo)** — Social Hub *Events* tab: daily trivia, weekly
+  raffle, live auto-tournaments, season/VIP resets and active campaigns in one
+  timezone-aware schedule (local + UTC) with persisted per-event reminders.
+- **Career Milestones (P6)** — twelve lifetime goals (games, wins, wager, jackpots,
+  level, achievements) with one-time BONUS claims that survive Prestige.
+- **Auction House (E10)** — three weekly cosmetic lots, autonomous bot bidding,
+  winner pays at the hammer and the house keeps a 10% hammer fee recognised as
+  `house.auctionFees` in the revenue fund-source register.
+- **Revenue fund-source register** — Admin Revenue now classifies every source as
+  REVENUE / COST / FUNDING / CASH-OUT / LIABILITY with % of gross and an NGR total;
+  the ledger audit verifies `net = gross − (promo + comps + rakeback + referral)`.
+- **Navigation redesign (both apps)** — collapsible nav groups with persisted state,
+  live badges (open bets, friend requests; Admin approvals, cash-out triggers,
+  campaigns), a Recent row (last 4 screens), and search that flattens groups.
+- **Leaderboard & Roster list controls** — name/country filter, sort modes and
+  Prev/Next pagination on the player Leaderboard (10/page) and Player Roster (12/page).
+- **UI copy cleanup** — every internal spec code (CAT23, G24, S1, T1, SEC2, RG1,
+  OPS4, AC-*) removed from visible buttons, nav, headings and descriptions in both
+  apps and rewritten as human-readable copy.
+- **Home stability** — live ticks now update KPI values in place (tabular
+  numerals) and rebuild Home cards only when their data changes, eliminating the
+  full-screen reflow/shake on every bot tick.
+- **Real-world Admin console** — session-gated sign-in (admin / flip2026) with
+  2FA demo code 246810, RBAC roles (Super Admin, Finance, Operations, Support),
+  header profile + logout, new **Approvals** screen (KYC player verify/reset plus
+  simulated request queue, review-flag triage, freeze and exclusion controls,
+  decision history — all audit-logged) and new **Settings** screen (house
+  economics, role switching, maintenance, engine speed, factory reset).
 
 ## v12.0 — Modular Code Structure
 

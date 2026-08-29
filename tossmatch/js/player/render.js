@@ -5,7 +5,7 @@ import {bc} from "./boot.js";
 import {ACHIEVEMENTS,COS,FREE_EMOJIS,HISTORY,QUESTS_SEED,SHOP_CATS,currentVipEntitlements,sessionStart} from "./bots.js";
 import {VIP_BENEFITS,VIP_DISC,VIP_SEED} from "./data.js";
 import {botByName} from "./games.js";
-import {$,applyAccessibility,applyLanguage,fmt,maxStake,playerTopupAnalytics,renderCommunityHub,renderEconomyHub,renderFeatureHubs,renderHome,renderNewGamesHub,renderProgressionHub,renderServicesHub,skillTier,syncPlayerNavigation,toast,vipFor} from "./helpers.js";
+import {$,applyAccessibility,applyLanguage,fmt,maxStake,playerTopupAnalytics,recordRecentTab,renderCommunityHub,renderNavRecent,renderEconomyHub,renderFeatureHubs,renderHome,renderNewGamesHub,renderProgressionHub,renderServicesHub,skillTier,syncPlayerNavigation,toast,updateNavBadges,vipFor} from "./helpers.js";
 import {cfg,reconcileHouse,save} from "./state.js";
 import {GAMES,renderGames} from "./sync.js";
 
@@ -20,9 +20,19 @@ el._warned={};
    renderTick()   → chrome + active tab live widgets (used by background sync).
    render()       → full boot / theme / all-tab initialisation.              */
 let activeTab="home";
+const LB_VIEW={page:1,size:10};
+let lbFilter="";
+const ROSTER_VIEW={page:1,size:12,sort:"net"};
+let rosterFilter="";
+function pagerHTML(view,total,size,prev,next){
+  const pages=Math.max(1,Math.ceil(total/size));
+  if(pages<=1)return total?`<span class="muted">${total} shown</span>`:'';
+  return `<button class="btn btn-sm btn-ghost" ${prev} ${view.page<=1?'disabled':''}>← Prev</button><span class="muted">Page ${view.page} of ${pages} · ${size} per page</span><button class="btn btn-sm btn-ghost" ${next} ${view.page>=pages?'disabled':''}>Next →</button>`;
+}
 function setActiveTab(tab){activeTab=tab;}
 
 function renderChrome(){
+  try{applyNavGroups();renderNavRecent();updateNavBadges();}catch(e){}
   const c=cfg();reconcileHouse();
   const mainVal=el("mainVal");if(mainVal)mainVal.textContent=fmt(S.wallet.main);
   const jpVal=el("jpVal");if(jpVal)jpVal.textContent=fmt(S.jackpot);
@@ -84,6 +94,7 @@ function renderTab(tab){
 /** Background/periodic refresh: chrome + the active tab only. */
 function renderTick(){
   renderChrome();
+  updateNavBadges();
   renderTab(activeTab);
   if(activeTab==="games"&&S.waiting.some(b=>b.kind==="catalog"&&b.catalogGame===activeGame)){try{renderGamePanel();}catch(e){}}
 }
@@ -159,11 +170,15 @@ function botAvi(b,size){
 }
 function renderLeaderboard(){
   const playerVip=vipFor(S.monthWagered),ent=currentVipEntitlements();
-  const players=[{name:playerName(),avi:playerAviHTML(18),flag:playerFlag(),level:S.level,wins:S.stats.wins,losses:S.stats.losses,streak:S.streak,net:S.stats.net,you:true,games:S.stats.games,vip:playerVip}, 
-    ...S.bots.map(b=>({name:b.name,avi:botAvi(b,16),flag:b.flag,level:b.level,wins:b.wins||0,losses:b.losses||0,streak:b.streak,net:b.net,games:b.games||0,bot:b}))];
+  const f=lbFilter.trim().toLowerCase();
+  const players=[{name:playerName(),avi:playerAviHTML(18),flag:playerFlag(),level:S.level,wins:S.stats.wins,losses:S.stats.losses,streak:S.streak,net:S.stats.net,you:true,games:S.stats.games,vip:playerVip},
+    ...S.bots.map(b=>({name:b.name,avi:botAvi(b,16),flag:b.flag,level:b.level,wins:b.wins||0,losses:b.losses||0,streak:b.streak,net:b.net,games:b.games||0,bot:b}))].filter(p=>!f||p.name.toLowerCase().includes(f));
   players.sort((a,b)=>(b[lbSort]||0)-(a[lbSort]||0));
+  const total=players.length,pages=Math.max(1,Math.ceil(total/LB_VIEW.size));
+  if(LB_VIEW.page>pages)LB_VIEW.page=pages;
   const med=["🥇","🥈","🥉"];
-  $("leaderboard").innerHTML=players.map((p,i)=>{
+  $("leaderboard").innerHTML=total?players.slice((LB_VIEW.page-1)*LB_VIEW.size,LB_VIEW.page*LB_VIEW.size).map((p,off)=>{
+    const i=(LB_VIEW.page-1)*LB_VIEW.size+off;
     const t=p.streak>=5?"⚡ UNSTOPPABLE":(p.streak>=3?"🔥 HOT":(S.stats.jackpots>0&&p.you?"🎰 LUCKY":(p.bot&&p.bot.jackpots>0?"🎰 JACKPOT":"")));
     const nameHtml=p.you?`<span class="${ent.goldName?'vip-name-legend':ent.title?'vip-name-royal':''}">${p.name}</span> <span class="ttl">💎 ${playerVip.name}${ent.title?' · '+ent.title:''}</span>`:p.name;
     return `<div class="lb-row ${p.you?'you':''}" ${p.bot?`data-bot="${p.bot.name}" style=cursor:pointer`:""} title="${p.bot?'View '+p.bot.name+' profile':''}">
@@ -172,8 +187,9 @@ function renderLeaderboard(){
       <span class="lb-val">${p.net>=0?'+':''}${fmt(p.net)}</span>
       <span class="lb-sub">W${p.wins}${p.games?' · '+p.games+'g':''} · Lv${p.level}${p.streak>0?' · 🔥'+p.streak:''}</span>
     </div>`;
-  }).join("");
-  $("lbSortLbl").textContent="— "+({net:"net",wins:"wins",streak:"streak",level:"level"})[lbSort];
+  }).join(""):'<div class="empty">No players match this filter.</div>';
+  $("lbPager").innerHTML=pagerHTML(LB_VIEW,total,LB_VIEW.size,'id="lbPrev"','id="lbNext"');
+  $("lbSortLbl").textContent="— "+({net:"net",wins:"wins",streak:"streak",games:"games",level:"level"})[lbSort];
 }
 let shopCatData=()=>COS[shopCat]||[];
 function renderShop(){
@@ -256,7 +272,7 @@ function renderWallet(){
     <div class="seg bank"><div class="sl">🏦 BANK</div><div class="sv">${fmt(w.bank)}</div><div class="sd">Parked, not for betting</div></div>`;
   $("refCode").textContent=S.referralCode;
   $("refBy").textContent=S.referredBy||"—";
-  $("refCount").textContent=S.referralCount;
+  $("refCount").textContent=Object.keys(S.referralBots||{}).length||S.referralCount;
   $("refEarned").textContent=fmt(S.referralEarned);
   $("firstDep").innerHTML=S.firstDepositDone?'<span style="color:var(--green)">✓ First deposit bonus already claimed.</span>':cfg().features.topupPromo===false?'<span style="color:var(--red)">First deposit +50% promo is paused by the admin. Regular deposits still work.</span>':'<span style="color:var(--gold)">First deposit bonus available: +50%!</span>';
   const tu=playerTopupAnalytics();$("walletTopupStats").innerHTML=[[fmt(tu.count),'Deposits'],[fmt(tu.base),'Base coins'],[fmt(tu.bonus),'Bonus coins'],[fmt(tu.credited),'Total credited']].map(x=>`<div class="service-status"><b>${x[0]}</b>${x[1]}</div>`).join('');
@@ -365,10 +381,21 @@ function renderSeries(){
 }
 function renderPlayers(){
   const el=document.getElementById("playersGrid");if(!el)return;
-  const sorted=[...S.bots].sort((a,b)=>(b.net||0)-(a.net||0));
-  el.innerHTML=sorted.map((b,i)=>{
+  const f=rosterFilter.trim().toLowerCase();
+  const rows=S.bots.map(b=>({b,balance:b.balance||0,wr:b.games?Math.round((b.wins||0)/b.games*100):0}))
+    .filter(x=>!f||x.b.name.toLowerCase().includes(f)||String(x.b.country||"").toLowerCase().includes(f))
+    .sort((x,y)=>{
+      const k=ROSTER_VIEW.sort;
+      if(k==="wins")return (y.b.wins||0)-(x.b.wins||0);
+      if(k==="games")return (y.b.games||0)-(x.b.games||0);
+      if(k==="level")return (y.b.level||0)-(x.b.level||0);
+      if(k==="balance")return y.balance-x.balance;
+      return (y.b.net||0)-(x.b.net||0);
+    });
+  const total=rows.length,pages=Math.max(1,Math.ceil(total/ROSTER_VIEW.size));
+  if(ROSTER_VIEW.page>pages)ROSTER_VIEW.page=pages;
+  el.innerHTML=total?rows.slice((ROSTER_VIEW.page-1)*ROSTER_VIEW.size,ROSTER_VIEW.page*ROSTER_VIEW.size).map(({b,wr})=>{
     const skinCls=b.skin?("skin-"+b.skin):"skin-classic";
-    const wr=b.games?Math.round((b.wins||0)/b.games*100):0;
     return `<div class="player-card online" data-bot="${b.name}">
       <span class="dot-live"></span>
       <div class="pc-avi">
@@ -379,8 +406,9 @@ function renderPlayers(){
       <div class="pc-title">${b.title||""}</div>
       <div class="pc-stats"><span>W <b>${b.wins||0}</b></span><span>${wr}%</span><span>Lv <b>${b.level}</b></span></div>
     </div>`;
-  }).join("");
+  }).join(""):'<div class="empty">No players match this filter.</div>';
   const bc=document.getElementById("botCount");if(bc)bc.textContent=S.bots.length;
+  const pg=document.getElementById("rosterPager");if(pg)pg.innerHTML=pagerHTML(ROSTER_VIEW,total,ROSTER_VIEW.size,'id="rosterPrev"','id="rosterNext"');
 }
 function openBotProfile(name){
   const b=S.bots.find(x=>x.name===name);if(!b)return;
@@ -449,11 +477,20 @@ export function bind(){
     b.classList.add("active");$("panel-"+b.dataset.tab).classList.add("active");
     // Targeted refresh: update the active tab's widgets only, then finish with a
     // cheap chrome pass so wallet/jackpot tickers stay live.
-    activeTab=b.dataset.tab;syncPlayerNavigation(b.dataset.tab);
+    activeTab=b.dataset.tab;recordRecentTab(b.dataset.tab);syncPlayerNavigation(b.dataset.tab);
     renderTab(b.dataset.tab);renderChrome();
   });
   $("themeBtn").onclick=()=>{S.settings.themeName=S.settings.themeName==="light"?"midnight":"light";S.settings.customPalette=null;applyTheme();render();};
-  document.querySelectorAll(".lbsort").forEach(b=>b.onclick=()=>{document.querySelectorAll(".lbsort").forEach(x=>x.classList.remove("active"));b.classList.add("active");lbSort=b.dataset.sort;renderLeaderboard();});
+  document.querySelectorAll(".lbsort").forEach(b=>b.onclick=()=>{document.querySelectorAll(".lbsort").forEach(x=>x.classList.remove("active"));b.classList.add("active");lbSort=b.dataset.sort;LB_VIEW.page=1;renderLeaderboard();});
+  const lbF=$("lbFilter");if(lbF)lbF.oninput=()=>{lbFilter=lbF.value;LB_VIEW.page=1;renderLeaderboard();};
+  document.addEventListener('click',e=>{
+    if(e.target.id==='lbPrev'){LB_VIEW.page=Math.max(1,LB_VIEW.page-1);renderLeaderboard();}
+    else if(e.target.id==='lbNext'){LB_VIEW.page++;renderLeaderboard();}
+    else if(e.target.id==='rosterPrev'){ROSTER_VIEW.page=Math.max(1,ROSTER_VIEW.page-1);renderPlayers();}
+    else if(e.target.id==='rosterNext'){ROSTER_VIEW.page++;renderPlayers();}
+  });
+  const rF=$("rosterFilter");if(rF)rF.oninput=()=>{rosterFilter=rF.value;ROSTER_VIEW.page=1;renderPlayers();};
+  const rS=$("rosterSort");if(rS)rS.onchange=()=>{ROSTER_VIEW.sort=rS.value;ROSTER_VIEW.page=1;renderPlayers();};
   $("rulesBtn").onclick=()=>{
     $("modalContent").innerHTML=`<h3>📖 Rules & Fairness</h3>
       <p class="muted"><b>Matching:</b> Post HEADS or TAILS + stake. Your bet waits in the room; an opposite-side bet at the same amount auto-matches. Private bets (🔒) require a manual Take.</p>

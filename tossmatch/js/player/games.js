@@ -7,7 +7,7 @@ import {randHex,shaHex} from "./crypto.js";
 import {BOTS_SEED,VIP_DISC,VIP_SEED} from "./data.js";
 import {$,addFeed,awardXp,beep,confettiFx,effectiveRakeback,filterSkillBots,fmt,maxStake,pushHistory,recordEngagement,recordPlayerMetrics,sfxFlip,sfxJp,sfxLose,sfxWin,subscriptionQuestMult,toast,vipFor} from "./helpers.js";
 import {playerAviHTML,playerFlag,playerName,render} from "./render.js";
-import {cfg,save} from "./state.js";
+import {audit,cfg,save} from "./state.js";
 import {GAMES,catalogRandomPick,ensureBotFirstTopup,renderGamePanel,settleBotFlip,takeCatalogBet,topUpBot} from "./sync.js";
 
 function selectSide(s){pickedSide=s;$("pickHeads").classList.toggle("sel",s==="HEADS");$("pickTails").classList.toggle("sel",s==="TAILS");}
@@ -163,6 +163,9 @@ async function settleFlip(maker,taker,bot,opts={}){
     if(wasComeback)unlockAch("comeback");
   }else{S.stats.losses++;S.streak=0;S.stats.net+=delta;S.lossStreak++;}
   S.quests.settle=Math.min(3,(S.quests.settle||0)+1);recordEngagement("coin",youWin);
+  // Referral program: when the demo player was referred, the external referrer
+  // earns 5% of the fee — a real house cost line (house.referralCost).
+  if(S.referredBy){const refCost=pct(fee,5);if(refCost>0){cfg().house.referralCost=(cfg().house.referralCost||0)+refCost;cfg().sinks=(cfg().sinks||0)+0;}}
   if(stake>=500)unlockAch("bigballer");
   if(S.stats.games>=1)unlockAch("first");if(S.stats.games>=10)unlockAch("nightowl");if(S.stats.games>=25)unlockAch("frequent");
   if(S.stats.wins>=10)unlockAch("doubledigits");if(S.level>=5)unlockAch("highroller");
@@ -604,7 +607,7 @@ export function bind(){
       toast(`🎯 Claimed +${reward} → bonus${reward>quest.reward?' (subscription 2×)':''}`,"ok");render();
     }
   });
-  $("claimRb").onclick=()=>{if(!S.accruedRakeback){toast("Nothing to claim.","err");return;}S.wallet.rakeback+=S.accruedRakeback;toast(`💸 Claimed ${fmt(S.accruedRakeback)} rakeback.`,"ok");S.accruedRakeback=0;render();};
+  $("claimRb").onclick=()=>{if(!S.accruedRakeback){toast("Nothing to claim.","err");return;}const amt=Math.round(S.accruedRakeback);S.wallet.rakeback+=amt;cfg().taps+=amt;cfg().house.rakebackPaid=(cfg().house.rakebackPaid||0)+amt;audit("rakeback-claim",fmt(amt)+" → RAKEBACK balance (house cost line)");toast(`💸 Claimed ${fmt(amt)} rakeback.`,"ok");S.accruedRakeback=0;render();};
   $("vfyBtn").onclick=async()=>{
     const sv=$("vSeed").value.trim(),mh=$("vMaker").value.trim(),th=$("vTaker").value.trim(),gid=$("vGid").value.trim();
     if(!sv||!mh||!th||!gid){toast("Fill all fields.","err");return;}

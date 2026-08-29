@@ -1,4 +1,4 @@
-# TossMatch — Unified Project (v11.0)
+# TossMatch — Unified Project (v13.0)
 
 This repository contains the **single, cohesive result of merging five separate
 workspaces** of the same website project — a local, offline-capable, play-coin
@@ -70,6 +70,27 @@ a single inline `<style>` + `<script>` per page.
    recommendations.
 5. Bug fixes found during the merge audit (e.g. Statistics "Best streak" tile
    read a non-existent field; RNG chart canvas guard).
+
+## v13.0 highlights (see `tossmatch/docs/TossMatch_v13.0_Release_Notes.md`)
+
+1. **New games** — CAT34 Byte War, CAT35 Sum of Four, CAT36 High Card Duel
+   (36 P2P catalog games) and Arcade Zone Roulette + one-shot Blackjack (25
+   modes), all proof-resolved with Admin command entries.
+2. **Event Calendar** (Social Hub) — timezone-aware schedule of daily trivia,
+   weekly raffle, live auto-tournaments, season/VIP resets and campaigns with
+   persisted reminders (LIVE1 → Implemented, demo).
+3. **Career Milestones** (Progress+) — twelve lifetime goals with one-time
+   BONUS rewards that survive Prestige.
+4. **Auction House** (Economy+) — three weekly cosmetic lots, autonomous bot
+   bidding, winner pays at the hammer; the 10% hammer fee is house revenue.
+5. **Revenue fund-source register** — every source classified REVENUE / COST /
+   FUNDING / CASH-OUT / LIABILITY with NGR totals, reconciliation readout and
+   Treatment-column CSV exports; ledger audit verifies net = gross − costs.
+6. **Navigation redesign (both apps)** — collapsible groups, live badges,
+   Recent row, flatten-on-search.
+7. **Real-world Admin console** — sign-in (admin / flip2026, 2FA 246810),
+   four RBAC roles, Approvals screen (KYC + flags + exclusions), Settings
+   screen, header profile/logout — 17 audit-logged screens.
 
 ## Running
 
