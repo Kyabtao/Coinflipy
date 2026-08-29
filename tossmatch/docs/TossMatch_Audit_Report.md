@@ -84,12 +84,17 @@ Randomization inside each pass (catalog game order, arcade subtabs) means the
 ## 4. Result
 
 ```
-pass  1/50 ✅ PASS — 105 checks
-pass  2/50 ✅ PASS — 105 checks
-...
-pass 50/50 ✅ PASS — 105 checks
-COMPLETE: 50/50 consecutive flawless passes. Zero errors.
+pass  1/50 ✅ PASS — 108 checks, 60.2s
+pass  2/50 ✅ PASS — 108 checks, 58.5s
+...                                     (full log: docs/audit-loop-v11.0.log)
+pass 49/50 ✅ PASS — 108 checks, 58.3s
+pass 50/50 ✅ PASS — 108 checks, 63.7s
+COMPLETE: 50/50 consecutive flawless passes in 51.3 minutes. Zero errors.
 ```
+
+Total: **5,400 checks executed across 50 consecutive passes with zero
+findings.** Each pass randomized its catalog/arcade game selection, so the run
+collectively exercised hundreds of distinct game-settlement paths.
 
 **Audit verdict: PASS.** The unified project contains every feature from all
 five archives, the identified gaps are implemented, and the merged codebase
