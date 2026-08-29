@@ -1,0 +1,2692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TossMatch v8.1 — Play-Money Demo (Phase 1 Complete)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Arial,sans-serif;
+background:#0b1020;
+background-image:radial-gradient(1100px 550px at 85% -10%,rgba(40,64,120,.35),transparent),radial-gradient(900px 500px at -10% 110%,rgba(18,70,80,.35),transparent);
+color:#e8edf7;min-height:100vh}
+.topnav{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:10px 20px;
+background:rgba(9,13,26,.94);backdrop-filter:blur(8px);border-bottom:1px solid #22304f;flex-wrap:wrap}
+.topnav .tb{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
+.topnav .tico{width:30px;height:30px;border-radius:50%;background:linear-gradient(145deg,#f7c948,#d9991f);
+display:flex;align-items:center;justify-content:center;color:#4a3300;font-weight:900;font-size:10px;letter-spacing:-1px}
+.vbtns{display:flex;gap:8px;margin-left:auto}
+.vbtn{cursor:pointer;border:1px solid #22304f;background:#0e1526;color:#c7d2e8;padding:8px 16px;border-radius:999px;font-weight:700;font-size:13px;font-family:inherit}
+.vbtn.on{background:linear-gradient(135deg,#f6c453,#e0a52e);color:#332500;border-color:transparent}
+.vbadge{font-size:10.5px;font-weight:800;color:#f6c453;border:1px solid rgba(246,196,83,.45);padding:3px 9px;border-radius:999px;letter-spacing:.8px}
+.docwrap{max-width:1280px;margin:0 auto;padding:0 20px 60px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px}
+@media(max-width:900px){.docwrap{grid-template-columns:1fr}
+.toc{display:block;position:static;max-height:none;padding:12px 0;border-bottom:1px solid #22304f;margin-bottom:16px}
+.toc .tt{cursor:pointer;padding:8px 12px;background:#121a2e;border-radius:8px;font-size:13px}
+.toc a{display:none}
+.toc.open a{display:block}
+.toc.open .tt{border-bottom:1px solid #22304f;margin-bottom:6px}}
+.toc{position:sticky;top:66px;align-self:start;max-height:calc(100vh - 86px);overflow:auto;padding:22px 0 22px 4px;font-size:13px}
+.toc .tt{font-size:10.5px;text-transform:uppercase;letter-spacing:1.3px;color:#93a0bd;font-weight:800;margin:14px 0 6px}
+.toc a{display:block;color:#9db0d4;text-decoration:none;padding:4px 10px;border-left:2px solid #22304f;border-radius:0 8px 8px 0;margin:1px 0}
+.toc a:hover{color:#f6c453;border-color:#f6c453}
+.doc{padding-top:8px;min-width:0}
+.doc section{scroll-margin-top:70px;margin-top:34px}
+.doc h2{font-size:21px;margin:0 0 14px;padding-left:12px;border-left:4px solid #f6c453;line-height:1.3}
+.doc h3{font-size:15px;margin:20px 0 8px;color:#f0d9a0}
+.doc p{line-height:1.75;color:#c7d2e8;font-size:14px;margin:8px 0}
+.doc li{line-height:1.75;color:#c7d2e8;font-size:14px}
+.doc ul,.doc ol{padding-left:22px;margin:8px 0}
+.doc code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:#0b1324;border:1px solid #22304f;border-radius:6px;padding:1px 6px;color:#a8c7e8;word-break:break-all}
+.doc pre{background:#0b1324;border:1px solid #22304f;border-radius:12px;padding:14px;overflow-x:auto;line-height:1.65;font-size:12px}
+.doc pre code{background:none;border:none;padding:0;color:#9fd0b0;word-break:normal}
+.doc table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
+.doc th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#93a0bd;border-bottom:2px solid #22304f;padding:8px 10px}
+.doc td{border-bottom:1px solid #1d2a47;padding:8px 10px;color:#c7d2e8;vertical-align:top}
+.doc tr:nth-child(even) td{background:rgba(18,26,46,.5)}
+.callout{border-radius:12px;padding:14px 16px;margin:14px 0;font-size:13.5px;line-height:1.7}
+.callout b{color:#f0d9a0}
+.warn{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.4)}
+.warn b{color:#f8a5a5}
+.info{background:rgba(94,234,212,.06);border:1px solid rgba(94,234,212,.3)}
+.ok{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.3)}
+.hero{margin-top:26px;background:linear-gradient(135deg,#121a2e,#0e1a30);border:1px solid #2a3a60;border-radius:18px;padding:30px}
+.hero h1{margin:0 0 8px;font-size:30px}
+.hero .sub{color:#93a0bd;font-size:14px;line-height:1.6;max-width:640px}
+.hbadges{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 20px}
+.hb{font-size:11px;font-weight:800;letter-spacing:.5px;border-radius:999px;padding:4px 11px;border:1px solid #33477a;color:#c7d2e8}
+.hb.gold{color:#f6c453;border-color:rgba(246,196,83,.5)}
+.hb.green{color:#34d399;border-color:rgba(52,211,153,.5)}
+.hb.violet{color:#c4b5fd;border-color:rgba(167,139,250,.5)}
+.hbtns{display:flex;gap:10px;flex-wrap:wrap}
+.hbtn{cursor:pointer;border:none;border-radius:12px;padding:13px 22px;font-weight:800;font-size:14px;font-family:inherit}
+.hbtn.gold{background:linear-gradient(135deg,#f6c453,#e0a52e);color:#332500}
+.hbtn.ghost{background:transparent;border:1px solid #33477a;color:#c7d2e8}
+.mini{font-size:11.5px;color:#5f6f8f}
+.doc hr{border:none;border-top:1px solid #1d2a47;margin:26px 0}
+.check{list-style:none;padding-left:0}
+.check li{padding-left:26px;position:relative}
+.check li:before{content:"☐";position:absolute;left:4px;color:#f6c453}
+.new{font-size:10px;font-weight:800;color:#c4b5fd;border:1px solid rgba(167,139,250,.5);border-radius:6px;padding:1px 6px;vertical-align:2px;margin-left:6px;letter-spacing:.5px}
+#demo-root .dhead{display:flex;align-items:center;gap:12px;padding:14px 20px;background:#0e1526;border-bottom:1px solid #22304f;border-radius:14px 14px 0 0;flex-wrap:wrap;margin:18px 0 0}
+#demo-root .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
+#demo-root .coin-ico{width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#f7c948,#d9991f);
+display:flex;align-items:center;justify-content:center;color:#4a3300;font-weight:900;font-size:11px;letter-spacing:-1px}
+#demo-root .badge{font-size:10.5px;font-weight:800;color:#f6c453;border:1px solid rgba(246,196,83,.45);padding:3px 9px;border-radius:999px;letter-spacing:.8px}
+#demo-root .jpill{font-size:11px;font-weight:800;color:#ddd0ff;border:1px solid #a78bfa88;padding:3px 10px;border-radius:999px}
+#demo-root nav{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;align-items:center}
+#demo-root .tab{cursor:pointer;border:1px solid #22304f;background:#0b1324;color:#c7d2e8;padding:8px 14px;border-radius:999px;font-weight:700;font-size:13px;font-family:inherit}
+#demo-root .tab.active{background:linear-gradient(135deg,#f6c453,#e0a52e);color:#332500;border-color:transparent}
+#demo-root .tabbal{opacity:.7;font-weight:600;margin-left:5px;font-size:11.5px}
+#demo-root .sectabs{display:flex;gap:8px;padding:12px 20px 0;flex-wrap:wrap;background:#0e1526;border-bottom:1px solid #22304f}
+#demo-root .stab{cursor:pointer;border:1px solid #2a3a60;background:#0b1324;color:#93a0bd;padding:7px 14px;border-radius:999px;font-weight:700;font-size:12.5px;font-family:inherit}
+#demo-root .stab.on{background:#22304f;color:#f6c453;border-color:rgba(246,196,83,.55)}
+#demo-root .banner{margin:14px 0 0;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600}
+#demo-root .banner.maint{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.4);color:#f8a5a5}
+#demo-root .banner.ann{background:rgba(94,234,212,.08);border:1px solid rgba(94,234,212,.4);color:#9ff5e6}
+#demo-root main{max-width:1200px;margin:0 auto;padding:20px 20px 40px}
+#demo-root .grid{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:16px;align-items:start}
+@media(max-width:980px){#demo-root .grid{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){#demo-root .grid{grid-template-columns:1fr}}
+#demo-root .stack{display:flex;flex-direction:column;gap:16px}
+#demo-root .card{background:#121a2e;border:1px solid #22304f;border-radius:16px;padding:16px}
+#demo-root .card h3{margin:0 0 12px;font-size:11.5px;text-transform:uppercase;letter-spacing:1.3px;color:#93a0bd;font-weight:800}
+#demo-root .bal{font-size:34px;font-weight:800;color:#f6c453;line-height:1.1}
+#demo-root .sub{color:#93a0bd;font-size:12.5px;margin-top:6px}
+#demo-root .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+#demo-root .chip{cursor:pointer;padding:7px 12px;border-radius:999px;border:1px solid #2a3a60;background:#0e1526;color:#c7d2e8;font-weight:700;font-size:13px;font-family:inherit}
+#demo-root .chip:hover{border-color:#f6c453;color:#f6c453}
+#demo-root input[type=number],#demo-root input[type=text]{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #2a3a60;background:#0b1324;color:#e8edf7;font-size:14px;font-weight:600;font-family:inherit}
+#demo-root input[type=number]{font-size:16px;font-weight:700}
+#demo-root textarea{width:100%;min-height:180px;background:#0b1324;border:1px solid #2a3a60;border-radius:10px;color:#9fd0b0;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;padding:10px}
+#demo-root .sides{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+#demo-root .side{cursor:pointer;padding:14px;border-radius:12px;border:1.5px solid #2a3a60;background:#0e1526;color:#c7d2e8;font-weight:800;letter-spacing:1.5px;font-size:14px;font-family:inherit}
+#demo-root .side.h.on{border-color:#34d399;color:#34d399;background:rgba(52,211,153,.08)}
+#demo-root .side.t.on{border-color:#f87171;color:#f87171;background:rgba(248,113,113,.08)}
+#demo-root .insbtn{cursor:pointer;width:100%;padding:10px;border-radius:10px;border:1.5px solid #2a3a60;background:#0e1526;color:#93a0bd;font-weight:800;font-size:12.5px;font-family:inherit;letter-spacing:.4px;margin-top:10px}
+#demo-root .insbtn.on{border-color:#60a5fa;color:#93c5fd;background:rgba(96,165,250,.08)}
+#demo-root .minirow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+#demo-root .mchip{cursor:pointer;border:1px solid #2a3a60;background:#0e1526;color:#93a0bd;padding:6px 11px;border-radius:999px;font-size:12px;font-weight:700;font-family:inherit}
+#demo-root .mchip.on{border-color:#34d399;color:#34d399;background:rgba(52,211,153,.08)}
+#demo-root .btn{cursor:pointer;border:none;border-radius:12px;padding:12px 16px;font-weight:800;font-size:14px;transition:.15s;font-family:inherit}
+#demo-root .btn.gold{background:linear-gradient(135deg,#f6c453,#e0a52e);color:#332500}
+#demo-root .btn.gold:hover{transform:translateY(-1px);filter:brightness(1.06)}
+#demo-root .btn.ghost{background:transparent;border:1px solid #33477a;color:#c7d2e8}
+#demo-root .btn.danger{background:transparent;border:1px solid rgba(248,113,113,.45);color:#f8a5a5}
+#demo-root .btn.sm{padding:8px 12px;font-size:12.5px;border-radius:10px}
+#demo-root .btn:disabled{opacity:.45;cursor:not-allowed}
+#demo-root .bet{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #1d2a47}
+#demo-root .bet:last-child{border-bottom:none}
+#demo-root .empty{color:#6d7d9d;font-size:13px;padding:8px 0;line-height:1.5}
+#demo-root .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+#demo-root .dot.h{background:#34d399}
+#demo-root .dot.t{background:#f87171}
+#demo-root .pill{font-size:11px;border:1px solid #2a3a60;border-radius:999px;padding:2px 9px;color:#c7d2e8;font-weight:700;white-space:nowrap}
+#demo-root .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:#9fb0d0;word-break:break-all;line-height:1.7}
+#demo-root .up{color:#34d399;font-weight:700}
+#demo-root .down{color:#f87171;font-weight:700}
+#demo-root .steps{margin:0;padding-left:18px;color:#c7d2e8;font-size:13px;line-height:1.9}
+#demo-root .note{color:#93a0bd;font-size:12.5px;line-height:1.6}
+#demo-root .lrow{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #1d2a47}
+#demo-root .lrow:last-child{border-bottom:none}
+#demo-root .lrow .t{color:#93a0bd}
+#demo-root .kv{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:5px 0;border-bottom:1px solid #1d2a47}
+#demo-root .kv:last-child{border:none}
+#demo-root .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+#demo-root .stat{background:#121a2e;border:1px solid #22304f;border-radius:14px;padding:14px}
+#demo-root .stat .v{font-size:24px;font-weight:800;color:#f6c453}
+#demo-root .stat .k{font-size:11px;color:#93a0bd;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+#demo-root .overlay{position:fixed;inset:0;background:rgba(3,7,16,.78);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
+#demo-root .modal{background:#101a30;border:1px solid #2a3a60;border-radius:18px;max-width:470px;width:100%;padding:22px;animation:pop .22s ease;max-height:92vh;overflow:auto}
+@keyframes pop{from{transform:scale(.93);opacity:0}}
+#demo-root .mhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:#93a0bd;font-weight:800;text-align:center;margin-bottom:14px}
+#demo-root .mrow{display:flex;justify-content:center;align-items:center;gap:10px;font-size:16px;font-weight:700;padding:4px 0}
+#demo-root .vs{text-align:center;color:#6d7d9d;font-size:12px;letter-spacing:3px;margin:2px 0 6px}
+#demo-root .mtot{text-align:center;color:#c7d2e8;font-size:13px;margin:12px 0 2px}
+#demo-root .mresult{text-align:center;font-size:19px;font-weight:800;margin:14px 0 2px}
+#demo-root .coinwrap{padding:14px 0 6px;perspective:700px}
+#demo-root .coin{width:116px;height:116px;margin:0 auto;border-radius:50%;
+background:linear-gradient(150deg,#ffe08a,#f6c453 45%,#c8871a);color:#4a3300;
+display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:900;
+box-shadow:0 12px 30px rgba(0,0,0,.45),inset 0 0 0 6px rgba(255,255,255,.15)}
+#demo-root .coin.flip{animation:toss 2.25s cubic-bezier(.25,.6,.3,1) forwards}
+@keyframes toss{0%{transform:rotateX(0) translateY(0)}50%{transform:rotateX(1080deg) translateY(-70px)}100%{transform:rotateX(2160deg) translateY(0)}}
+#demo-root .coin.sk-silver{background:linear-gradient(150deg,#f1f5f9,#cbd5e1 45%,#94a3b8)}
+#demo-root .coin.sk-neon{background:linear-gradient(150deg,#a5f3fc,#22d3ee 45%,#0e7490);color:#083344}
+#demo-root .coin.sk-ice{background:linear-gradient(150deg,#e0f2fe,#7dd3fc 45%,#0284c7);color:#082f49}
+#demo-root .coin.sk-fire{background:linear-gradient(150deg,#fed7aa,#fb923c 45%,#b91c1c)}
+#demo-root .coin.sk-btc{background:linear-gradient(150deg,#fde047,#facc15 45%,#a16207);color:#422006}
+#demo-root .coin.sk-rainbow{background:linear-gradient(150deg,#f87171,#fbbf24 30%,#34d399 60%,#60a5fa);animation:hue 3s linear infinite}
+@keyframes hue{to{filter:hue-rotate(360deg)}}
+#demo-root .verify{background:#0b1324;border:1px dashed #33477a;border-radius:12px;padding:12px;margin-top:12px}
+#demo-root .jackbanner{background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(246,196,83,.25));border:1px solid #a78bfa;border-radius:12px;padding:12px;text-align:center;font-weight:800;color:#e4d9ff;margin:10px 0;font-size:15px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#1c2742;border:1px solid #33477a;
+color:#e8edf7;padding:10px 18px;border-radius:12px;opacity:0;transition:.25s;z-index:80;font-size:13.5px;font-weight:600;pointer-events:none;max-width:90vw}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#demo-root footer{text-align:center;color:#5f6f8f;font-size:11.5px;padding:18px 20px 26px;line-height:1.7}
+#demo-root .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){#demo-root .two{grid-template-columns:1fr}}
+#demo-root .zap{color:#f6c453;font-weight:800}
+#demo-root .jpcard{background:linear-gradient(135deg,#1a1530,#121a2e);border:1px solid #6d5bb8;border-radius:16px;padding:16px;position:relative;overflow:hidden;animation:jglow 3s ease-in-out infinite}
+@keyframes jglow{0%,100%{box-shadow:0 0 0 rgba(246,196,83,0)}50%{box-shadow:0 0 20px rgba(246,196,83,.22)}}
+#demo-root .jpcard h3{color:#b9a7ea}
+#demo-root .jppool{font-size:30px;font-weight:800;color:#f6c453}
+#demo-root .lbrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #1d2a47;font-size:13px}
+#demo-root .lbrow:last-child{border-bottom:none}
+#demo-root .lbrow .medal{font-size:17px;width:26px;text-align:center}
+#demo-root .streak{color:#f87171;font-weight:800}
+#demo-root .prog{height:8px;background:#0b1324;border:1px solid #22304f;border-radius:999px;overflow:hidden;margin:6px 0}
+#demo-root .prog>div{height:100%;background:linear-gradient(90deg,#f6c453,#e0a52e)}
+#demo-root .prog.vip>div{background:linear-gradient(90deg,#93c5fd,#60a5fa)}
+#demo-root .shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+#demo-root .shopitem{background:#0e1526;border:1px solid #2a3a60;border-radius:14px;padding:12px;text-align:center}
+#demo-root .shopitem .coin{width:64px;height:64px;font-size:24px;margin:0 auto 8px}
+#demo-root .feed .fi{padding:8px 0;border-bottom:1px solid #1d2a47;font-size:12.5px;color:#c7d2e8}
+#demo-root .feed .fi:last-child{border:none}
+#demo-root .feed .fi .t{color:#5f6f8f;font-size:11px;display:block}
+#demo-root .achip{display:inline-flex;gap:6px;align-items:center;background:#0e1526;border:1px solid #2a3a60;border-radius:10px;padding:6px 10px;margin:3px;font-size:12px;color:#93a0bd}
+#demo-root .achip.on{border-color:#34d399;color:#a7f3d0;background:rgba(52,211,153,.07)}
+#demo-root .quest{border:1px solid #22304f;border-radius:12px;padding:10px;margin-bottom:8px}
+#demo-root .quest.done{border-color:rgba(52,211,153,.5)}
+#demo-root .dotset span{display:inline-block;width:12px;height:12px;border-radius:50%;background:#22304f;margin-right:5px}
+#demo-root .dotset span.w{background:#34d399}
+#demo-root .dotset span.l{background:#f87171}
+#demo-root .react{cursor:pointer;border:1px solid #2a3a60;background:transparent;border-radius:8px;padding:2px 7px;font-size:13px;margin-right:4px;font-family:inherit}
+#demo-root .react:hover{border-color:#f6c453}
+#demo-root .rchip{font-size:11px;border:1px solid #33477a;border-radius:999px;padding:1px 7px;margin-right:4px;color:#c7d2e8}
+#demo-root .bars{display:flex;align-items:center;gap:8px;font-size:12px;margin:6px 0}
+#demo-root .bar{flex:1;height:10px;background:#0b1324;border:1px solid #22304f;border-radius:6px;overflow:hidden}
+#demo-root .bar>div{height:100%}
+#fx-root{position:fixed;inset:0;pointer-events:none;z-index:75;overflow:hidden}
+.confetto{position:absolute;top:-30px;font-size:20px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.2}}
+.demobar{max-width:1200px;margin:18px auto -14px;padding:0 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.demobar .t{font-size:12px;color:#93a0bd}
+body.light{background:#f5f6fa;background-image:none;color:#1a2035}
+body.light .topnav{background:rgba(255,255,255,.95);border-color:#d5dae8}
+body.light .vbtn{background:#fff;border-color:#d5dae8;color:#333}
+body.light .card,body.light .stat{background:#fff;border-color:#d5dae8}
+body.light .card h3,body.light .stat .k,body.light .sub,body.light .note,body.light .empty{color:#667}
+body.light .card p,body.light .kv b{color:#333}
+body.light .doc h2{border-color:#b8860b;color:#333}
+body.light .doc h3{color:#8b6914}
+body.light .doc p,body.light .doc li{color:#334}
+body.light .doc td{color:#334;border-color:#dde}
+body.light .doc th{color:#667;border-color:#ccb}
+body.light .doc pre{background:#eef;border-color:#ccd}
+body.light .doc code{background:#eef;border-color:#ccd;color:#225}
+body.light .hero{background:linear-gradient(135deg,#fff,#f0f4ff);border-color:#ccd}
+body.light .hb{border-color:#ccd;color:#334}
+body.light .hb.gold{color:#885000;border-color:#cca}
+body.light .callout.info{background:rgba(0,100,200,.04);border-color:rgba(0,100,200,.2)}
+body.light .callout.warn{background:rgba(200,0,0,.04);border-color:rgba(200,0,0,.2)}
+body.light .doc .check li:before{color:#885}
+body.light #demo-root .dhead{background:#e8ecf8;border-color:#ccd}
+body.light #demo-root .tab{background:#fff;border-color:#ccd;color:#333}
+body.light #demo-root .tab.active{background:linear-gradient(135deg,#f6c453,#e0a52e);color:#332500}
+body.light #demo-root .card{background:#fff;border-color:#d5dae8}
+body.light #demo-root .card h3{color:#667}
+body.light #demo-root .sub,body.light #demo-root .note{color:#889}
+body.light #demo-root .card p{color:#334}
+body.light #demo-root input{background:#fff;border-color:#ccd;color:#111}
+body.light #demo-root .bet{border-color:#eef}
+body.light #demo-root .lrow{border-color:#eef}
+body.light #demo-root .stat .v{color:#885000}
+@media print{.topnav,.toc,.demobar,#view-demo{display:none!important}.docwrap{grid-template-columns:1fr}}
+
+#demo-root .segkv{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:3px 0;border-bottom:1px dashed #1d2a47}
+#demo-root .segkv:last-child{border:none}
+#demo-root .flp{font-size:15px;margin-right:3px}
+#demo-root .avp{font-size:15px;margin-right:2px}
+#demo-root .coin.sk-arctic{background:linear-gradient(150deg,#e0f2fe,#7dd3fc 45%,#0284c7);color:#082f49}
+#demo-root .coin.sk-ember{background:linear-gradient(150deg,#fed7aa,#fb923c 45%,#b91c1c)}
+#demo-root .coin.sk-bitcoin{background:linear-gradient(150deg,#fde047,#facc15 45%,#a16207);color:#422006}
+#demo-root .coin.sk-ruby{background:linear-gradient(150deg,#fecdd3,#f43f5e 45%,#9f1239);color:#fff}
+#demo-root .coin.sk-emerald{background:linear-gradient(150deg,#a7f3d0,#10b981 45%,#065f46);color:#fff}
+#demo-root .coin.sk-sapphire{background:linear-gradient(150deg,#bfdbfe,#3b82f6 45%,#1e3a8a);color:#fff}
+#demo-root .coin.sk-koi{background:linear-gradient(150deg,#fff7ed,#fb923c 45%,#b91c1c)}
+#demo-root .coin.sk-tiger{background:linear-gradient(150deg,#fed7aa,#f59e0b 45%,#7c2d12);color:#fff}
+#demo-root .coin.sk-peacock{background:linear-gradient(150deg,#a5f3fc,#0891b2 45%,#155e75);color:#fff}
+#demo-root .coin.sk-galaxy{background:linear-gradient(150deg,#c7d2fe,#6366f1 45%,#1e1b4b);color:#fff}
+#demo-root .coin.sk-nebula{background:linear-gradient(150deg,#f5d0fe,#c026d3 45%,#4a044e);color:#fff}
+#demo-root .coin.sk-diwali{background:linear-gradient(150deg,#fde68a,#f97316 45%,#b45309)}
+#demo-root .coin.sk-holi{background:linear-gradient(150deg,#fbcfe8,#a3e635 40%,#38bdf8 80%)}
+
+/* ---- v5.1 responsive ---- */
+#demo-root .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:900px){#demo-root .grid2{grid-template-columns:1fr}}
+#demo-root .sectabs{overflow-x:auto;white-space:nowrap;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+#demo-root .stab{flex:0 0 auto}
+#demo-root .bet{flex-wrap:wrap}
+#demo-root .bet>div{min-width:200px;flex:1}
+#demo-root .banner{margin:12px 12px 0}
+#demo-root .demobar{padding:0 12px}
+#demo-root .kv{flex-wrap:wrap}
+@media(max-width:680px){
+  #demo-root main{padding:14px 12px 30px}
+  #demo-root .dhead{padding:10px 12px;gap:8px}
+  #demo-root .brand{font-size:15px}
+  #demo-root .card{padding:13px}
+  #demo-root .stack{gap:12px}
+  #demo-root .grid{gap:12px}
+  #demo-root .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  #demo-root .modal{padding:16px;margin:6px;border-radius:14px}
+  #demo-root .bal{font-size:27px}
+  #demo-root .lbrow{flex-wrap:wrap}
+  #demo-root input[type=number],#demo-root input[type=text],#demo-root select{font-size:16px}
+  #demo-root .sides .side{padding:12px;font-size:13px}
+  #demo-root .two{grid-template-columns:1fr}
+  #demo-root .jpill{display:none}
+  .demobar{font-size:11px}
+}
+@media(max-width:420px){
+  #demo-root .stats{grid-template-columns:1fr 1fr}
+  #demo-root .stat{padding:10px}
+  #demo-root .stat .v{font-size:18px}
+  #demo-root .chips{gap:6px}
+  #demo-root .chip{padding:6px 10px;font-size:12px}
+  #demo-root .shopgrid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+  #demo-root .shopitem .coin{width:52px;height:52px;font-size:20px}
+}
+</style>
+</head>
+<body>
+<!-- ================= LIVE DEMO VIEW (v5.0 ENGINE) ================= -->
+<div id="view-demo">
+<div id="demo-root">
+
+  <div class="demobar">
+    <span class="t">🎮 <b style="color:#c7d2e8">Live demo v8.1</b> — every v5.0 feature implemented: segmented wallet &amp; transfers, funding-cap betting, fee-funded jackpot, monthly 6-tier VIP, admin economy panels, ×2 waiting room, real-player tournaments, shop 2.0. Shortcuts: H / T / P.</span>
+    
+  </div>
+
+  <div class="dhead">
+    <div class="brand"><div class="coin-ico">H/T</div>TossMatch</div>
+    <span class="badge">PLAY COINS · NO REAL MONEY</span>
+    <span class="jpill">💰 <span id="jp-header"></span></span>
+    <nav>
+      <button class="tab" id="tab-p1" onclick="switchView('p1')">Aman <span class="tabbal" id="bal-p1"></span></button>
+      <button class="tab" id="tab-p2" onclick="switchView('p2')">Binish <span class="tabbal" id="bal-p2"></span></button>
+      <button class="tab" id="tab-admin" onclick="switchView('admin')">⚙️ Admin</button>
+    </nav>
+  </div>
+
+  <div class="sectabs">
+    <button class="stab on" id="sec-tables" onclick="setSection('tables')">🎲 Tables</button>
+    <button class="stab" id="sec-series" onclick="setSection('series')">⚔️ Series</button>
+    <button class="stab" id="sec-stats" onclick="setSection('stats')">📊 Stats</button>
+    <button class="stab" id="sec-season" onclick="setSection('season')">🏅 Season</button>
+    <button class="stab" id="sec-shop" onclick="setSection('shop')">🛍 Shop</button>
+    <button class="stab" id="sec-verify" onclick="setSection('verify')">🔍 Verify</button>
+  </div>
+
+  <main id="app"></main>
+  <div id="modal-root"></div>
+  <div id="toast"></div>
+  <div id="fx-root"></div>
+
+  <footer>
+    Play-money demo · auto-match queue · escrow · fees · 3-party commit–reveal fairness · fee-funded jackpot · segmented wallet + transfers · VIP rakeback · Series Cups &amp; tournaments · shop 2.0.<br>
+    Not a real-money gambling product. Operating real-money games of chance requires a licence where legal — in most of India it is prohibited.
+  </footer>
+</div>
+</div>
+
+<script>
+/* ================= VIEW SWITCHER ================= */
+let topView='demo';
+function toggleTheme(){
+  try{document.body.classList.toggle('light');}catch(e){}
+}
+function showView(v){
+  topView=v;
+  document.getElementById('view-doc').style.display=v==='doc'?'':'none';
+  document.getElementById('view-demo').style.display=v==='demo'?'':'none';
+  document.getElementById('nav-doc').classList.toggle('on',v==='doc');
+  document.getElementById('nav-demo').classList.toggle('on',v==='demo');
+  window.scrollTo(0,0);
+}
+
+/* ================= CRYPTO ================= */
+const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+function utf8Bytes(str){
+  const out=[];
+  for(let i=0;i<str.length;i++){
+    let c=str.codePointAt(i);
+    if(c>0xffff) i++;
+    if(c<0x80) out.push(c);
+    else if(c<0x800) out.push(0xc0|(c>>6),0x80|(c&63));
+    else if(c<0x10000) out.push(0xe0|(c>>12),0x80|((c>>6)&63),0x80|(c&63));
+    else out.push(0xf0|(c>>18),0x80|((c>>12)&63),0x80|((c>>6)&63),0x80|(c&63));
+  }
+  return out;
+}
+function sha256Bytes(bytes){
+  const b=bytes.slice();
+  const bitLen=bytes.length*8;
+  b.push(0x80);
+  while(b.length%64!==56) b.push(0);
+  const hi=Math.floor(bitLen/4294967296), lo=bitLen>>>0;
+  b.push((hi>>>24)&255,(hi>>>16)&255,(hi>>>8)&255,hi&255,(lo>>>24)&255,(lo>>>16)&255,(lo>>>8)&255,lo&255);
+  const rotr=(x,n)=>((x>>>n)|(x<<(32-n)))>>>0;
+  let h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  for(let off=0;off<b.length;off+=64){
+    const w=new Array(64);
+    for(let i=0;i<16;i++) w[i]=((b[off+4*i]<<24)|(b[off+4*i+1]<<16)|(b[off+4*i+2]<<8)|b[off+4*i+3])>>>0;
+    for(let i=16;i<64;i++){
+      const s0=(rotr(w[i-15],7)^rotr(w[i-15],18)^(w[i-15]>>>3))>>>0;
+      const s1=(rotr(w[i-2],17)^rotr(w[i-2],19)^(w[i-2]>>>10))>>>0;
+      w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0;
+    }
+    let a=h[0],bb=h[1],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],hh=h[7];
+    for(let i=0;i<64;i++){
+      const S1=(rotr(e,6)^rotr(e,11)^rotr(e,25))>>>0;
+      const ch=((e&f)^(~e&g))>>>0;
+      const t1=(hh+S1+ch+K[i]+w[i])>>>0;
+      const S0=(rotr(a,2)^rotr(a,13)^rotr(a,22))>>>0;
+      const maj=((a&bb)^(a&c)^(bb&c))>>>0;
+      const t2=(S0+maj)>>>0;
+      hh=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=bb;bb=a;a=(t1+t2)>>>0;
+    }
+    h=[(h[0]+a)>>>0,(h[1]+bb)>>>0,(h[2]+c)>>>0,(h[3]+d)>>>0,(h[4]+e)>>>0,(h[5]+f)>>>0,(h[6]+g)>>>0,(h[7]+hh)>>>0];
+  }
+  const out=[];
+  for(const word of h) out.push((word>>>24)&255,(word>>>16)&255,(word>>>8)&255,word&255);
+  return out;
+}
+function bytesToHex(b){return b.map(x=>x.toString(16).padStart(2,'0')).join('');}
+function hexToBytes(hx){const out=[];for(let i=0;i<hx.length;i+=2)out.push(parseInt(hx.substr(i,2),16));return out;}
+function sha256(str){return bytesToHex(sha256Bytes(utf8Bytes(str)));}
+function hmacSha256(keyStr,msgStr){
+  let key=utf8Bytes(keyStr);
+  if(key.length>64) key=hexToBytes(bytesToHex(sha256Bytes(key)));
+  key=key.slice();
+  while(key.length<64) key.push(0);
+  const ipad=key.map(x=>(x^0x36)>>>0), opad=key.map(x=>(x^0x5c)>>>0);
+  const inner=sha256Bytes(ipad.concat(utf8Bytes(msgStr)));
+  return bytesToHex(sha256Bytes(opad.concat(inner)));
+}
+function randomHex(nBytes){
+  const a=new Uint8Array(nBytes);
+  if(typeof crypto!=='undefined'&&crypto.getRandomValues){crypto.getRandomValues(a);}
+  else{for(let i=0;i<a.length;i++)a[i]=Math.floor(Math.random()*256);}
+  return bytesToHex([].slice.call(a));
+}
+
+/* ================= STATE (v5.0) ================= */
+let state, currentView='p1', draftSide='Heads', draftAmt='100';
+let draftNote='', draftPrivate=false, activeGame=null, modalState='ready';
+let demoSection='tables', lastReact=0, draftFmt='bo3', draftAdv=false, draftTSize=2;
+
+function monthKey(){return new Date().toISOString().slice(0,7);}
+function nextMonthEnd20(){
+  const d=new Date();
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth()+1, 0, 20, 0, 0)).getTime();
+}
+function initState(){
+  state={
+    feePct:5, cupRakePct:5, tourneyRakePct:10, fundCapPct:20,
+    jackpotFeePct:10, jackpotMin:1,
+    house:{bank:5000, fees:0, seriesRake:0, tourneyRake:0, shopSales:0, promoCost:0},
+    jackpot:{pool:0, hits:0, paid:0, payPct:50, minTrigger:50},
+    vip:[
+      {n:'Starter',min:0,cb:0},
+      {n:'Silver',min:1000,cb:4},
+      {n:'Gold',min:3000,cb:6},
+      {n:'Platinum',min:8000,cb:8},
+      {n:'Diamond',min:20000,cb:12},
+      {n:'Black Diamond',min:50000,cb:15},
+      {n:'Royal',min:75000,cb:17},
+      {n:'Legend',min:100000,cb:20}
+    ],
+    vipMonth:monthKey(),
+    levelRewards:{}, firstToLevel:{}, levelFirsts:{}, customAch:[],
+    features:{quests:true, login:true, referral:true, botMode:false},
+    promos:[],
+    challenges:[], tourney:null, tourneyHistory:[],
+    season:{n:1, nextEnd:nextMonthEnd20()}, seasonHistory:[],
+    names:{p1:'Aman',p2:'Binish'},
+    settings:{sound:false, instant:false, confetti:false},
+    autoMatch:true, totalWagered:0, gamesCount:0, maintenance:false, announcement:'',
+    audit:[], feed:[],
+    betTimes:{p1:[],p2:[]},
+    history:{H:0,T:0}, lbSort:'net',
+    taps:5000, sessionStart:Date.now(),
+    players:{p1:mkPlayer('p1'),p2:mkPlayer('p2')},
+    openBets:[], readyGames:[], games:[], series:null,
+    ledger:{p1:[],p2:[]}
+  };
+  // demo default referral link: Binish was referred by Aman
+  state.players.p2.referredBy='p1';
+  // seeded opening bet (Aman, 50, HEADS) funded from main
+  const p1=state.players.p1;
+  p1.bal.main=950;
+  addLedger('p1','escrow',-50,'Seeded bet: 50 on HEADS (main)');
+  state.openBets.push({id:'B1',pid:'p1',amount:50,side:'Heads',ts:Date.now(),
+    seed:p1.mySeed, private:false, note:'',
+    fund:{main:50,bonus:0,referral:0,rakeback:0},
+    betHash:sha256(p1.mySeed+':B1:50:Heads')});
+  state.seq=2;
+}
+function mkPlayer(id){
+  return {id,
+    bal:{main:1000,referral:0,bonus:0,rakeback:0},
+    vault:0, mySeed:randomHex(8),
+    streak:0,bestStreak:0,wins:0,net:0,lastBonus:0,
+    xp:0,wagered:0,gamesPlayed:0,biggestStake:0,jackpots:0,trophies:0,comebacks:0,lossRun:0,
+    rakebackPending:0, autorebet:false, achievements:[], title:'',
+    quests:{day:'',plays:0,wins:0,cup:0,claimed:{}},
+    lastLoginDay:'',loginStreak:0,excludedUntil:0,sessionNet:0,lossLimit:0,
+    skin:'classic', ownedSkins:['classic'], flag:'', ownedFlags:[], avatar:'', ownedAvatars:[],
+    frame:'', ownedFrames:[], chatColour:'', ownedChatColours:[], victoryFX:'', ownedVictoryFX:[],
+    tableTheme:'', ownedTableThemes:[], soundPack:'', ownedSoundPacks:[], ownedEmojis:[], equippedEmojis:[],
+    promoUsed:false, referredBy:null, transferToday:{day:'',used:0}, lastBonusDay:'', bank:0, refCode:'TM-'+randomHex(2).toUpperCase()
+  };
+}
+
+function addLedger(pid,type,delta,note){
+  const p=state.players[pid];
+  state.ledger[pid].unshift({ts:Date.now(),type,delta,bal:totalBal(p),note});
+  if(state.ledger[pid].length>60) state.ledger[pid].pop();
+}
+function audit(action){ state.audit.unshift({ts:Date.now(),action}); if(state.audit.length>50)state.audit.pop(); }
+function F0(msg){ state.feed.unshift({ts:Date.now(),msg}); if(state.feed.length>40)state.feed.pop(); }
+
+const N=pid=>state.names[pid];
+const fmt=n=>Number(n).toLocaleString('en-IN');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const other=s=>s==='Heads'?'Tails':'Heads';
+const sideTag=s=>'<span class="pill"><span class="dot '+((s||'')==='Heads'?'h':'t')+'"></span>'+String(s||'—').toUpperCase()+'</span>';
+const timeStr=ts=>new Date(ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const today=()=>new Date().toISOString().slice(0,10); /* UTC day — one clock for everything */
+const dateStr=ts=>new Date(ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+
+/* ================= LEVELS / VIP ================= */
+const levelOf=xp=>Math.floor(Math.sqrt(xp/60))+1;
+const xpFor=l=>60*(l-1)*(l-1);
+function tierOf(w){let t=state.vip[0];for(const x of state.vip)if(w>=x.min)t=x;return t;}
+function nextTierOf(w){for(const x of state.vip)if(w<x.min)return x;return null;}
+function maxStake(pid){return Math.min(1000,100+levelOf(state.players[pid].xp)*100);}
+function levelReward(l){return state.levelRewards[l]!=null?state.levelRewards[l]:l*50;}
+function ensureVipMonth(){
+  const mk=monthKey();
+  if(mk!==state.vipMonth){
+    ['p1','p2'].forEach(id=>{state.players[id].wagered=0;});
+    state.vipMonth=mk;
+    audit('VIP month reset → '+mk);
+    F0('💎 VIP month reset — tiers re-earn from zero this month');
+    toast('💎 New VIP month — wagered counters reset');
+  }
+}
+function endVipMonth(){
+  ['p1','p2'].forEach(id=>{state.players[id].wagered=0;});
+  state.vipMonth=monthKey();
+  audit('VIP month manually ended');
+  toast('💎 VIP month ended — tiers re-earn now');
+  render();
+}
+
+/* ================= WALLET (segmented) ================= */
+function totalBal(p){return p.bal.main+p.bal.referral+p.bal.bonus+p.bal.rakeback;}
+function credit(pid,seg,amt,note,tap){
+  if(!amt) return;
+  const p=state.players[pid];
+  p.bal[seg]+=amt;
+  if(tap) state.taps+=amt;
+  addLedger(pid,seg,amt,note);
+}
+function fundingFor(pid,amt){
+  const p=state.players[pid];
+  let cap=Math.round(amt*state.fundCapPct/100);
+  const f={main:amt,bonus:0,referral:0,rakeback:0};
+  let take=Math.min(cap,p.bal.bonus); f.bonus=take; cap-=take;
+  if(cap>0){take=Math.min(cap,p.bal.referral); f.referral=take; cap-=take;}
+  if(cap>0){take=Math.min(cap,p.bal.rakeback); f.rakeback=take; cap-=take;}
+  f.main=amt-f.bonus-f.referral-f.rakeback;
+  return f;
+}
+function applyFunding(pid,f,note){
+  const p=state.players[pid];
+  p.bal.main-=f.main; p.bal.bonus-=f.bonus; p.bal.referral-=f.referral; p.bal.rakeback-=f.rakeback;
+  addLedger(pid,'escrow',-(f.main+f.bonus+f.referral+f.rakeback),note+
+    ' [main '+f.main+(f.bonus?' · bonus '+f.bonus:'')+(f.referral?' · ref '+f.referral:'')+(f.rakeback?' · rb '+f.rakeback:'')+']');
+}
+function refundFunding(pid,f,note){
+  const p=state.players[pid];
+  p.bal.main+=f.main; p.bal.bonus+=f.bonus; p.bal.referral+=f.referral; p.bal.rakeback+=f.rakeback;
+  addLedger(pid,'refund',f.main+f.bonus+f.referral+f.rakeback,note);
+}
+function bettedInPlay(pid){
+  let s=0;
+  state.openBets.forEach(b=>{if(b.pid===pid)s+=b.amount;});
+  state.readyGames.forEach(g=>{if(g.maker.pid===pid||g.taker.pid===pid)s+=g.amount;});
+  state.challenges.forEach(c=>{if(c.pid===pid)s+=c.stake;});
+  if(state.series)s+=state.series.stake;
+  if(state.tourney&&state.tourney.entrants.indexOf(pid)>=0)s+=state.tourney.entry;
+  return s;
+}
+function transferTo(pid,to,amt){
+  amt=Math.round(amt);
+  if(state.maintenance) return toast('🚧 Maintenance mode');
+  if(!state.players[to]||to===pid) return toast('Pick the other player');
+  if(amt<10) return toast('Minimum transfer is 10');
+  const p=state.players[pid];
+  if(Date.now()<p.excludedUntil) return toast('⛔ You are self-excluded');
+  const tk=today();
+  if(p.transferToday.day!==tk)p.transferToday={day:tk,used:0};
+  if(p.transferToday.used+amt>500) return toast('Daily transfer cap is 500 (used '+p.transferToday.used+')');
+  if(p.bal.main<amt) return toast('Transfers use MAIN balance only — you have '+fmt(p.bal.main));
+  p.bal.main-=amt; p.transferToday.used+=amt;
+  state.players[to].bal.main+=amt;
+  addLedger(pid,'transfer',-amt,'Transfer to '+N(to)+' (main)');
+  addLedger(to,'transfer',amt,'Transfer from '+N(pid)+' (main)');
+  audit('Transfer '+N(pid)+' → '+N(to)+': '+amt);
+  F0('💸 '+N(pid)+' sent '+fmt(amt)+' to '+N(to));
+  toast('💸 Sent '+fmt(amt)+' to '+N(to));
+  render();
+}
+
+/* ================= ACHIEVEMENTS / QUESTS / SKINS / FLAGS ================= */
+const ACH=[
+ {id:'first',n:'First Flip',d:'Settle your first game',r:50,c:p=>p.gamesPlayed>=1},
+ {id:'streak3',n:'On Fire',d:'3-win streak',r:100,t:'🔥 Hot Streak',c:p=>p.bestStreak>=3},
+ {id:'streak5',n:'Unstoppable',d:'5-win streak',r:250,t:'⚡ Unstoppable',c:p=>p.bestStreak>=5},
+ {id:'jackpot',n:'Jackpot!',d:'Win the jackpot pool',r:200,t:'💰 Pool Shark',c:p=>p.jackpots>=1},
+ {id:'series',n:'Cup Winner',d:'Win a Series Cup',r:150,t:'🏆 Cup Champ',c:p=>p.trophies>=1},
+ {id:'champ',n:'Champion',d:'Win a real-player tournament',r:300,t:'👑 Champion',c:p=>p.tourneys>=1},
+ {id:'baller',n:'Big Baller',d:'Stake 500+ in one game',r:100,t:'🕶️ Baller',c:p=>p.biggestStake>=500},
+ {id:'night',n:'Night Owl',d:'Play 10 games',r:75,c:p=>p.gamesPlayed>=10},
+ {id:'vet',n:'Frequent Flipper',d:'Play 25 games',r:150,c:p=>p.gamesPlayed>=25},
+ {id:'wins10',n:'Double Digits',d:'Win 10 games',r:150,c:p=>p.wins>=10},
+ {id:'level5',n:'High Roller',d:'Reach level 5',r:200,t:'👑 High Roller',c:p=>levelOf(p.xp)>=5},
+ {id:'comeback',n:'Comeback Kid',d:'Win right after 2 losses',r:80,c:p=>p.comebacks>=1}
+];
+const QUESTS=[
+ {id:'q_play',n:'Warm up — settle 3 games',goal:3,r:50,k:'plays'},
+ {id:'q_win',n:'Win 1 game today',goal:1,r:75,k:'wins'},
+ {id:'q_cup',n:'Play 1 Series Cup game',goal:1,r:50,k:'cup'}
+];
+const SKINS=[
+ {id:'classic',n:'Classic Gold',price:0,ico:'H'},
+ {id:'silver',n:'Silver',price:25,ico:'S'},
+ {id:'neon',n:'Neon',price:50,ico:'N'},
+ {id:'arctic',n:'Arctic',price:50,ico:'A'},
+ {id:'ruby',n:'Ruby',price:60,ico:'R'},
+ {id:'emerald',n:'Emerald',price:60,ico:'E'},
+ {id:'sapphire',n:'Sapphire',price:60,ico:'S'},
+ {id:'ember',n:'Ember',price:75,ico:'F'},
+ {id:'bitcoin',n:'Bitcoin',price:100,ico:'₿'},
+ {id:'diwali',n:'Diwali',price:100,ico:'D'},
+ {id:'holi',n:'Holi',price:100,ico:'H'},
+ {id:'koi',n:'Koi',price:90,ico:'K'},
+ {id:'tiger',n:'Tiger',price:90,ico:'T'},
+ {id:'peacock',n:'Peacock',price:110,ico:'P'},
+ {id:'galaxy',n:'Galaxy',price:120,ico:'G'},
+ {id:'nebula',n:'Nebula',price:120,ico:'N'},
+ {id:'rainbow',n:'Rainbow',price:150,ico:'R'},
+ {id:'platinumvip',n:'Platinum VIP',price:-1,vipTier:'Platinum',ico:'P'},
+ {id:'diamondvip',n:'Diamond VIP',price:-1,vipTier:'Diamond',ico:'D'},
+ {id:'legendprism',n:'Legend Prism',price:-1,vipTier:'Legend',ico:'L'}
+];
+const FLAGS=[
+ ['🇮🇳','India',50],['🇧🇷','Brazil',60],['🇬🇧','UK',60],['🇺🇸','USA',70],['🇯🇵','Japan',70],
+ ['🇦🇪','UAE',80],['🇦🇺','Australia',80],['🇨🇦','Canada',90],['🇩🇪','Germany',90],['🌐','Earth',120]
+];
+const AVATARS=[
+ ['🦸','Hero',25],['🥷','Ninja',25],['🧙','Wizard',50],['👮','Officer',50],
+ ['🧑‍🚀','Astronaut',100],['🤖','Robot',100],['🎭','Mask',100],['👻','Ghost',200],
+ ['🕵️','Agent',200],['🧚','Fairy',400],['👑','Royal',500],['🦄','Unicorn',500]
+];
+const FRAMES=[
+ ['⭕','Thin Ring',25],['◎','Double Ring',50],['●','Gold Ring',100],
+ ['🔥','Fire Ring',150],['❄️','Ice Ring',200],['⚡','Neon Pulse',250],
+ ['🌩️','Lightning',300],['✨','Sparkle',300],['🌈','Rainbow Spin',500],['💎','Diamond VIP',0]
+];
+const CHAT_COLOURS=[
+ ['#c7d2e8','Default White',0],['#60a5fa','Blue',50],['#34d399','Green',50],
+ ['#fb923c','Orange',100],['#a78bfa','Purple',100],['#fbbf24','Gold',200],
+ ['gradient','Rainbow',400],['glitch','Glitch FX',800]
+];
+const VICTORY_FX=[
+ ['🎉','Standard',0],['🪙','Gold Coins',50],['🎆','Fireworks',100],
+ ['⭐','Star Burst',150],['🎇','Laser Show',300],['💰','Money Rain',300],
+ ['🔥','Phoenix',600],['🐲','Dragon',1200]
+];
+const TABLE_THEMES=[
+ ['🌙','Midnight',0],['🌊','Ocean',50],['🌲','Forest',100],
+ ['🌅','Sunset',150],['🚀','Space',300],['🎰','Casino Gold',300],
+ ['🌌','Aurora',500],['🌃','Cyberpunk',800]
+];
+const SOUND_PACKS=[
+ ['🔔','Standard',0],['🎮','8-Bit Retro',50],['🎻','Orchestral',100],
+ ['🎧','DJ Mix',200],['🎬','Movie Trailer',300],['🎼','Epic Choir',500]
+];
+const PREMIUM_EMOJIS=[
+ ['🔥','Fire','Common',25],['🎊','Party','Common',25],['👎','Thumbs Down','Common',25],
+ ['🤤','Drooling','Uncommon',50],['💩','Poop','Uncommon',50],['🤬','Angry','Uncommon',50],
+ ['🤔','Thinking','Rare',100],['🤯','Exploding','Rare',100],['🤓','Nerdy','Rare',100],
+ ['🤑','Money Face','Epic',200],['👑','Crown','Epic',200],['🎮','Controller','Epic',200],
+ ['💎','Diamond','Legendary',400],['🎰','Slot Machine','Legendary',400],['💯','100','Legendary',500]
+];
+function questWindowOpen(){
+  var h=new Date().getUTCHours();
+  return h>=0 && h<22;
+}
+function ensureQuests(pid){
+  const q=state.players[pid].quests;
+  if(q.day!==today()){q.day=today();q.plays=0;q.wins=0;q.cup=0;q.claimed={};}
+  q.paused=!questWindowOpen();
+}
+function achEnabled(a){return !state.achDisabled||!state.achDisabled[a.id];}
+function achReward(a){return (state.achRewardOverride&&state.achRewardOverride[a.id]!=null)?state.achRewardOverride[a.id]:a.r;}
+function checkAchievements(pid){
+  const p=state.players[pid];
+  ACH.forEach(a=>{
+    if(p.achievements.indexOf(a.id)<0&&achEnabled(a)&&a.c(p)){
+      p.achievements.push(a.id);
+      credit(pid,'bonus',achReward(a),'Achievement: '+a.n,true);
+      toast('🏅 '+N(pid)+' unlocked “'+a.n+'” +'+achReward(a));
+      F0('🏅 '+N(pid)+' unlocked “'+a.n+'”');
+    }
+  });
+}
+function maybeLoginBonus(pid){
+  if(!state.features.login) return;              // toggle off → streak frozen
+  const p=state.players[pid];
+  if(p.lastLoginDay===today()) return;
+  const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  p.loginStreak=(p.lastLoginDay===yest)?p.loginStreak+1:1;
+  p.lastLoginDay=today();
+  const amt=50+25*Math.min(p.loginStreak-1,5);
+  credit(pid,'bonus',amt,'Daily login day '+p.loginStreak,true);
+  toast('🎁 '+N(pid)+' daily login day '+p.loginStreak+' — +'+amt+' bonus');
+  F0('🎁 '+N(pid)+' claimed the daily login bonus (day '+p.loginStreak+')');
+}
+
+/* ================= BETTING CORE ================= */
+function switchView(v){
+  currentView=v;
+  ensureVipMonth();
+  if(v!=='admin'){ensureQuests(v);maybeLoginBonus(v);}
+  render();
+}
+function setSection(s){demoSection=s;render();}
+function selectSide(s){draftSide=s;render();}
+function randomSide(){draftSide=Math.random()<0.5?'Heads':'Tails';toast('🎲 Random side: '+draftSide.toUpperCase());render();}
+function setAmt(a){draftAmt=String(a);render();}
+function setSeed(v){state.players[currentView==='admin'?'p1':currentView].mySeed=v||'seed';}
+function setNote(v){draftNote=String(v||'').slice(0,24);}
+function togglePrivate(){draftPrivate=!draftPrivate;render();}
+function toggleAutoRebet(){const p=state.players[currentView];if(!p)return;p.autorebet=!p.autorebet;render();}
+function toggleSound(){state.settings.sound=!state.settings.sound;render();}
+function toggleInstant(){state.settings.instant=!state.settings.instant;render();}
+function toggleConfetti(){state.settings.confetti=!state.settings.confetti;render();}
+
+function betGuard(pid,amt){
+  if(state.maintenance) return '🚧 Maintenance mode — betting paused';
+  const p=state.players[pid];
+  if(Date.now()<p.excludedUntil) return '⛔ '+N(pid)+' is self-excluded right now';
+  if(p.lossLimit>0&&p.sessionNet<=-p.lossLimit) return '🛑 Session loss limit reached ('+fmt(p.lossLimit)+') — take a break';
+  const now=Date.now();
+  state.betTimes[pid]=state.betTimes[pid].filter(t=>now-t<60000);
+  if(state.betTimes[pid].length>=12) return '🐢 Too many bets per minute — slow down';
+  if(amt<10) return 'Minimum stake is 10';
+  if(amt>maxStake(pid)) return 'Max stake at your level is '+fmt(maxStake(pid));
+  return null;
+}
+function placeBetFor(pid,amt,side){
+  amt=parseInt(amt,10);
+  if(!amt||amt<=0) return toast('Enter a valid amount');
+  const err=betGuard(pid,amt);
+  if(err) return toast(err);
+  const f=fundingFor(pid,amt);
+  if(f.main>state.players[pid].bal.main)
+    return toast('Need '+fmt(f.main)+' MAIN for this stake (cap '+state.fundCapPct+'%) — you have '+fmt(state.players[pid].bal.main));
+  state.betTimes[pid].push(Date.now());
+  applyFunding(pid,f,'Bet '+amt+' on '+side.toUpperCase());
+  const bid='B'+(state.seq++);
+  const seed=state.players[pid].mySeed||('seed-'+randomHex(4));
+  const bet={id:bid,pid,amount:amt,side,seed,private:draftPrivate&&pid===currentView,
+    note:(pid===currentView?draftNote:''),fund:f,
+    betHash:sha256(seed+':'+bid+':'+amt+':'+side),ts:Date.now()};
+  state.openBets.push(bet);
+  if(!attemptAutoMatch(bet)){
+    toast('Bet queued — '+amt+' coins escrowed'+(bet.private?' · 🔒 private':''));
+  }
+  render();
+}
+function placeBet(){
+  if(currentView==='admin') return toast('Switch to a player first');
+  placeBetFor(currentView,draftAmt,draftSide);
+}
+
+/* ---------- game factory ---------- */
+function createGame(makerBet,takerPid,auto){
+  const gid='G'+(state.seq++);
+  const takerSeed=state.players[takerPid].mySeed||('seed-'+randomHex(4));
+  const takerHash=sha256(takerSeed+':'+gid+':'+makerBet.amount+':'+other(makerBet.side));
+  const serverSeed=randomHex(32);
+  const g={
+    id:gid, ts:Date.now(), auto:!!auto, makerWait:Date.now()-makerBet.ts,
+    maker:{pid:makerBet.pid, side:makerBet.side, seed:makerBet.seed, betHash:makerBet.betHash, bid:makerBet.id},
+    taker:{pid:takerPid, side:other(makerBet.side), seed:takerSeed, betHash:takerHash},
+    note:makerBet.note||'', amount:makerBet.amount, feePct:state.feePct,
+    serverSeed, commit:sha256(serverSeed),
+    status:'ready', result:null, winner:null, fee:0, payout:0,
+    jackpotRake:0, jackpotHit:false, jackpotWon:0,
+    bigWin:false, reactions:[]
+  };
+  state.readyGames.push(g);
+  if(auto) state.autoMatches=(state.autoMatches||0)+1; else state.manualMatches=(state.manualMatches||0)+1;
+  return g;
+}
+function findMatchFor(bet){
+  if(bet.private) return null;
+  return state.openBets.find(x=>
+    !x.private && x.id!==bet.id && x.pid!==bet.pid &&
+    x.amount===bet.amount && x.side===other(bet.side)
+  )||null;
+}
+function attemptAutoMatch(bet){
+  if(!state.autoMatch||bet.private) return false;
+  const m=findMatchFor(bet);
+  if(!m) return false;
+  state.openBets=state.openBets.filter(x=>x.id!==m.id&&x.id!==bet.id);
+  const g=createGame(m,bet.pid,true);
+  toast('\u26A1 Auto-match! Paired with '+N(m.pid)+' — flipping…');
+  openGameModal(g,'ready');
+  sfx('flip');
+  setTimeout(()=>{ if(activeGame===g&&modalState==='ready') doFlip(); },state.settings.instant?400:1100);
+  return true;
+}
+function sweepQueue(){
+  let n=0, progressed=true;
+  while(progressed){
+    progressed=false;
+    outer:
+    for(let i=0;i<state.openBets.length;i++){
+      const a=state.openBets[i];
+      if(a.private) continue;
+      for(let j=0;j<state.openBets.length;j++){
+        if(i===j) continue;
+        const b=state.openBets[j];
+        if(!b.private&&b.pid!==a.pid&&b.amount===a.amount&&b.side===other(a.side)){
+          state.openBets=state.openBets.filter(x=>x.id!==a.id&&x.id!==b.id);
+          settle(createGame(a,b.pid,true));
+          n++; progressed=true;
+          break outer;
+        }
+      }
+    }
+  }
+  return n;
+}
+function toggleAutoMatch(){
+  state.autoMatch=!state.autoMatch;
+  audit('Auto-match → '+(state.autoMatch?'ON':'OFF'));
+  if(state.autoMatch){const n=sweepQueue();toast(n?('\u26A1 Auto-match ON — swept '+n+' pair(s)'):'\u26A1 Auto-match ON');}
+  else toast('Auto-match OFF — manual taking only');
+  render();
+}
+function acceptBet(id){
+  const b=state.openBets.find(x=>x.id===id);
+  if(!b) return;
+  const me=currentView;
+  if(me==='admin') return toast('Switch to a player first');
+  if(b.pid===me) return toast("You can't take your own bet");
+  const err=betGuard(me,b.amount);
+  if(err) return toast(err);
+  const f=fundingFor(me,b.amount);
+  if(f.main>state.players[me].bal.main)
+    return toast('Need '+fmt(f.main)+' MAIN — you have '+fmt(state.players[me].bal.main));
+  state.betTimes[me].push(Date.now());
+  applyFunding(me,f,'Took '+b.id+(b.private?' (🔒 private)':''));
+  state.openBets=state.openBets.filter(x=>x.id!==id);
+  openGameModal(createGame(b,me,false),'ready');
+  render();
+}
+function cancelBet(id){
+  const b=state.openBets.find(x=>x.id===id);
+  if(!b) return;
+  state.openBets=state.openBets.filter(x=>x.id!==id);
+  refundFunding(b.pid,b.fund,'Cancelled '+b.id);
+  toast('Bet cancelled — stake refunded to the same balances');
+  render();
+}
+function findGame(id){return state.readyGames.find(g=>g.id===id)||state.games.find(g=>g.id===id);}
+function mergedHash(g){
+  /* v6 fairness: BigInt sum of three SHA-256 hashes + SHA-256 with game nonce
+     formula: combined = BigInt(hashA) + BigInt(hashB) + BigInt(SHA256(serverSeed))
+              finalHash = SHA256(combined_hex + ':' + gameId)
+              result = first byte of finalHash */
+  try{
+    var _a=BigInt('0x'+g.maker.betHash);
+    var _b=BigInt('0x'+g.taker.betHash);
+    var _s=BigInt('0x'+sha256(g.serverSeed));
+    var _combined=(_a+_b+_s).toString(16);
+    return sha256(_combined+':'+g.id);
+  }catch(e){
+    return hmacSha256(g.serverSeed,g.maker.betHash+g.taker.betHash+':'+g.id);
+  }
+}
+function tossResult(g){const fb=parseInt(mergedHash(g).slice(0,2),16);return fb%2===0?'Heads':'Tails';}
+function jpHit(h){return h.slice(0,2)==='00';}
+function fairBadge(g){
+  try{
+    const fb=parseInt(mergedHash(g).slice(0,2),16);
+    return (fb%2===0?'Heads':'Tails')===g.result?'<span class="rchip" style="border-color:rgba(52,211,153,.6);color:#a7f3d0">✓ fair</span>':'';
+  }catch(e){return '';}
+}
+function doFlip(){
+  if(!activeGame) return;
+  modalState='flipping';
+  renderModal();
+  sfx('flip');
+  setTimeout(()=>settle(activeGame),state.settings.instant?250:2300);
+}
+
+/* ---------- v5 settlement ---------- */
+function settle(g){
+  if(!g||g.status==='settled') return;
+  ensureVipMonth();
+  const h=mergedHash(g);
+  const fb=parseInt(h.slice(0,2),16);
+  g.result=fb%2===0?'Heads':'Tails';
+  g.status='settled';
+  const pot=2*g.amount;
+  g.fee=Math.round(pot*g.feePct/100);
+  state.house.fees+=g.fee;
+  // jackpot: from the FEE, with 1-coin floor, capped at the fee (v5.0)
+  g.jackpotRake=Math.max(0,Math.min(g.fee-1,Math.max(state.jackpotMin,Math.round(g.fee*state.jackpotFeePct/100))));
+  state.house.fees-=g.jackpotRake;
+  state.jackpot.pool+=g.jackpotRake;
+  g.payout=pot-g.fee;
+  g.bigWin=g.payout>=400;
+  g.winner=g.maker.side===g.result?g.maker.pid:g.taker.pid;
+  const loserPid=g.winner===g.maker.pid?g.taker.pid:g.maker.pid;
+  const W=state.players[g.winner], L=state.players[loserPid];
+
+  // payout → 100% MAIN
+  credit(g.winner,'main',g.payout,'Won #'+g.id+' (pot '+pot+' − fee '+g.fee+')');
+
+  // 💰 jackpot — same hash, byte 00
+  g.jackpotHit=jpHit(h);
+  g.jackpotArmed=state.jackpot.pool>=state.jackpot.minTrigger&&state.jackpot.pool>0;
+  if(g.jackpotHit&&g.jackpotArmed){
+    const pay=Math.round(state.jackpot.pool*state.jackpot.payPct/100);
+    const roll=state.jackpot.pool-pay;
+    state.jackpot.pool=roll; state.jackpot.hits++; state.jackpot.paid+=pay;
+    credit(g.winner,'main',pay,'🎉 JACKPOT on #'+g.id+' ('+state.jackpot.payPct+'% of pool — '+fmt(roll)+' rolls over)');
+    W.jackpots++; g.jackpotWon=pay; g.jackpotRoll=roll;
+    toast('🎉 JACKPOT! '+N(g.winner)+' wins '+fmt(pay)+' ('+state.jackpot.payPct+'%) — '+fmt(roll)+' stays in the pool!');
+    F0('🎉 '+N(g.winner)+' hit the JACKPOT — +'+fmt(pay)+' ('+state.jackpot.payPct+'% of pool, '+fmt(roll)+' rolls over)');
+    confetti(40); sfx('jackpot');
+  }else if(g.jackpotHit){
+    g.jackpotNotArmed=true;
+    F0('💰 Jackpot byte hit, but the pool is not armed ('+fmt(state.jackpot.pool)+'/'+fmt(state.jackpot.minTrigger)+') — it rolls on');
+  }
+
+  // 🤝 referral: 5% of the friend's fee share → referrer's referral balance
+  [g.maker.pid,g.taker.pid].forEach(pid=>{
+    const ref=state.players[pid].referredBy;
+    if(ref&&state.features.referral){
+      const cut=Math.round(g.fee*0.05/2);
+      if(cut>0&&state.house.fees>=cut){
+        state.house.fees-=cut;
+        credit(ref,'referral',cut,'Referral: '+N(pid)+' activity',false);
+      }
+    }
+  });
+
+  // 💎 VIP rakeback accrual (tier% × half fee each)
+  [g.maker.pid,g.taker.pid].forEach(pid=>{
+    const p=state.players[pid];
+    const cb=Math.round(g.fee*tierOf(p.wagered).cb/200);
+    if(cb>0&&state.house.fees>=cb){state.house.fees-=cb;p.rakebackPending+=cb;}
+  });
+
+  // 🔥 streaks · net · session · comeback
+  if(W.lossRun>=2) W.comebacks++;
+  W.lossRun=0; L.lossRun=(L.lossRun||0)+1;
+  W.streak++; if(W.streak>W.bestStreak)W.bestStreak=W.streak;
+  W.wins++; L.streak=0;
+  W.net+=g.payout-g.amount; L.net-=g.amount;
+  W.sessionNet+=g.payout-g.amount; L.sessionNet-=g.amount;
+
+  // ⭐ XP · wagered · quests (levels + rewards + first-to-level)
+  [g.maker.pid,g.taker.pid].forEach(pid=>{
+    const p=state.players[pid];
+    const lvBefore=levelOf(p.xp);
+    p.xp+=g.amount; p.wagered+=g.amount; p.gamesPlayed++;
+    if(g.amount>p.biggestStake)p.biggestStake=g.amount;
+    if(state.features.quests){ensureQuests(pid);if(!p.quests.paused){p.quests.plays++;if(pid===g.winner)p.quests.wins++;}}
+    const lvAfter=levelOf(p.xp);
+    if(lvAfter>lvBefore){
+      const rw=levelReward(lvAfter);
+      credit(pid,'bonus',rw,'Level '+lvAfter+' reward',true);
+      toast('⭐ '+N(pid)+' reached level '+lvAfter+' — +'+rw+' bonus');
+      F0('⭐ '+N(pid)+' reached level '+lvAfter);
+      if(state.firstToLevel[lvAfter]&&!state.levelFirsts[lvAfter]){
+        const ft=state.firstToLevel[lvAfter];
+        state.levelFirsts[lvAfter]=pid;
+        credit(pid,'bonus',ft,'🥇 FIRST to reach level '+lvAfter,true);
+        toast('🥇 '+N(pid)+' is the FIRST ever at level '+lvAfter+' — +'+ft+'!');
+        F0('🥇 '+N(pid)+' was first to level '+lvAfter);
+        confetti(30);
+      }
+    }
+  });
+
+  state.history[g.result==='Heads'?'H':'T']++;
+  state.totalWagered=(state.totalWagered||0)+pot;
+  state.gamesCount=(state.gamesCount||0)+1;
+  F0((g.auto?'⚡ ':'')+g.id+': '+N(g.maker.pid)+' vs '+N(g.taker.pid)+' — '+g.result.toUpperCase()+' → '+N(g.winner)+' +'+g.payout+(g.jackpotWon?' (+💰 '+g.jackpotWon+')':''));
+  if(W.streak===3)F0('🔥 '+N(g.winner)+' is on a 3-win streak!');
+  if(g.bigWin)F0('⚑ Big win: '+N(g.winner)+' +'+g.payout+' flagged for review');
+
+  state.readyGames=state.readyGames.filter(x=>x.id!==g.id);
+  state.games.unshift(g);
+  var winnerP=state.players[g.winner];
+  if(winnerP&&winnerP.victoryFX!==''&&winnerP.victoryFX!==undefined){
+    var fxIdx=parseInt(winnerP.victoryFX);
+    if(!isNaN(fxIdx)&&VICTORY_FX[fxIdx]){
+      var fxEmoji=VICTORY_FX[fxIdx][0];
+      confettiEmoji(30,fxEmoji);
+    }
+  }
+  if(g.payout>=400||g.jackpotWon){confetti(24);}else{sfx('win');}
+  checkAchievements(g.maker.pid);
+  checkAchievements(g.taker.pid);
+  if(activeGame===g){modalState='done';renderModal();}
+  render();
+
+  // 🔁 auto-rebet
+  [g.maker,g.taker].forEach(side=>{
+    const p=state.players[side.pid];
+    if(p.autorebet){
+      if(p.sessionNet<=-200){
+        p.autorebet=false;
+        toast('\u{1F6D1} Auto-rebet stopped — session loss limit reached ('+fmt(p.sessionNet)+')');
+        return;
+      }
+      setTimeout(()=>{
+        const amt=Math.min(g.amount,maxStake(side.pid));
+        if(!betGuard(side.pid,amt)){
+          const f=fundingFor(side.pid,amt);
+          if(f.main<=state.players[side.pid].bal.main)
+            placeBetFor(side.pid,amt,side.pid===g.maker.pid?g.maker.side:g.taker.side);
+        }
+      },1600);
+    }
+  });
+}
+function cancelGame(id){
+  const g=state.readyGames.find(x=>x.id===id);
+  if(!g){closeModal();return;}
+  state.readyGames=state.readyGames.filter(x=>x.id!==g.id);
+  credit(g.maker.pid,'main',g.amount,'Game '+g.id+' cancelled');
+  credit(g.taker.pid,'main',g.amount,'Game '+g.id+' cancelled');
+  toast('Game cancelled — both stakes refunded to MAIN');
+  closeModal();
+  render();
+}
+function rematch(id){
+  const g=findGame(id);
+  if(!g) return;
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  draftAmt=String(g.amount);
+  draftSide=g.maker.pid===pid?g.maker.side:g.taker.side;
+  closeModal();
+  placeBet();
+}
+
+/* ================= ⏳ ×2 CHALLENGE WAITING ROOM ================= */
+function dblOrNothing(id){
+  const g=findGame(id);
+  if(!g) return;
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  const stake=Math.min(g.amount*2,maxStake(pid));
+  const err=betGuard(pid,stake);
+  if(err) return toast(err);
+  const f=fundingFor(pid,stake);
+  if(f.main>state.players[pid].bal.main)
+    return toast('Need '+fmt(f.main)+' MAIN — you have '+fmt(state.players[pid].bal.main));
+  applyFunding(pid,f,'×2 challenge stake');
+  const side=g.maker.pid===pid?g.maker.side:g.taker.side;
+  const cid='C'+(state.seq++);
+  state.challenges.push({id:cid,pid,stake,side,ts:Date.now(),fund:f,
+    betHash:sha256(state.players[pid].mySeed+':'+cid+':'+stake+':'+side)});
+  closeModal();
+  F0('⏳ '+N(pid)+' posted a ×2 challenge — '+fmt(stake)+' on '+side.toUpperCase()+' (waiting for a real player)');
+  toast('⏳ ×2 challenge posted to the waiting room — '+fmt(stake)+' on '+side.toUpperCase());
+  render();
+}
+function acceptChallenge(cid){
+  const c=state.challenges.find(x=>x.id===cid);
+  if(!c) return;
+  const me=currentView;
+  if(me==='admin') return toast('Switch to a player first');
+  if(c.pid===me) return toast("That's your own challenge — cancel it instead");
+  const err=betGuard(me,c.stake);
+  if(err) return toast(err);
+  const f=fundingFor(me,c.stake);
+  if(f.main>state.players[me].bal.main)
+    return toast('Need '+fmt(f.main)+' MAIN — you have '+fmt(state.players[me].bal.main));
+  state.betTimes[me].push(Date.now());
+  applyFunding(me,f,'Accepted ×2 challenge '+c.id);
+  state.challenges=state.challenges.filter(x=>x.id!==cid);
+  const makerBet={id:c.id,pid:c.pid,amount:c.stake,side:c.side,seed:state.players[c.pid].mySeed,
+    betHash:c.betHash,ts:c.ts,note:'×2 challenge'};
+  F0('⏳ '+N(me)+' accepted '+N(c.pid)+"'s ×2 challenge!");
+  openGameModal(createGame(makerBet,me,false),'ready');
+  render();
+}
+function cancelChallenge(cid){
+  const c=state.challenges.find(x=>x.id===cid);
+  if(!c) return;
+  state.challenges=state.challenges.filter(x=>x.id!==cid);
+  refundFunding(c.pid,c.fund,'Cancelled challenge '+c.id);
+  toast('Challenge cancelled — stake refunded to the same balances');
+  render();
+}
+function buildPremiumEmojiBar(gid){
+  var p=state.players[currentView];
+  if(!p||!p.equippedEmojis||!p.equippedEmojis.length)return '';
+  return p.equippedEmojis.map(function(i){
+    var em=PREMIUM_EMOJIS[i];
+    if(!em)return '';
+    return '<button class="react" style="border-color:rgba(167,139,250,.4)" onclick="react(\''+gid+'\',\''+em[0]+'\')">'+em[0]+'</button>';
+  }).join('');
+}
+function react(id,e){
+  const g=findGame(id);
+  if(!g||currentView==='admin') return toast('Switch to a player first');
+  if(Date.now()-lastReact<5000) return toast('Reactions have a short cooldown');
+  lastReact=Date.now();
+  g.reactions=g.reactions||[];
+  g.reactions.push({pid:currentView,e});
+  render();
+}
+
+/* ================= SERIES CUPS (admin cup rake) ================= */
+function setFmt(f){draftFmt=f;render();}
+function setAdv(){draftAdv=!draftAdv;render();}
+function startSeries(){
+  if(state.maintenance) return toast('🚧 Maintenance mode');
+  if(state.series) return toast('A Series Cup is already running');
+  const amt=parseInt(draftAmt,10);
+  if(!amt||amt<10) return toast('Enter a stake of 10+');
+  const p1=state.players.p1,p2=state.players.p2;
+  if(p1.bal.main<amt||p2.bal.main<amt) return toast('Both players need '+amt+' MAIN');
+  p1.bal.main-=amt; p2.bal.main-=amt;
+  addLedger('p1','escrow',-amt,'Series entry (main)');
+  addLedger('p2','escrow',-amt,'Series entry (main)');
+  const fmtMap={bo3:2,bo5:3,bo7:4};
+  state.series={id:'S'+(state.seq++),stake:amt,target:fmtMap[draftFmt]||2,fmt:draftFmt,adv:draftAdv,wins:{p1:0,p2:0},games:[],ts:Date.now()};
+  F0('⚔️ Series Cup '+state.series.id+' started ('+draftFmt.toUpperCase()+(draftAdv?' advantage':'')+', '+fmt(amt)+' each)');
+  toast('⚔️ Series Cup started — '+draftFmt.toUpperCase()+(draftAdv?' (win by 2)':''));
+  render();
+}
+function seriesFlip(){
+  const s=state.series;
+  if(!s) return toast('No active Series Cup');
+  const n=s.games.length+1, gid=s.id+'#'+n;
+  const ha=sha256(state.players.p1.mySeed+':'+gid+':'+s.stake+':Heads');
+  const hb=sha256(state.players.p2.mySeed+':'+gid+':'+s.stake+':Tails');
+  const serverSeed=randomHex(32);
+  const h=hmacSha256(serverSeed,ha+hb+':'+gid);
+  const fb=parseInt(h.slice(0,2),16);
+  const res=fb%2===0?'Heads':'Tails';
+  const winPid=res==='Heads'?'p1':'p2';
+  s.games.push({gid,res,winPid,fb,commit:sha256(serverSeed),seed:serverSeed,ha,hb,h});
+  s.wins[winPid]++;
+  if(state.features.quests){['p1','p2'].forEach(id=>{ensureQuests(id);if(!state.players[id].quests.paused)state.players[id].quests.cup++;});}
+  sfx('flip');
+  const oPid=winPid==='p1'?'p2':'p1';
+  const capReached=s.adv&&s.games.length>=(s.target*2+3);
+  const advWon=s.adv?(s.wins[winPid]>=s.target&&s.wins[winPid]-s.wins[oPid]>=2)||(capReached&&s.wins[winPid]>s.wins[oPid]):true;
+  if(s.wins[winPid]>=s.target&&advWon){
+    const pot=2*s.stake;
+    const rake=Math.round(pot*state.cupRakePct/100);
+    const payout=pot-rake;
+    state.house.seriesRake+=rake;
+    const W=state.players[winPid];
+    credit(winPid,'main',payout,'🏆 Won Series '+s.id+' (pot '+pot+' − rake '+rake+')');
+    W.trophies++; W.xp+=s.stake; W.wagered+=s.stake;
+    F0('🏆 '+N(winPid)+' won Series Cup '+s.id+' +'+fmt(payout)+' (rake '+rake+')');
+    toast('🏆 '+N(winPid)+' takes the cup +'+fmt(payout)+'!');
+    checkAchievements(winPid);
+    confetti(30); sfx('win');
+    state.series=null;
+  }else{
+    toast('Series game '+n+': '+res.toUpperCase()+' → '+N(winPid)+' ('+s.wins.p1+'–'+s.wins.p2+')');
+  }
+  render();
+}
+function cancelSeries(){
+  const s=state.series;
+  if(!s) return;
+  credit('p1','main',s.stake,'Series '+s.id+' cancelled');
+  credit('p2','main',s.stake,'Series '+s.id+' cancelled');
+  state.series=null;
+  toast('Series cancelled — entries refunded to MAIN');
+  render();
+}
+
+/* ================= TOURNAMENTS (real players only, size 2/4/8/16) ================= */
+function setTSize(n){draftTSize=n;render();}
+function shuffleArr(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function startTournament(){
+  if(state.maintenance) return toast('🚧 Maintenance mode');
+  if(state.tourney) return toast('A tournament is already '+(state.tourney.status==='lobby'?'in the lobby':'running'));
+  const pid=currentView;
+  if(pid!=='admin') return toast('Only admin can create tournaments — players join from the lobby');
+  const entry=parseInt(document.getElementById('tEntryInput')?document.getElementById('tEntryInput').value:'50',10)||50;
+  if(!entry||entry<10) return toast('Entry must be 10+');
+  const p=state.players[pid];
+  if(p.bal.main<entry) return toast('Entries are paid from MAIN — you have '+fmt(p.bal.main));
+  p.bal.main-=entry;
+  addLedger(pid,'escrow',-entry,'Tournament entry (main)');
+  state.tourney={id:'T'+(state.seq++),entry,size:draftTSize,entrants:[pid],pool:entry,
+    alive:[],round:0,matches:[],status:'lobby',done:false,champion:null,paid:''};
+  F0('🏟 '+N(pid)+' opened a '+draftTSize+'-player tournament ('+fmt(entry)+' entry) — waiting for '+(draftTSize-1)+' more real player(s)');
+  toast('🏟 Tournament lobby opened — '+draftTSize+' slots at '+fmt(entry)+' each');
+  render();
+}
+function joinTournament(){
+  const t=state.tourney;
+  if(!t||t.status!=='lobby') return toast('No tournament in the lobby');
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  if(t.entrants.indexOf(pid)>=0) return toast('You are already in — switch player to add the other');
+  const p=state.players[pid];
+  if(p.bal.main<t.entry) return toast('Entries are paid from MAIN — you have '+fmt(p.bal.main));
+  p.bal.main-=t.entry;
+  addLedger(pid,'escrow',-t.entry,'Tournament entry (main)');
+  t.entrants.push(pid);
+  t.pool+=t.entry;
+  F0('🏟 '+N(pid)+' joined tournament '+t.id+' ('+t.entrants.length+'/'+t.size+')');
+  if(t.entrants.length>=t.size){
+    t.alive=shuffleArr(t.entrants.slice());
+    t.status='running';
+    toast('🏟 Bracket full — tournament running!');
+  }else{
+    toast('Joined — '+t.entrants.length+'/'+t.size+' slots filled');
+  }
+  render();
+}
+function cancelTournament(){
+  const t=state.tourney;
+  if(!t) return;
+  if(currentView!=='admin'&&t.entrants[0]!==currentView)
+    return toast('Only the tournament creator or admin can cancel');
+  t.entrants.forEach(pid=>{
+    credit(pid,'main',t.entry,'Tournament '+t.id+' cancelled — entry refunded');
+  });
+  F0('🏟 Tournament '+t.id+' cancelled — entries refunded');
+  state.tourney=null;
+  toast('Tournament cancelled — all entries refunded to MAIN');
+  render();
+}
+function tFlip(a,b,mid){
+  const ha=sha256(state.players[a].mySeed+':'+mid+':T');
+  const hb=sha256(state.players[b].mySeed+':'+mid+':T');
+  const seed=randomHex(32);
+  const h=hmacSha256(seed,ha+hb+':'+mid);
+  const fb=parseInt(h.slice(0,2),16);
+  return {w:fb%2===0?a:b,h,fb,commit:sha256(seed)};
+}
+function playTourneyRound(){
+  const t=state.tourney;
+  if(!t||t.status!=='running') return toast('No running tournament');
+  const names=['Final','Semi-finals','Quarter-finals'];
+  const roundIdx=Math.max(0,Math.log2(t.size)-t.round-1);
+  const round={name:names[roundIdx]||('Round '+(t.round+1)),ms:[]};
+  for(let i=0;i+1<t.alive.length;i+=2){
+    const a=t.alive[i],b=t.alive[i+1];
+    const r=tFlip(a,b,t.id+'-R'+t.round+'-M'+(i/2+1));
+    round.ms.push({a,b,w:r.w,h:r.h,fb:r.fb,commit:r.commit});
+    F0('🏟 '+round.name+': '+N(a)+' vs '+N(b)+' → '+N(r.w));
+  }
+  t.matches.push(round);
+  t.alive=round.ms.map(m=>m.w);
+  t.round++;
+  sfx('flip');
+  if(t.alive.length===1) finishTournament();
+  render();
+}
+function finishTournament(){
+  const t=state.tourney;
+  const champ=t.alive[0];
+  const fm=t.matches[t.matches.length-1].ms[0];
+  const runner=fm.w===champ?(fm.a===champ?fm.b:fm.a):(fm.a===champ?fm.b:fm.a);
+  const rake=Math.round(t.pool*state.tourneyRakePct/100);
+  const pot=t.pool-rake;
+  const wShare=Math.round(pot*0.75), rShare=pot-wShare;
+  state.house.tourneyRake+=rake;
+  credit(champ,'main',wShare,'🏆 Tournament '+t.id+' champion (75%)');
+  credit(runner,'main',rShare,'Tournament '+t.id+' runner-up (25%)');
+  const W=state.players[champ];
+  W.tourneys=(W.tourneys||0)+1; W.xp+=t.entry; W.wagered+=t.entry;
+  t.done=true; t.status='done'; t.champion=champ;
+  t.paid=N(champ)+' +'+fmt(wShare)+' · '+N(runner)+' +'+fmt(rShare);
+  F0('🏆 '+N(champ)+' won tournament '+t.id+' — rake '+fmt(rake)+' to house');
+  toast('🏆 '+N(champ)+' takes the tournament! +'+fmt(wShare));
+  checkAchievements(champ);
+  confetti(40); sfx('jackpot');
+}
+function dismissTournament(){
+  state.tourneyHistory.unshift(state.tourney);
+  if(state.tourneyHistory.length>3)state.tourneyHistory.pop();
+  state.tourney=null;
+  render();
+}
+
+/* ================= PRACTICE VS BOT (bot mode — demo only, no coins) ================= */
+function toggleBotMode(){
+  state.features.botMode=!state.features.botMode;
+  audit('Bot mode → '+(state.features.botMode?'ON (practice only)':'OFF'));
+  toast(state.features.botMode?'🤖 Bot mode ON — practice flips available (no coins)':'Bot mode OFF');
+  render();
+}
+function practiceFlip(){
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  if(!state.features.botMode) return toast('Bot mode is off');
+  const serverSeed=randomHex(32), commit=sha256(serverSeed);
+  const bseed=randomHex(8);
+  const h=hmacSha256(serverSeed,bseed+':practice:'+Date.now());
+  const fb=parseInt(h.slice(0,2),16);
+  const res=fb%2===0?'Heads':'Tails';
+  const you=fb%2===0?'Heads':'Tails';
+  F0('🤖 '+N(pid)+' practiced a flip vs Bot-Ravi — '+res.toUpperCase());
+  openData('🤖 Practice flip (no coins)', 'commit = '+commit+'\nserverSeed = '+serverSeed+'\nbotSeed = '+bseed+
+    '\nHMAC = '+h+'\nfirst byte '+fb+' → '+(fb%2===0?'HEADS':'TAILS')+' — you called '+draftSide.toUpperCase()+
+    ' → '+(draftSide===res?'WIN (practice)':'LOSE (practice)'));
+}
+
+/* ================= SEASONS (auto month-end 20:00 UTC) ================= */
+function checkSeason(){
+  if(Date.now()>=state.season.nextEnd){
+    endSeason(true);
+  }
+}
+function endSeason(auto){
+  const standings=['p1','p2'].map(id=>({id,name:N(id),net:state.players[id].net,wins:state.players[id].wins}))
+    .sort((a,b)=>b.net-a.net);
+  const rewards=[500,250];
+  standings.forEach((st,i)=>{
+    credit(st.id,'bonus',rewards[i],'Season '+state.season.n+' reward (#'+(i+1)+')',true);
+    if(i===0){state.players[st.id].seasonTitles=(state.players[st.id].seasonTitles||[]);state.players[st.id].seasonTitles.push('👑 S'+state.season.n+' Champ');}
+  });
+  state.seasonHistory.unshift({n:state.season.n,ts:Date.now(),standings});
+  if(state.seasonHistory.length>6)state.seasonHistory.pop();
+  audit('Season '+state.season.n+' ended'+(auto?' (auto, month-end 20:00 UTC)':' (manual)')+' — champion '+standings[0].name);
+  F0('🏁 Season '+state.season.n+' ended — champion '+standings[0].name+' +500');
+  toast('🏁 Season '+state.season.n+' complete — '+standings[0].name+' is the champion!');
+  state.season.n++;
+  state.season.nextEnd=nextMonthEnd20();
+  ['p1','p2'].forEach(id=>{const p=state.players[id];p.net=0;p.wins=0;p.streak=0;p.sessionNet=0;});
+  confetti(30);
+  render();
+}
+
+/* ================= SHOP 2.0 (skins · flags · avatars — main balance) ================= */
+function buySkin(id){
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  const it=SKINS.find(x=>x.id===id), p=state.players[pid];
+  if(!it) return;
+  if(it.price===-1){
+    var tier=tierOf(p.wagered);
+    if(tier.n!==it.vipTier) return toast('VIP exclusive — requires '+it.vipTier+' tier');
+    if(p.ownedSkins.indexOf(id)<0)p.ownedSkins.push(id);
+    p.skin=id;toast('VIP skin unlocked!');return render();
+  }
+  if(p.ownedSkins.indexOf(id)>=0){p.skin=id;toast('Equipped '+it.n);return render();}
+  var disc=applyVipDiscount(pid,it.price);
+  if(p.bal.main<disc) return toast('Skins are bought with MAIN — need '+fmt(disc));
+  p.bal.main-=disc;
+  state.house.shopSales+=disc;
+  p.ownedSkins.push(id); p.skin=id;
+  addLedger(pid,'shop',-disc,'Bought skin: '+it.n+(vipCosmeticDiscount(pid)>0?' (VIP -'+vipCosmeticDiscount(pid)+'%)':''));
+  toast('🛍 Bought & equipped “'+it.n+'”');
+  render();
+}
+function buyFrame(i){
+  var pid=currentView; if(pid==='admin')return toast('Switch to a player first');
+  var p=state.players[pid], it=FRAMES[i];
+  if(it[2]===0)return toast('VIP exclusive — reach the required tier');
+  if(p.ownedFrames.indexOf(i)>=0){p.frame=i;return render();}
+  if(p.bal.main<it[2])return toast('Need '+fmt(it[2])+' MAIN');
+  p.bal.main-=it[2]; state.house.shopSales+=it[2]; p.ownedFrames.push(i); p.frame=i;
+  addLedger(pid,'shop',-it[2],'Bought frame: '+it[1]); toast('Bought & equipped '+it[1]); render();
+}
+function equipFrame(i){var p=state.players[currentView];if(!p)return;p.frame=i;render();}
+function buyChatColour(i){
+  var pid=currentView; if(pid==='admin')return toast('Switch to a player first');
+  var p=state.players[pid], it=CHAT_COLOURS[i];
+  if(p.ownedChatColours.indexOf(i)>=0){p.chatColour=it[0];return render();}
+  if(p.bal.main<it[2])return toast('Need '+fmt(it[2])+' MAIN');
+  p.bal.main-=it[2]; state.house.shopSales+=it[2]; p.ownedChatColours.push(i); p.chatColour=it[0];
+  addLedger(pid,'shop',-it[2],'Bought chat colour: '+it[1]); toast('Bought & equipped '+it[1]); render();
+}
+function equipChatColour(i){var p=state.players[currentView];if(!p)return;p.chatColour=CHAT_COLOURS[i][0];render();}
+function buyVictoryFX(i){
+  var pid=currentView; if(pid==='admin')return toast('Switch to a player first');
+  var p=state.players[pid], it=VICTORY_FX[i];
+  if(p.ownedVictoryFX.indexOf(i)>=0){p.victoryFX=i;return render();}
+  if(p.bal.main<it[2])return toast('Need '+fmt(it[2])+' MAIN');
+  p.bal.main-=it[2]; state.house.shopSales+=it[2]; p.ownedVictoryFX.push(i); p.victoryFX=i;
+  addLedger(pid,'shop',-it[2],'Bought victory FX: '+it[1]); toast('Bought & equipped '+it[1]); render();
+}
+function equipVictoryFX(i){var p=state.players[currentView];if(!p)return;p.victoryFX=i;render();}
+function buyTableTheme(i){
+  var pid=currentView; if(pid==='admin')return toast('Switch to a player first');
+  var p=state.players[pid], it=TABLE_THEMES[i];
+  if(p.ownedTableThemes.indexOf(i)>=0){p.tableTheme=i;return render();}
+  if(p.bal.main<it[2])return toast('Need '+fmt(it[2])+' MAIN');
+  p.bal.main-=it[2]; state.house.shopSales+=it[2]; p.ownedTableThemes.push(i); p.tableTheme=i;
+  addLedger(pid,'shop',-it[2],'Bought table theme: '+it[1]); toast('Bought & equipped '+it[1]); render();
+}
+function equipTableTheme(i){var p=state.players[currentView];if(!p)return;p.tableTheme=i;render();}
+function buySoundPack(i){
+  var pid=currentView; if(pid==='admin')return toast('Switch to a player first');
+  var p=state.players[pid], it=SOUND_PACKS[i];
+  if(p.ownedSoundPacks.indexOf(i)>=0){p.soundPack=i;if(!state.settings.sound)toggleSound();return render();}
+  if(p.bal.main<it[2])return toast('Need '+fmt(it[2])+' MAIN');
+  p.bal.main-=it[2]; state.house.shopSales+=it[2]; p.ownedSoundPacks.push(i); p.soundPack=i;
+  if(!state.settings.sound)toggleSound();
+  addLedger(pid,'shop',-it[2],'Bought sound pack: '+it[1]); toast('Bought '+it[1]+' — sounds enabled'); render();
+}
+function equipSoundPack(i){var p=state.players[currentView];if(!p)return;p.soundPack=i;render();}
+function buyEmoji(i){
+  var pid=currentView; if(pid==='admin')return toast('Switch to a player first');
+  var p=state.players[pid], it=PREMIUM_EMOJIS[i];
+  if(p.ownedEmojis.indexOf(i)>=0)return toast('Already owned');
+  if(p.bal.main<it[3])return toast('Need '+fmt(it[3])+' MAIN');
+  p.bal.main-=it[3]; state.house.shopSales+=it[3]; p.ownedEmojis.push(i); p.equippedEmojis.push(i);
+  addLedger(pid,'shop',-it[3],'Bought emoji: '+it[1]); toast('Bought '+it[0]+' '+it[1]); render();
+}
+function toggleEquipEmoji(i){
+  var p=state.players[currentView];if(!p)return;
+  var idx=p.equippedEmojis.indexOf(i);
+  if(idx>=0)p.equippedEmojis.splice(idx,1); else p.equippedEmojis.push(i);
+  render();
+}
+function vipCosmeticDiscount(pid){
+  var t=tierOf(state.players[pid].wagered);
+  var disc=0;
+  if(t.n==='Black Diamond')disc=10;else if(t.n==='Royal')disc=15;else if(t.n==='Legend')disc=20;
+  return disc;
+}
+function applyVipDiscount(pid,price){
+  var d=vipCosmeticDiscount(pid);
+  if(d===0)return price;
+  return Math.max(0,Math.round(price*(100-d)/100));
+}
+function equipSkin(id){const p=state.players[currentView];if(!p)return;p.skin=id;toast('Equipped '+SKINS.find(x=>x.id===id).n);render();}
+function buyFlag(i){
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  const it=FLAGS[i], p=state.players[pid];
+  if(p.ownedFlags.indexOf(i)>=0){p.flag=it[0];toast('Flag equipped');return render();}
+  if(p.bal.main<it[2]) return toast('Flags are bought with MAIN — need '+fmt(it[2]));
+  p.bal.main-=it[2];
+  state.house.shopSales+=it[2];
+  p.ownedFlags.push(i); p.flag=it[0];
+  addLedger(pid,'shop',-it[2],'Bought flag: '+it[1]);
+  toast('🏳️ Bought & equipped '+it[1]);
+  render();
+}
+function buyAvatar(i){
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  const it=AVATARS[i], p=state.players[pid];
+  if(p.ownedAvatars.indexOf(i)>=0){p.avatar=it[0];toast('Avatar equipped');return render();}
+  if(p.bal.main<it[2]) return toast('Avatars are bought with MAIN — need '+fmt(it[2]));
+  p.bal.main-=it[2];
+  state.house.shopSales+=it[2];
+  p.ownedAvatars.push(i); p.avatar=it[0];
+  addLedger(pid,'shop',-it[2],'Bought avatar: '+it[1]);
+  toast('Persona equipped: '+it[1]);
+  render();
+}
+function equipFlag(i){const p=state.players[currentView];if(!p)return;p.flag=FLAGS[i][0];render();}
+function equipAvatar(i){const p=state.players[currentView];if(!p)return;p.avatar=AVATARS[i][0];render();}
+function bankMove(pid,dir,amt){
+  amt=Math.round(amt);
+  if(state.maintenance) return toast('🚧 Maintenance mode');
+  if(!amt||amt<10) return toast('Minimum is 10');
+  const p=state.players[pid];
+  if(dir==='w'){
+    if(p.bal.main<amt) return toast('Insufficient MAIN — you have '+fmt(p.bal.main));
+    p.bal.main-=amt; p.bank+=amt;
+    addLedger(pid,'bank',-amt,'Withdrawn to bank (main)');
+    toast('🏧 Withdrawn '+fmt(amt)+' to bank');
+  }else{
+    if(p.bank<amt) return toast('Bank balance is '+fmt(p.bank));
+    p.bank-=amt; p.bal.main+=amt;
+    addLedger(pid,'bank',amt,'Deposited from bank → main');
+    toast('🏧 Deposited '+fmt(amt)+' from bank');
+  }
+  render();
+}
+function applyReferralCode(pid,code){
+  const p=state.players[pid];
+  code=String(code||'').trim().toUpperCase();
+  if(!code) return toast('Enter a referral code');
+  if(p.referredBy) return toast('Already referred by '+N(p.referredBy));
+  const other=pid==='p1'?'p2':'p1';
+  if(code===String(state.players[other].refCode||'').toUpperCase()){
+    if(state.players[other].referredBy===pid)
+      return toast('⛔ Mutual referral blocked — '+N(other)+' is already referred by you');
+    p.referredBy=other;
+    F0('🔗 '+N(pid)+' joined with '+N(other)+"'s referral code");
+    audit('Referral link: '+N(pid)+' ← '+N(other));
+    toast('🔗 Linked! '+N(other)+' now earns 5% of your fees');
+    render();
+  } else toast('Code not recognised');
+}
+function applyReferral(){
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  const el=document.getElementById('refIn-'+pid);
+  applyReferralCode(pid,el?el.value:'');
+}
+function unlinkReferral(pid){
+  if(!state.players[pid].referredBy) return toast(N(pid)+' has no referral link');
+  audit('Referral unlinked: '+N(pid));
+  state.players[pid].referredBy=null;
+  toast('Referral link removed for '+N(pid));
+  render();
+}
+function vaultMove(pid,d){
+  const p=state.players[pid];
+  if(d>0){if(p.bal.main<100)return toast('Vault uses MAIN — need 100');p.bal.main-=100;p.vault+=100;addLedger(pid,'vault',-100,'To vault (main)');}
+  else{if(p.vault<100)return toast('Vault empty');p.vault-=100;p.bal.main+=100;addLedger(pid,'vault',100,'From vault → main');}
+  render();
+}
+
+/* ================= VIP / QUEST CLAIMS ================= */
+function claimRakeback(){
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  const p=state.players[pid];
+  if(p.rakebackPending<=0) return toast('No rakeback accrued yet — play more');
+  const amt=p.rakebackPending;
+  p.rakebackPending=0;
+  credit(pid,'rakeback',amt,'💎 VIP rakeback claim',false);
+  toast('💎 Rakeback claimed to your RAKEBACK balance: '+fmt(amt));
+  render();
+}
+function claimQuest(qid){
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  if(!state.features.quests) return toast('Quests are currently paused');
+  const p=state.players[pid];
+  ensureQuests(pid);
+  const q=QUESTS.find(x=>x.id===qid);
+  if(!q) return;
+  if(p.quests.claimed[qid]) return toast('Already claimed');
+  if(p.quests.paused) return toast('Quests paused (window: 00:00–22:00 UTC)');
+  if(p.quests[q.k]<q.goal) return toast('Quest not complete yet');
+  p.quests.claimed[qid]=true;
+  credit(pid,'bonus',q.r,'Quest reward: '+q.n,true);
+  toast('✅ Quest complete +'+q.r+' (bonus balance)');
+  render();
+}
+function claimBonus(){
+  const pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  const p=state.players[pid];
+  const tk=today();
+  if(p.lastBonusDay===tk) return toast('Daily bonus already claimed — next claim in '+cdText());
+  p.lastBonusDay=tk; p.lastBonus=Date.now();
+  credit(pid,'bonus',100,'Daily bonus claimed',true);
+  toast('Daily bonus claimed: +100 → bonus balance. Next claim tomorrow.');
+  render();
+}
+function cdText(){
+  const n=new Date();
+  const nx=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+1,0,0,0);
+  let s=Math.max(0,Math.floor((nx-n.getTime())/1000));
+  const hh=Math.floor(s/3600), mm=Math.floor((s%3600)/60), ss=s%60;
+  return hh+'h '+String(mm).padStart(2,'0')+'m '+String(ss).padStart(2,'0')+'s';
+}
+
+/* ================= EXPORTS / RULES ================= */
+function copyText(txt){
+  try{
+    if(typeof navigator!=='undefined'&&navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt);
+      toast('\u{1F4CB} Copied to clipboard');
+    }else if(typeof document!=='undefined'&&document.execCommand){
+      var ta=document.createElement('textarea');
+      ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      toast('\u{1F4CB} Copied to clipboard');
+    }else toast('Copy not available — select manually');
+  }catch(e){toast('Copy not available');}
+}
+function openData(title,txt){
+  document.getElementById('modal-root').innerHTML=
+    '<div class="overlay"><div class="modal"><div class="mhead">'+title+'</div>'+
+    '<textarea readonly>'+esc(txt)+'</textarea>'+
+    '<button class="btn gold" style="width:100%;margin-top:12px" onclick="closeModal()">Close</button></div></div>';
+}
+function exportJSON(){
+  if(!state.games.length) return toast('No games yet');
+  openData('Game history (JSON)',JSON.stringify(state.games,null,1));
+}
+function exportCSV(){
+  const rows=[['time','player','type','delta','balance_after']];
+  ['p1','p2'].forEach(pid=>{
+    state.ledger[pid].slice().reverse().forEach(e=>rows.push([new Date(e.ts).toISOString(),N(pid),e.type,e.delta,e.bal]));
+  });
+  openData('Ledger (CSV)',rows.map(r=>r.join(',')).join('\n'));
+}
+function openCashOut(){
+  var pid=currentView;
+  if(pid==='admin') return toast('Switch to a player first');
+  var p=state.players[pid];
+  var bankTotal=p.bank+(p.vault||0);
+  document.getElementById('modal-root').innerHTML=
+  '<div class="overlay"><div class="modal"><div class="mhead">\u{1F3E6} Cash Out</div>'+
+  '<div class="note">Bank balance: <b>'+fmt(bankTotal)+' play coins</b><br><br>'+
+  'In a real-money build this would open the payment processor\u2019s withdrawal form:<br>'+
+  '\u00b7 Choose method (bank transfer, UPI, wallet)<br>'+
+  '\u00b7 Enter withdrawal amount<br>'+
+  '\u00b7 Confirm identity (KYC verified)<br>'+
+  '\u00b7 Processing time: 1\u20133 business days<br><br>'+
+  'For this play-money demo, coins stay in your bank account.<br>'+
+  'Admin can top up more play coins from the Admin tab.</div>'+
+  '<button class="btn gold" style="width:100%;margin-top:12px" onclick="closeModal()">Got it</button></div></div>';
+}
+function openRules(){
+  document.getElementById('modal-root').innerHTML=
+  '<div class="overlay"><div class="modal"><div class="mhead">Rules & fairness</div>'+
+  '<div class="note">1 · Pick an amount and a side — stakes are escrowed instantly (funding: 80–90% MAIN + up to '+state.fundCapPct+'% from bonus/referral/rakeback).<br>'+
+  '2 · Auto-match pairs you with the oldest opposite-side bet of the same amount; ×2 challenges wait in the real-player room.<br>'+
+  '3 · The coin = first byte of SHA256( BigInt(yourHash) + BigInt(rivalHash) + BigInt(SHA256(seed)) + gameId ). Even → HEADS, odd → TAILS. Nobody can steer it.<br>'+
+  '4 · Winner takes pot − house fee ('+state.feePct+'%). The 💰 pool is funded from the fee (min '+state.jackpotMin+' coin); once it reaches '+fmt(state.jackpot.minTrigger)+' it is ARMED and a “00” hash (1 in 256) pays the winner '+state.jackpot.payPct+'% of the pool — the rest rolls over.<br>'+
+  '5 · <b>All game winnings, jackpots, tournament prizes and refunds go 100% to your MAIN balance.</b><br>&nbsp;&nbsp;&nbsp;Rewards (quests, levels, achievements, login) go to bonus — they can only fund up to '+state.fundCapPct+'% of any stake.<br>'+
+  '6 · Play coins only. Never bet money you cannot afford to lose; use the vault, loss limits and self-exclusion tools.</div>'+
+  '<button class="btn gold" style="width:100%;margin-top:12px" onclick="closeModal()">Got it</button></div></div>';
+}
+
+/* ================= FX ================= */
+function sfx(kind){
+  if(!state.settings.sound) return;
+  try{
+    if(typeof window==='undefined'||!window.AudioContext) return;
+    sfx.ctx=sfx.ctx||new window.AudioContext();
+    const c=sfx.ctx,t=c.currentTime;
+    const seq=kind==='win'?[523,659,784]:kind==='jackpot'?[523,659,784,1047,1319]:kind==='flip'?[220,180]:[440];
+    seq.forEach((f,i)=>{
+      const o=c.createOscillator(),g=c.createGain();
+      o.type='triangle';o.frequency.value=f;
+      g.gain.setValueAtTime(0.05,t+i*0.09);
+      g.gain.exponentialRampToValueAtTime(0.001,t+i*0.09+0.15);
+      o.connect(g);g.connect(c.destination);
+      o.start(t+i*0.09);o.stop(t+i*0.09+0.16);
+    });
+  }catch(e){}
+}
+function confettiEmoji(n,emoji){
+  if(!state.settings.confetti)return;
+  try{
+    if(typeof document==='undefined'||!document.createElement)return;
+    var root=document.getElementById('fx-root');if(!root)return;
+    for(var i=0;i<n;i++){
+      var s=document.createElement('span');
+      s.className='confetto';s.textContent=emoji||'🎉';
+      s.style.left=Math.random()*100+'%';
+      s.style.animationDuration=(2+Math.random()*2)+'s';
+      s.style.animationDelay=(Math.random()*0.6)+'s';
+      root.appendChild(s);
+    }
+    setTimeout(function(){root.innerHTML='';},4200);
+  }catch(e){}
+}
+function confetti(n){
+  if(!state.settings.confetti) return;
+  try{
+    if(typeof document==='undefined'||!document.createElement) return;
+    const root=document.getElementById('fx-root');
+    if(!root) return;
+    const em=['🎉','💰','✨','🪙','🔥'];
+    for(let i=0;i<n;i++){
+      const s=document.createElement('span');
+      s.className='confetto';
+      s.textContent=em[Math.floor(Math.random()*em.length)];
+      s.style.left=Math.random()*100+'%';
+      s.style.animationDuration=(2+Math.random()*2)+'s';
+      s.style.animationDelay=(Math.random()*0.6)+'s';
+      root.appendChild(s);
+    }
+    setTimeout(()=>{root.innerHTML='';},4200);
+  }catch(e){}
+}
+
+/* ================= MODAL ================= */
+function openGameModal(g,st){if(!g)return;activeGame=g;modalState=st;renderModal();}
+function closeModal(){activeGame=null;document.getElementById('modal-root').innerHTML='';}
+function renderModal(){
+  const root=document.getElementById('modal-root');
+  if(!activeGame){root.innerHTML='';return;}
+  const g=activeGame;
+  const pot=2*g.amount, fee=Math.round(pot*g.feePct/100), payout=pot-fee;
+  const sk=currentView!=='admin'&&state.players[currentView]?(' sk-'+state.players[currentView].skin):'';
+  let body='';
+  if(modalState==='ready'){
+    body=
+    '<div class="mrow"><span>'+N(g.maker.pid)+'</span> '+sideTag(g.maker.side)+'</div>'+
+    '<div class="vs">'+(g.auto?'\u26A1 AUTO-MATCHED':'VS')+(g.note?' · <span style="color:'+getTauntColour(g.maker.pid)+'">💬 '+esc(g.note)+'</span>':'')+'</div>'+
+    '<div class="mrow"><span>'+N(g.taker.pid)+'</span> '+sideTag(g.taker.side)+'</div>'+
+    '<div class="mtot">Pot '+fmt(pot)+' · fee '+g.feePct+'% ('+fmt(fee)+') · winner takes <b style="color:#f6c453">'+fmt(payout)+'</b> → MAIN</div>'+
+    '<div class="jpcard" style="margin-top:10px;padding:10px 14px"><div style="font-size:12px;color:#b9a7ea">💰 JACKPOT POOL (fee-funded)</div><div class="jppool" style="font-size:22px">'+fmt(state.jackpot.pool)+'</div><div style="font-size:11px;color:#93a0bd">hash starts 00 → 1 in 256 · '+(state.jackpot.pool>=state.jackpot.minTrigger?'ARMED':'building')+' · pays '+state.jackpot.payPct+'% on hit, remainder rolls over</div></div>'+
+    '<div class="verify"><div style="color:#93a0bd;font-size:10.5px;letter-spacing:1px;margin-bottom:6px">FAIRNESS COMMITMENTS — PUBLISHED BEFORE THE FLIP</div>'+
+    '<div class="mono">commit = SHA-256(seed)<br>'+g.commit+'<br><br>'+N(g.maker.pid)+' fingerprint<br>'+g.maker.betHash+'<br><br>'+N(g.taker.pid)+' fingerprint<br>'+g.taker.betHash+'</div></div>'+
+    '<div style="display:flex;gap:10px;margin-top:14px">'+
+    '<button class="btn gold" style="flex:1" onclick="doFlip()">Flip the coin</button>'+
+    '<button class="btn danger" onclick="cancelGame(\''+g.id+'\')">Cancel &amp; refund</button></div>';
+  } else if(modalState==='flipping'){
+    body='<div class="coinwrap"><div class="coin flip'+sk+'">?</div></div>'+
+    '<div style="text-align:center;color:#93a0bd;margin-top:12px;font-size:13px">Tossing&hellip;</div>';
+  } else {
+    const h=mergedHash(g);
+    const fb=parseInt(h.slice(0,2),16);
+    body='<div class="coinwrap"><div class="coin'+sk+'">'+(g.result==='Heads'?'H':'T')+'</div></div>'+
+    (g.jackpotWon?('<div class="jackbanner">🎉 JACKPOT! '+N(g.winner)+' also takes the pool: +'+fmt(g.jackpotWon)+' 🎉</div>'):'')+
+    '<div class="mresult">'+g.result.toUpperCase()+' — '+N(g.winner)+' wins <span style="color:#f6c453">'+fmt(g.payout)+'</span></div>'+
+    '<div style="text-align:center;font-size:14px;font-weight:800;color:#34d399;margin:4px 0">'+fmt(g.payout)+' coins → MAIN balance</div>'+
+    '<div class="mtot">Pot '+fmt(pot)+' − fee '+fmt(g.fee)+' = <b style="color:#34d399;font-size:15px">'+fmt(g.payout)+' → MAIN</b></div>'+
+    '<div class="verify"><div style="color:#93a0bd;font-size:10.5px;letter-spacing:1px;margin-bottom:6px">PROOF — ALL THREE INPUTS, RECOMPUTE IT YOURSELF</div>'+
+    '<div class="mono">'+
+    '1. seed (committed as '+g.commit.slice(0,16)+'…)<br>&nbsp;&nbsp;&nbsp;&nbsp;'+g.serverSeed+'<br>'+
+    '2. '+N(g.maker.pid)+' preimage: '+g.maker.seed+':'+g.maker.bid+':'+g.amount+':'+g.maker.side+'<br>&nbsp;&nbsp;&nbsp;&nbsp;betHash = '+g.maker.betHash+'<br>'+
+    '3. '+N(g.taker.pid)+' preimage: '+g.taker.seed+':'+g.id+':'+g.amount+':'+g.taker.side+'<br>&nbsp;&nbsp;&nbsp;&nbsp;betHash = '+g.taker.betHash+'<br>'+
+    '4. combined = BigInt(hashA) + BigInt(hashB) + BigInt(SHA256(seed))<br>&nbsp;&nbsp;&nbsp;&nbsp;hex: '+h.slice(0,20)+'...<br>'+
+    '5. final = SHA256(combined_hex + \''+g.id+'\')<br>&nbsp;&nbsp;&nbsp;&nbsp;'+h+'<br><br>'+
+    'first byte '+fb+' → '+(fb%2===0?'HEADS':'TAILS')+' ✓ · jackpot: '+h.slice(0,2)+(jpHit(h)?(g.jackpotWon?(' 💰 HIT — paid '+fmt(g.jackpotWon)+', '+fmt(g.jackpotRoll||0)+' rolled over'):' 💰 hit — pool not armed (<'+fmt(state.jackpot.minTrigger)+')'):' — no')+
+    '</div></div>'+
+    '<div style="display:flex;gap:8px;margin-top:14px">'+
+    '<button class="btn gold" style="flex:1" onclick="closeModal()">Done</button>'+
+    '<button class="btn ghost sm" onclick="copyText(\''+g.serverSeed+'\')">📋 Seed</button>'+
+    '<button class="btn ghost" style="flex:1" onclick="rematch(\''+g.id+'\')">🔁 Again</button>'+
+    '<button class="btn ghost" style="flex:1" onclick="dblOrNothing(\''+g.id+'\')">×2 Room</button></div>';
+  }
+  root.innerHTML='<div class="overlay"><div class="modal"><div class="mhead">Game #'+g.id+(g.auto?' · \u26A1':' · manual')+' · '+fmt(g.amount)+' each · pot '+fmt(pot)+'</div>'+body+'</div></div>';
+}
+
+/* ================= RENDER ================= */
+function render(){
+  checkSeason();
+  ['p1','p2','admin'].forEach(v=>document.getElementById('tab-'+v).classList.remove('active'));
+  document.getElementById('tab-'+currentView).classList.add('active');
+  document.getElementById('bal-p1').textContent=fmt(totalBal(state.players.p1)+state.players.p1.vault)+' pc';
+  document.getElementById('bal-p2').textContent=fmt(totalBal(state.players.p2)+state.players.p2.vault)+' pc';
+  document.getElementById('jp-header').textContent=fmt(state.jackpot.pool)+' pc · '+(state.jackpot.pool>=state.jackpot.minTrigger?'ARMED':'building');
+  ['tables','series','stats','season','shop','verify'].forEach(s=>document.getElementById('sec-'+s).classList.remove('on'));
+  const sec=document.getElementById('sec-'+(currentView==='admin'?'tables':demoSection));
+  if(sec)sec.classList.add('on');
+  let html='';
+  if(currentView==='admin') html=renderAdmin();
+  else if(demoSection==='series') html=renderSeries(currentView);
+  else if(demoSection==='stats') html=renderStats(currentView);
+  else if(demoSection==='season') html=renderSeason(currentView);
+  else if(demoSection==='shop') html=renderShop(currentView);
+  else if(demoSection==='verify') html=renderVerify();
+  else html=renderTables(currentView);
+  let banners='';
+  if(state.maintenance) banners+='<div class="banner maint">🚧 Maintenance mode — betting is paused. Games in flight still settle.</div>';
+  if(state.announcement) banners+='<div class="banner ann">📣 '+esc(state.announcement)+'</div>';
+  document.getElementById('app').innerHTML=banners+html;
+  checkChallenges();
+  checkPromos();
+  saveState();
+}
+
+const netStr=n=>'<span class="'+(n>=0?'up':'down')+'">'+(n>=0?'+':'')+fmt(n)+'</span>';
+function setLbSort(s){state.lbSort=s;render();}
+function getTauntColour(pid){
+  var p=state.players[pid];
+  if(!p||!p.chatColour)return '#c7d2e8';
+  return p.chatColour;
+}
+function tagline(p){
+  var frame='';
+  if(p.frame!==''&&p.frame!==undefined){
+    var fi=parseInt(p.frame);
+    if(!isNaN(fi)&&FRAMES[fi])frame=FRAMES[fi][0];
+  }
+  var av=p.avatar||'';
+  if(frame)av='<span style="border:2px solid rgba(246,196,83,.6);border-radius:50%;padding:2px">'+av+'</span>';
+  return (av?('<span class="avp">'+av+'</span>'):'')+(p.flag?('<span class="flp">'+p.flag+'</span>'):'');
+}
+
+function balCard(pid){
+  const p=state.players[pid];
+  const claimedToday=p.lastBonusDay===today();
+  const lv=levelOf(p.xp);
+  const cur=xpFor(lv), nxt=xpFor(lv+1);
+  const pct=Math.min(100,Math.round(100*(p.xp-cur)/(nxt-cur)));
+  const t=tierOf(p.wagered);
+  const otherPid=pid==='p1'?'p2':'p1';
+  return '<div class="card"><h3>'+tagline(p)+' '+esc(N(pid))+(p.title?' · '+esc(p.title):'')+' · wallet</h3>'+
+  '<div class="bal">'+fmt(totalBal(p)+p.vault)+' <span style="font-size:13px;color:#93a0bd;font-weight:600">play coins</span></div>'+
+  '<div class="prog"><div style="width:'+pct+'%"></div></div>'+
+  '<div class="sub">Lv '+lv+' · '+fmt(p.xp)+' XP · 💎 '+t.n+' ('+t.cb+'% rakeback) · '+p.wins+' W · 🔥'+p.streak+'</div>'+
+  '<div class="segkv" style="background:rgba(52,211,153,.06);border-radius:6px;padding:4px 6px"><span style="font-weight:800;color:#34d399">✔ MAIN — winnings land here</span><b style="color:#34d399;font-weight:800">'+fmt(p.bal.main)+'</b></div>'+
+  '<div class="segkv"><span style="color:#6d7d9d">Bonus (max '+state.fundCapPct+'% of stake)</span><b style="color:#93a0bd">'+fmt(p.bal.bonus)+'</b></div>'+
+  '<div class="segkv"><span>REFERRAL (capped '+state.fundCapPct+'%)</span><b>'+fmt(p.bal.referral)+'</b></div>'+
+  '<div class="segkv"><span>RAKEBACK (capped '+state.fundCapPct+'%)</span><b>'+fmt(p.bal.rakeback)+'</b></div>'+
+  '<div class="segkv"><span>VAULT</span><b>'+fmt(p.vault)+'</b></div>'+
+  '<div class="segkv"><span>BANK (outside wallet)</span><b>'+fmt(p.bank)+'</b></div>'+
+  '<div class="segkv"><span>BETTED (in play)</span><b>'+fmt(bettedInPlay(pid))+'</b></div>'+
+  '<div class="minirow">'+
+  (claimedToday
+    ?'<button class="btn ghost sm" disabled>📅 Claimed — next in <span id="cdBtn" class="cd">'+cdText()+'</span></button>'
+    :'<button class="btn gold sm" onclick="claimBonus()">🎁 Claim daily bonus +100</button>')+
+  '<button class="mchip" onclick="vaultMove(\''+pid+'\',1)">🏦 Vault 100</button>'+
+  '<button class="mchip" onclick="vaultMove(\''+pid+'\',-1)">↩️ Unvault</button>'+
+  '</div>'+
+  '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'+
+  '<input id="txAmt-'+pid+'" type="number" min="10" placeholder="amount ≥10" style="flex:1;min-width:110px"/>'+
+  '<button class="btn ghost sm" onclick="transferTo(\''+pid+'\',\''+otherPid+'\',parseFloat(document.getElementById(\'txAmt-'+pid+'\').value)||0)">💸 → '+esc(N(otherPid))+'</button>'+
+  '</div>'+
+  '<div class="sub">Transfers: MAIN → MAIN only · min 10 · 500/day · used '+fmt(p.transferToday.used||0)+' today</div>'+
+  '<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">'+
+  '<input id="bkAmt-'+pid+'" type="number" min="10" placeholder="amount ≥10" style="flex:1;min-width:110px"/>'+
+  '<button class="btn ghost sm" onclick="bankMove(\''+pid+'\',\'w\',parseFloat(document.getElementById(\'bkAmt-'+pid+'\').value)||0)">🏧 Withdraw</button>'+
+  '<button class="btn ghost sm" onclick="bankMove(\''+pid+'\',\'d\',parseFloat(document.getElementById(\'bkAmt-'+pid+'\').value)||0)">Deposit</button>'+
+  '</div>'+
+  '<div class="segkv" style="margin-top:8px"><span>YOUR REFERRAL CODE</span><b>'+p.refCode+'</b></div>'+
+  (p.referredBy
+    ?'<div class="sub">Referred by '+esc(N(p.referredBy))+' — they earn 5% of your fees.</div>'
+    :'<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">'+
+     '<input id="refIn-'+pid+'" type="text" placeholder="friend’s referral code" style="flex:1;min-width:110px"/>'+
+     '<button class="btn ghost sm" onclick="applyReferral()">🔗 Apply code</button></div>')+
+  '</div>';
+}
+
+function betCard(pid){
+  const p=state.players[pid];
+  const f=fundingFor(pid,parseInt(draftAmt)||100);
+  return '<div class="card"><h3>Place a bet</h3>'+
+  '<div class="chips">'+[10,25,50,100,250,500].map(a=>'<button class="chip" onclick="setAmt('+a+')">'+a+'</button>').join('')+'</div>'+
+  '<input id="amt" type="number" min="1" value="'+draftAmt+'" oninput="draftAmt=this.value"/>'+
+  '<div class="sub" style="margin:8px 0 0">Funding: MAIN '+f.main+(f.bonus?' · bonus '+f.bonus:'')+(f.referral?' · referral '+f.referral:'')+(f.rakeback?' · rakeback '+f.rakeback:'')+' (non-main cap '+state.fundCapPct+'%)</div>'+
+  '<div class="sub" style="margin:2px 0 0">If you win: <b style="color:#34d399">+'+fmt((parseInt(draftAmt)||0)*2-Math.round((parseInt(draftAmt)||0)*2*state.feePct/100))+'</b> to MAIN (pot '+fmt((parseInt(draftAmt)||0)*2)+' − fee '+fmt(Math.round((parseInt(draftAmt)||0)*2*state.feePct/100))+')</div>'+
+  '<div class="sides">'+
+  '<button class="side h '+(draftSide==='Heads'?'on':'')+'" onclick="selectSide(\'Heads\')">HEADS</button>'+
+  '<button class="side t '+(draftSide==='Tails'?'on':'')+'" onclick="selectSide(\'Tails\')">TAILS</button>'+
+  '</div>'+
+  '<div class="minirow"><button class="mchip" onclick="randomSide()">🎲 Random side</button>'+
+  '<button class="mchip '+(draftPrivate?'on':'')+'" onclick="togglePrivate()">'+(draftPrivate?'🔒 Private':'Public')+'</button></div>'+
+  '<div class="sub" style="margin:10px 0 6px">Your secret seed — your fingerprint in the result hash</div>'+
+  '<input type="text" value="'+esc(p.mySeed)+'" oninput="setSeed(this.value)"/>'+
+  '<input type="text" style="margin-top:8px" placeholder="Message to opponent (optional, max 24)" maxlength="24" value="'+esc(draftNote)+'" oninput="setNote(this.value)"/>'+
+  '<button class="btn gold" style="width:100%;margin-top:12px" onclick="placeBet()">Place bet</button>'+
+  '<div class="sub">'+(state.autoMatch
+    ?'<span style="color:#34d399;font-weight:700">● Auto-match ON</span> — pairs instantly, flips automatically.'
+    :'<span style="color:#f87171;font-weight:700">○ Auto-match OFF</span> — manual taking only.')+
+  ' Limits 10–'+fmt(maxStake(pid))+' (level-based). Winnings → MAIN.</div>'+
+  '<div class="minirow">'+
+  '<button class="mchip '+(p.autorebet?'on':'')+'" onclick="toggleAutoRebet()">🔁 Auto-rebet</button>'+
+  '<button class="mchip '+(state.settings.instant?'on':'')+'" onclick="toggleInstant()">⚡ Instant</button>'+
+  '<button class="mchip '+(state.settings.sound?'on':'')+'" onclick="toggleSound()">'+(state.settings.sound?'🔊':'🔇')+(currentView!=='admin'&&state.players[currentView]&&state.players[currentView].soundPack!==''&&state.players[currentView].soundPack!==undefined?' ('+SOUND_PACKS[state.players[currentView].soundPack][1]+')':'')+'</button>'+
+  '<button class="mchip '+(state.settings.confetti?'on':'')+'" onclick="toggleConfetti()">🎊</button>'+
+  '<button class="mchip" onclick="openRules()">📖 Rules</button>'+
+  (state.features.botMode?'<button class="mchip on" onclick="practiceFlip()">🤖 Practice vs bot</button>':'')+
+  '</div></div>';
+}
+
+function jackpotCard(){
+  const j=state.jackpot;
+  return '<div class="card jpcard"><h3>💰 Jackpot pool — fee-funded</h3>'+
+  '<div class="jppool">'+fmt(j.pool)+' <span style="font-size:13px;color:#93a0bd;font-weight:600">play coins</span></div>'+
+  '<div class="sub" style="margin-top:6px">Every game adds <b>min(fee, max('+state.jackpotMin+', '+state.jackpotFeePct+'% of fee))</b> — never from winnings. <b>'+(state.jackpot.pool>=state.jackpot.minTrigger?'🟢 ARMED':'🔵 building '+fmt(state.jackpot.pool)+'/'+fmt(state.jackpot.minTrigger))+'</b>: when armed, a <b>00</b> hash (1 in 256) pays the winner <b>'+state.jackpot.payPct+'%</b> of the pool — the remainder rolls over.</div>'+
+  (j.hits?('<div class="sub">Hits: <b>'+j.hits+'</b> · paid <b>'+fmt(j.paid)+'</b></div>'):'')+'</div>';
+}
+function fairCard(){
+  return '<div class="card"><h3>Fairness — 3-party merged hash</h3>'+
+  '<div class="note">Result <b>and</b> jackpot from one hash nobody can steer:<br>'+
+  '1 · Each player\u2019s seed → SHA-256(seed:betId:amount:side)<br>'+
+  '2 · System secret seed, committed up-front as SHA-256(seed)<br>'+
+  '3 · combined = BigInt(hashA) + BigInt(hashB) + BigInt(SHA256(seed)) · final = SHA256(combined:'+gameId+')<br>'+
+  '&nbsp;&nbsp;&nbsp;first byte even = HEADS · odd = TAILS · byte 00 = 💰 jackpot<br>'+
+  'Recompute any game yourself in the <b>🔍 Verify</b> section.</div></div>';
+}
+function howToCard(){
+  return '<div class="card"><h3>How it works</h3><ol class="steps">'+
+  '<li>Amount + side → escrowed from MAIN (+ up to '+state.fundCapPct+'% bonus/referral/rakeback) into the <b>FIFO queue</b>.</li>'+
+  '<li>Auto-match pairs with the <b>oldest</b> opposite side of the <b>same amount</b>; ×2 challenges wait in the real-player room.</li>'+
+  '<li>Winner takes <b>pot − fee</b> → MAIN · jackpot pool grows from the fee · XP &amp; quests tick · VIP rakeback accrues.</li></ol></div>';
+}
+function queueCard(pid){
+  const rows=state.openBets.map((b,i)=>{
+    const mine=b.pid===pid;
+    const action=mine
+      ?'<button class="btn ghost sm" onclick="cancelBet(\''+b.id+'\')">Cancel &amp; refund</button>'
+      :'<button class="btn gold sm" style="white-space:nowrap" onclick="acceptBet(\''+b.id+'\')">Take '+other(b.side).toUpperCase()+' · win '+fmt(2*b.amount-Math.round(2*b.amount*state.feePct/100))+'</button>';
+    return '<div class="bet"><div style="font-size:13px;line-height:1.6"><span class="pill">#'+(i+1)+'</span> '+tagline(state.players[b.pid])+' <b>'+esc(N(b.pid))+'</b> — <b>'+fmt(b.amount)+'</b> on '+sideTag(b.side)+(b.private?' 🔒':'')+'</div>'+action+'</div>';
+  }).join('');
+  return '<div class="card"><h3>Match queue · '+state.openBets.length+' waiting</h3>'+
+  (rows||'<div class="empty">Queue empty. Post a bet — a same-amount opposite side matches instantly.</div>')+'</div>';
+}
+function challengesCard(pid){
+  const rows=state.challenges.map(c=>{
+    const mine=c.pid===pid;
+    const action=mine
+      ?'<button class="btn ghost sm" onclick="cancelChallenge(\''+c.id+'\')">Cancel &amp; refund</button>'
+      :'<button class="btn gold sm" style="white-space:nowrap" onclick="acceptChallenge(\''+c.id+'\')">Accept — take '+other(c.side).toUpperCase()+' for '+fmt(c.stake)+'</button>';
+    return '<div class="bet"><div style="font-size:13px;line-height:1.6"><span class="pill">×2</span> <b>'+esc(N(c.pid))+'</b> stakes <b>'+fmt(c.stake)+'</b> on '+sideTag(c.side)+'</div>'+action+'</div>';
+  }).join('');
+  return '<div class="card"><h3>⏳ ×2 Waiting room · real players only</h3>'+
+  '<div class="sub" style="margin:-6px 0 8px">Double-or-nothing challenges — house bots never take them</div>'+
+  (rows||'<div class="empty">No open challenges. Press “×2 Room” on any settled game to post one.</div>')+'</div>';
+}
+function readyCard(){
+  if(!state.readyGames.length) return '';
+  const rows=state.readyGames.map(g=>'<div class="bet"><div style="font-size:13px"><b>#'+g.id+'</b>'+(g.auto?' <span class="zap">\u26A1</span>':'')+' '+
+  esc(N(g.maker.pid))+' vs '+esc(N(g.taker.pid))+' · '+fmt(g.amount)+' each</div>'+
+  '<button class="btn gold sm" onclick="openGameModal(findGame(\''+g.id+'\'),\'ready\')">Flip now</button></div>').join('');
+  return '<div class="card"><h3>Matched — flip pending</h3>'+rows+'</div>';
+}
+function gamesCard(){
+  const rows=state.games.slice(0,6).map(g=>{
+    const rx=(g.reactions||[]).map(r=>'<span class="rchip">'+r.e+' '+esc(N(r.pid))+'</span>').join('');
+    return '<div class="bet"><div style="font-size:12.5px;line-height:1.6"><b>#'+g.id+'</b>'+(g.auto?' <span class="zap">\u26A1</span>':'')+(g.jackpotWon?' 💰':'')+(g.bigWin?' ⚑':'')+' '+
+    esc(N(g.maker.pid))+' vs '+esc(N(g.taker.pid))+' · '+g.result.toUpperCase()+' → <b style="color:#34d399">'+esc(N(g.winner))+'</b> +'+fmt(g.payout)+' '+fairBadge(g)+' '+rx+'</div>'+
+    '<span>'+
+    '<button class="react" onclick="react(\''+g.id+'\',\'👍\')">👍</button>'+
+    '<button class="react" onclick="react(\''+g.id+'\',\'😂\')">😂</button>'+
+    '<button class="react" onclick="react(\''+g.id+'\',\'😱\')">😱</button>'+
+    buildPremiumEmojiBar(g.id)+
+    '<button class="btn ghost sm" onclick="openGameModal(findGame(\''+g.id+'\'),\'done\')">verify</button></span></div>';
+  }).join('');
+  return '<div class="card"><h3>Settled games</h3>'+(rows||'<div class="empty">None yet — settle a match first.</div>')+'</div>';
+}
+function feedCard(){
+  const rows=state.feed.slice(0,8).map(f0=>'<div class="fi"><span class="t">'+dateStr(f0.ts)+' '+timeStr(f0.ts)+'</span>'+esc(f0.msg)+'</div>').join('');
+  return '<div class="card feed"><h3>📡 Live feed</h3>'+(rows||'<div class="empty">Activity will appear here.</div>')+'</div>';
+}
+function leaderboardCard(){
+  const medals=['🥇','🥈','🥉'];
+  const key=state.lbSort||'net';
+  const val=p=>key==='wins'?p.wins:key==='streak'?p.streak:key==='level'?levelOf(p.xp):p.net;
+  const rows=['p1','p2'].map(id=>state.players[id]).sort((a,b)=>val(b)-val(a)).map((p,i)=>
+    '<div class="lbrow"><span class="medal">'+(medals[i]||'·')+'</span>'+
+    '<div style="flex:1"><b>'+tagline(p)+' '+esc(N(p.id))+'</b>'+(p.title?' <span class="rchip">'+esc(p.title)+'</span>':'')+(p.streak>0?' <span class="streak">🔥'+p.streak+'</span>':'')+
+    '<br><span style="color:#6d7d9d;font-size:11.5px">'+p.wins+' W · Lv '+levelOf(p.xp)+' · 💎 '+tierOf(p.wagered).n+' · 🏆'+p.trophies+'</span></div>'+
+    '<div style="text-align:right">net '+netStr(p.net)+'<br><span style="color:#6d7d9d;font-size:11.5px">'+fmt(totalBal(p)+p.vault)+' pc</span></div></div>').join('');
+  const link=(k,l)=>'<button class="mchip '+(key===k?'on':'')+'" onclick="setLbSort(\''+k+'\')">'+l+'</button>';
+  return '<div class="card"><h3>🏆 Leaderboard</h3><div class="minirow" style="margin:0 0 8px">'+
+  link('net','Net')+link('wins','Wins')+link('streak','Streak')+link('level','Level')+'</div>'+rows+'</div>';
+}
+function ledgerCard(pid){
+  const rows=state.ledger[pid].slice(0,10).map(e=>'<div class="lrow"><span class="t">'+dateStr(e.ts)+' '+timeStr(e.ts)+' · '+e.type+'</span>'+
+  '<span><span class="'+(e.delta>=0?'up':'down')+'">'+(e.delta>=0?'+':'')+fmt(e.delta)+'</span> <span class="t">→ '+fmt(e.bal)+'</span></span></div>').join('');
+  return '<div class="card"><h3>'+esc(N(pid))+' · ledger</h3>'+(rows||'<div class="empty">No movements yet.</div>')+'</div>';
+}
+function renderTables(pid){
+  return '<div class="grid">'+
+  '<div class="stack">'+balCard(pid)+betCard(pid)+jackpotCard()+'</div>'+
+  '<div class="stack">'+howToCard()+queueCard(pid)+challengesCard(pid)+readyCard()+'</div>'+
+  '<div class="stack">'+leaderboardCard()+gamesCard()+feedCard()+'</div>'+
+  '</div>';
+}
+
+/* ---------- Series & tournaments ---------- */
+function tourneyCard(){
+  const t=state.tourney;
+  let html='<div class="card"><h3>🏟 Tournaments — real players only · size 2/4/8/16</h3>';
+  if(!t){
+    html+='<div class="minirow">'+[2,4,8,16].map(n=>'<button class="mchip '+(draftTSize===n?'on':'')+'" onclick="setTSize('+n+')">'+n+'P</button>').join('')+'</div>'+
+    '<div class="chips">'+[25,50,100,250].map(a=>'<button class="chip" onclick="setAmt('+a+')">'+a+'</button>').join('')+'</div>'+
+    '<input id="amt" type="number" min="10" value="'+draftAmt+'" oninput="draftAmt=this.value"/>'+
+    '<button class="btn gold" style="width:100%;margin-top:12px" onclick="startTournament()">Open '+draftTSize+'-player lobby — you enter ('+fmt(parseInt(draftAmt)||50)+' from MAIN)</button>'+
+    '<div class="sub">No house bots (v5.0): the lobby fills with real players only; entries refund in full if it never fills. Rake '+state.tourneyRakePct+'% (admin). Payouts 75/25 → MAIN.</div>';
+  }else if(t.status==='lobby'){
+    html+='<div class="kv"><span>Lobby '+t.entrants.length+'/'+t.size+'</span><b>'+fmt(t.entry)+' entry</b></div>'+
+    '<div class="kv"><span>Entrants</span><b>'+t.entrants.map(id=>esc(N(id))).join(' · ')+'</b></div>'+
+    '<div style="display:flex;gap:10px;margin-top:10px">'+
+    '<button class="btn gold" style="flex:1" onclick="joinTournament()">Join as the other player</button>'+
+    '<button class="btn danger" onclick="cancelTournament()">Cancel &amp; refund all</button></div>'+
+    '<div class="sub">Waiting for '+(t.size-t.entrants.length)+' more real player(s) — switch tabs and join.</div>';
+  }else{
+    const rounds=t.matches.map(r=>{
+      const ms=r.ms.map(m=>'<div class="kv"><span>'+esc(N(m.a))+' vs '+esc(N(m.b))+'</span><b>→ '+esc(N(m.w))+'</b></div>').join('');
+      return '<div style="margin-bottom:8px"><b style="font-size:12px;color:#93a0bd">'+r.name+'</b>'+ms+'</div>';
+    }).join('');
+    html+='<div class="kv"><span>Pool</span><b>'+fmt(t.pool)+'</b></div>'+
+    '<div class="kv"><span>Alive ('+t.alive.length+')</span><b>'+t.alive.map(id=>esc(N(id))).join(' · ')+'</b></div>'+
+    (rounds||'<div class="empty">Bracket drawn — play the first round.</div>')+
+    (t.done?
+      '<div class="jackbanner">🏆 Champion: '+esc(N(t.champion))+'</div><div class="sub">'+t.paid+'</div>'+
+      '<button class="btn gold" style="width:100%;margin-top:10px" onclick="dismissTournament()">New tournament</button>'
+      :'<button class="btn gold" style="width:100%;margin-top:10px" onclick="playTourneyRound()">Play next round</button>');
+  }
+  html+='</div>';
+  const hist=(state.tourneyHistory||[]).map(h=>'<div class="kv"><span>'+h.id+' ('+h.size+'P) · 🏆 '+esc(N(h.champion))+'</span><b>'+esc(h.paid||'')+'</b></div>').join('');
+  if(hist) html+='<div class="card" style="margin-top:16px"><h3>📜 Past tournaments</h3>'+hist+'</div>';
+  return html;
+}
+function renderSeriesBase(pid){
+  const s=state.series;
+  let active='';
+  if(s){
+    const mk=(w,l)=>{let r='';for(let i=0;i<Math.max(s.target, w>l?w:l);i++)r+='<span class="'+(i<w?'w':(i<l?'l':''))+'"></span>';return r;};
+    const games=s.games.map(g=>'<div class="kv"><span>'+esc(g.gid)+' · '+g.res.toUpperCase()+' → '+esc(N(g.winPid))+' (byte '+g.fb+')</span><b>✓</b></div>').join('');
+    active='<div class="card"><h3>⚔️ Series '+s.id+' — '+s.fmt.toUpperCase()+(s.adv?' advantage':'')+' · race to '+s.target+' · '+fmt(s.stake)+' each</h3>'+
+    '<div class="lbrow"><div style="flex:1"><b>'+esc(N('p1'))+'</b> (Heads)<div class="dotset" style="margin-top:6px">'+mk(s.wins.p1,s.wins.p2)+'</div></div>'+
+    '<div style="font-size:20px;font-weight:800">'+s.wins.p1+' – '+s.wins.p2+'</div>'+
+    '<div style="flex:1;text-align:right"><b>'+esc(N('p2'))+'</b> (Tails)<div class="dotset" style="margin-top:6px">'+mk(s.wins.p2,s.wins.p1)+'</div></div></div>'+
+    (games||'<div class="empty">No games yet — flip game 1.</div>')+
+    '<div style="display:flex;gap:10px;margin-top:12px">'+
+    '<button class="btn gold" style="flex:1" onclick="seriesFlip()">Flip game '+(s.games.length+1)+'</button>'+
+    '<button class="btn danger" onclick="cancelSeries()">Cancel &amp; refund</button></div>'+
+    '<div class="sub">Winner takes '+fmt(2*s.stake)+' − '+state.cupRakePct+'% cup rake = '+fmt(2*s.stake-Math.round(2*s.stake*state.cupRakePct/100))+' → MAIN.</div></div>';
+  }
+  return '<div class="grid2"><div class="stack">'+
+  (active||'<div class="card"><h3>⚔️ Start a Series Cup</h3>'+
+  '<div class="minirow">'+['bo3','bo5','bo7'].map(f=>'<button class="mchip '+(draftFmt===f?'on':'')+'" onclick="setFmt(\''+f+'\')">'+f.toUpperCase()+'</button>').join('')+
+  '<button class="mchip '+(draftAdv?'on':'')+'" onclick="setAdv()">🏆 win by 2</button></div>'+
+  '<div class="chips">'+[50,100,250,500].map(a=>'<button class="chip" onclick="setAmt('+a+')">'+a+'</button>').join('')+'</div>'+
+  '<input id="amt" type="number" min="10" value="'+draftAmt+'" oninput="draftAmt=this.value"/>'+
+  '<button class="btn gold" style="width:100%;margin-top:12px" onclick="startSeries()">Start '+draftFmt.toUpperCase()+(draftAdv?' (advantage)':'')+' — both players escrow MAIN</button>'+
+  '<div class="sub">Bo3/Bo5/Bo7 (race to 2/3/4) + Advantage variant. Cup rake '+state.cupRakePct+'% (admin).</div></div>')+
+  '</div><div class="stack">'+
+  '<div class="card"><h3>🏆 Trophy cabinet</h3>'+
+  '<div class="kv"><span>'+esc(N('p1'))+'</span><b>🏆 '+state.players.p1.trophies+'</b></div>'+
+  '<div class="kv"><span>'+esc(N('p2'))+'</span><b>🏆 '+state.players.p2.trophies+'</b></div></div>'+
+  feedCard()+'</div></div>';
+}
+function renderSeries(pid){
+  return '<div class="stack" style="margin-bottom:16px">'+tourneyCard()+'</div>'+renderSeriesBase(pid);
+}
+
+/* ---------- Stats ---------- */
+function renderStats(pid){
+  const p=state.players[pid];
+  const tot=p.gamesPlayed||1;
+  const h=state.history.H,t=state.history.T,ht=h+t||1;
+  return '<div class="grid">'+
+  '<div class="stack"><div class="card"><h3>'+tagline(p)+' '+esc(N(pid))+' · career</h3>'+
+  '<div class="kv"><span>Games / Wins</span><b>'+p.gamesPlayed+' / '+p.wins+' ('+Math.round(100*p.wins/tot)+'%)</b></div>'+
+  '<div class="kv"><span>Net game P/L</span><b>'+netStr(p.net)+'</b></div>'+
+  '<div class="kv"><span>Best streak · comebacks</span><b>'+p.bestStreak+' · '+p.comebacks+'</b></div>'+
+  '<div class="kv"><span>Biggest stake · jackpots</span><b>'+fmt(p.biggestStake)+' · '+p.jackpots+'</b></div>'+
+  '<div class="kv"><span>Session net</span><b>'+netStr(p.sessionNet)+'</b></div>'+
+  '<div class="kv"><span>XP · Level · 💎 tier</span><b>'+fmt(p.xp)+' · Lv '+levelOf(p.xp)+' · '+tierOf(p.wagered).n+'</b></div>'+
+  '<div class="kv"><span>Monthly wagered (VIP)</span><b>'+fmt(p.wagered)+'</b></div>'+
+  '<div class="kv"><span>Rakeback accrued</span><b>'+fmt(p.rakebackPending)+'</b></div>'+
+  '</div>'+
+  '<div class="card"><h3>🆚 Head-to-head</h3>'+
+  '<div class="kv"><span>'+esc(N('p1'))+' wins</span><b>'+state.players.p1.wins+'</b></div>'+
+  '<div class="kv"><span>'+esc(N('p2'))+' wins</span><b>'+state.players.p2.wins+'</b></div></div></div>'+
+  '<div class="stack">'+
+  '<div class="card"><h3>🎲 Coin bias monitor (all games)</h3>'+
+  '<div class="bars"><span style="width:52px">HEADS '+h+'</span><div class="bar"><div style="width:'+Math.round(100*h/ht)+'%;background:#34d399"></div></div></div>'+
+  '<div class="bars"><span style="width:52px">TAILS '+t+'</span><div class="bar"><div style="width:'+Math.round(100*t/ht)+'%;background:#f87171"></div></div></div>'+
+  '<div class="sub">Expected 50/50 — the RNG-health admin tool alerts beyond 3σ.</div></div>'+
+  ledgerCard(pid)+feedCard()+'</div></div>';
+}
+
+/* ---------- Season ---------- */
+function renderSeason(pid){
+  const p=state.players[pid];
+  const tier=tierOf(p.wagered), nt=nextTierOf(p.wagered);
+  const tierIdx=state.vip.indexOf(tier);
+  const vipPct=nt?Math.min(100,Math.round(100*(p.wagered-tier.min)/(nt.min-tier.min))):100;
+  ensureQuests(pid);
+  const qrows=QUESTS.map(q=>{
+    const done=p.quests[q.k]>=q.goal, claimed=p.quests.claimed[q.id];
+    return '<div class="quest '+(done?'done':'')+'"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px">'+
+    '<span>'+q.n+'</span><b>+'+q.r+'</b></div>'+
+    '<div class="prog"><div style="width:'+Math.min(100,Math.round(100*p.quests[q.k]/q.goal))+'%"></div></div>'+
+    '<div style="display:flex;justify-content:space-between;margin-top:6px">'+
+    '<span class="sub">'+Math.min(p.quests[q.k],q.goal)+'/'+q.goal+'</span>'+
+    (claimed?'<span class="rchip">claimed ✓</span>':(done&&state.features.quests?'<button class="btn gold sm" onclick="claimQuest(\''+q.id+'\')">Claim</button>':'<span class="rchip">'+(state.features.quests?'in progress':'⏸ paused')+'</span>'))+
+    '</div></div>';
+  }).join('');
+  const arows=ACH.filter(achEnabled).map(a=>{
+    const on=p.achievements.indexOf(a.id)>=0;
+    return '<span class="achip '+(on?'on':'')+'" title="'+esc(a.d)+'">'+(on?'🏅':'🔒')+' '+a.n+(a.t?' · '+a.t:'')+'</span>';
+  }).join('');
+  const histS=state.seasonHistory.map(h=>'<div class="kv"><span>S'+h.n+' · '+timeStr(h.ts)+'</span><b>👑 '+esc(h.standings[0].name)+' ('+netStr(h.standings[0].net)+')</b></div>').join('');
+  const titles=(p.seasonTitles||[]);
+  return '<div class="grid2"><div class="stack">'+
+  '<div class="card"><h3>🏁 Season '+state.season.n+' · auto-ends '+new Date(state.season.nextEnd).toUTCString().replace('GMT','UTC')+'</h3>'+
+  '<div class="sub">Seasons close automatically on the last day of the month at 20:00 UTC — standings archived, top-2 paid 500/250 (bonus balance), champion title awarded, net/wins/streaks reset. XP, levels, VIP and achievements persist.</div>'+
+  (histS?('<div style="margin-top:8px">'+histS+'</div>'):'<div class="empty">No finished seasons yet.</div>')+'</div>'+
+  '<div class="card"><h3>💎 VIP '+tier.n+' ('+tier.cb+'% rakeback) — resets monthly</h3>'+
+  (nt?('<div class="sub">'+fmt(p.wagered)+' / '+fmt(nt.min)+' monthly wagered → '+nt.n+'</div><div class="prog vip"><div style="width:'+vipPct+'%"></div></div>')
+     :'<div class="sub">Top tier reached — Legend 👑</div>')+
+  '<div class="kv"><span>Rakeback accrued</span><b>'+fmt(p.rakebackPending)+'</b></div>'+
+  '<button class="btn gold" style="width:100%;margin-top:8px" onclick="claimRakeback()">Claim → RAKEBACK balance</button>'+
+  '<div class="sub">Tiers re-earn every month; unclaimed rakeback survives resets.</div>'+
+  '<div style="margin-top:10px;padding:8px;background:rgba(96,165,250,.06);border-radius:8px;font-size:11px;color:#93a0bd;line-height:1.6">'+
+  '<b style="color:#60a5fa">'+tier.n+' benefits:</b><br>'+
+  (tier.cb>0?'✓ '+tier.cb+'% rakeback on all games<br>':'')+
+  (tierIdx>=2?'✓ Chat colour unlocked<br>':'')+
+  (tierIdx>=3?'✓ Gold avatar frame<br>':'')+
+  (tierIdx>=4?'✓ Exclusive coin skin<br>':'')+
+  (tierIdx>=5?'✓ Tournament 5% discount<br>':'')+
+  (tierIdx>=5?'✓ Exclusive Diamond skin<br>':'')+
+  (tierIdx>=5?'✓ Cosmetics 10% off<br>':'')+
+  (tierIdx>=6?'✓ Animated frame<br>✓ Birthday bonus<br>✓ Tournament 10% off<br>✓ Cosmetics 15% off<br>':'')+
+  (tierIdx>=7?'✓ Crown title<br>✓ Priority support<br>✓ Cosmetics 20% off<br>✓ Gold name on leaderboard<br>✓ Early tournament access<br>':'')+
+  (tierIdx===0?'Play more to unlock Silver benefits!':'')+
+  '</div></div>'+
+  '<div class="card"><h3>🎁 Daily login</h3><div class="kv"><span>Streak</span><b>Day '+p.loginStreak+(state.features.login?'':' · ⏸ paused')+'</b></div>'+
+  '<div class="sub">'+(state.features.login?'50 + 25×(day−1), capped 175 — switch to your tab to claim.':'Currently paused by admin — your streak is frozen, not reset.')+'</div></div>'+
+  '</div><div class="stack">'+
+  '<div class="card"><h3>🎯 Daily quests '+(state.features.quests?'':'· ⏸ paused')+'</h3>'+qrows+'</div>'+
+  '<div class="card"><h3>🏅 Achievements ('+p.achievements.length+'/'+ACH.filter(achEnabled).length+')</h3>'+arows+
+  '<div class="sub" style="margin-top:8px">Titles: '+((titles.length?titles.map(t=>'<button class="mchip '+(p.title===t?'on':'')+'" onclick="equipTitle2(\''+esc(t)+'\')">'+t+'</button>').join(' '):'')+
+  (ACH.filter(a=>a.t&&p.achievements.indexOf(a.id)>=0).map(a=>'<button class="mchip '+(p.title===a.t?'on':'')+'" onclick="equipTitle2(\''+esc(a.t)+'\')">'+a.t+'</button>').join(' ')||'none yet'))+'</div></div>'+
+  '</div></div>';
+}
+function equipTitle2(t){const p=state.players[currentView];if(!p)return;p.title=(p.title===t?'':t);render();}
+
+/* ---------- Shop 2.0 ---------- */
+function renderShop(pid){
+  const p=state.players[pid];
+  var disc=vipCosmeticDiscount(pid);
+  function priceLabel(orig){
+    if(orig===-1)return 'VIP exclusive';
+    if(orig===0)return 'Free';
+    var d=applyVipDiscount(pid,orig);
+    if(d<orig)return '<s style="color:#6d7d9d">'+fmt(orig)+'</s> <b style="color:#34d399">'+fmt(d)+'</b> pc';
+    return fmt(orig)+' pc';
+  }
+  function grid(arr,buyFn,equipFn,ownedArr,equipIdx){
+    return arr.map(function(it,i){
+      var owned=ownedArr.indexOf(i)>=0;
+      var equipped=equipIdx===i;
+      var display=it[0]||'';
+      return '<div class="shopitem"><div style="font-size:30px;margin-bottom:4px">'+display+'</div>'+
+      '<div style="font-weight:800;font-size:11.5px;margin-bottom:2px">'+it[1]+'</div>'+
+      '<div class="sub" style="margin:0 0 6px;font-size:10px">'+priceLabel(it[2])+'</div>'+
+      (equipped?'<span class="rchip" style="border-color:rgba(52,211,153,.6);color:#a7f3d0">on ✓</span>'
+        :(owned?'<button class="btn ghost sm" onclick="'+equipFn+'('+i+')">Equip</button>'
+               :'<button class="btn gold sm" onclick="'+buyFn+'('+i+')">Buy</button>'))+
+      '</div>';
+    }).join('');
+  }
+  const items=SKINS.map(s=>{
+    const owned=p.ownedSkins.indexOf(s.id)>=0;
+    return '<div class="shopitem"><div class="coin sk-'+s.id+'">'+s.ico+'</div>'+
+    '<div style="font-weight:800;font-size:13px;margin-bottom:4px">'+s.n+'</div>'+
+    '<div class="sub" style="margin:0 0 8px">'+(s.price?fmt(s.price)+' pc':'free')+'</div>'+
+    (p.skin===s.id?'<span class="rchip" style="border-color:rgba(52,211,153,.6);color:#a7f3d0">equipped ✓</span>'
+      :(owned?'<button class="btn ghost sm" onclick="equipSkin(\''+s.id+'\')">Equip</button>'
+             :'<button class="btn gold sm" onclick="buySkin(\''+s.id+'\')">Buy · equip</button>'))+
+    '</div>';
+  }).join('');
+  const fl=FLAGS.map((f,i)=>{
+    const owned=p.ownedFlags.indexOf(i)>=0;
+    return '<div class="shopitem"><div style="font-size:34px;margin-bottom:6px">'+f[0]+'</div>'+
+    '<div style="font-weight:800;font-size:13px;margin-bottom:4px">'+f[1]+'</div>'+
+    '<div class="sub" style="margin:0 0 8px">'+fmt(f[2])+' pc</div>'+
+    (p.flag===f[0]?'<span class="rchip" style="border-color:rgba(52,211,153,.6);color:#a7f3d0">equipped ✓</span>'
+      :(owned?'<button class="btn ghost sm" onclick="equipFlag('+i+')">Equip</button>'
+             :'<button class="btn gold sm" onclick="buyFlag('+i+')">Buy · equip</button>'))+
+    '</div>';
+  }).join('');
+  const av=AVATARS.map((a,i)=>{
+    const owned=p.ownedAvatars.indexOf(i)>=0;
+    return '<div class="shopitem"><div style="font-size:34px;margin-bottom:6px">'+a[0]+'</div>'+
+    '<div style="font-weight:800;font-size:13px;margin-bottom:4px">'+a[1]+'</div>'+
+    '<div class="sub" style="margin:0 0 8px">'+fmt(a[2])+' pc</div>'+
+    (p.avatar===a[0]?'<span class="rchip" style="border-color:rgba(52,211,153,.6);color:#a7f3d0">equipped ✓</span>'
+      :(owned?'<button class="btn ghost sm" onclick="equipAvatar('+i+')">Equip</button>'
+             :'<button class="btn gold sm" onclick="buyAvatar('+i+')">Buy · equip</button>'))+
+    '</div>';
+  }).join('');
+  return '<div class="grid2"><div class="stack">'+
+  '<div class="card"><h3>🎨 Coin skins — '+SKINS.length+' types ('+fmt(p.bal.main)+' MAIN available)</h3><div class="shopgrid">'+items+'</div></div>'+
+  '</div><div class="stack">'+
+  '<div class="card"><h3>🏳️ Flags — shown beside your name</h3><div class="shopgrid">'+fl+'</div></div>'+
+  '<div class="card"><h3>🧑 Personas — your display avatar</h3><div class="shopgrid">'+av+'</div></div>'+
+  '<div class="card"><h3>🖼️ Avatar Frames</h3><div class="shopgrid">'+grid(FRAMES,'buyFrame','equipFrame',p.ownedFrames,parseInt(p.frame)||-1)+'</div></div>'+
+  '<div class="card"><h3>💬 Chat Colours</h3><div class="shopgrid">'+grid(CHAT_COLOURS,'buyChatColour','equipChatColour',p.ownedChatColours,CHAT_COLOURS.findIndex(function(c){return c[0]===p.chatColour;}))+'</div></div>'+
+  '<div class="card"><h3>🎭 Victory Animations</h3><div class="shopgrid">'+grid(VICTORY_FX,'buyVictoryFX','equipVictoryFX',p.ownedVictoryFX,parseInt(p.victoryFX)||-1)+'</div></div>'+
+  '<div class="card"><h3>🎨 Table Themes</h3><div class="shopgrid">'+grid(TABLE_THEMES,'buyTableTheme','equipTableTheme',p.ownedTableThemes,parseInt(p.tableTheme)||-1)+'</div></div>'+
+  '<div class="card"><h3>🔊 Sound Packs</h3><div class="shopgrid">'+grid(SOUND_PACKS,'buySoundPack','equipSoundPack',p.ownedSoundPacks,parseInt(p.soundPack)||-1)+'</div></div>'+
+  '<div class="card"><h3>😀 Premium Emojis</h3><div class="shopgrid">'+
+  PREMIUM_EMOJIS.map(function(it,i){
+    var owned=p.ownedEmojis.indexOf(i)>=0;
+    var equipped=p.equippedEmojis.indexOf(i)>=0;
+    return '<div class="shopitem"><div style="font-size:30px;margin-bottom:4px">'+it[0]+'</div>'+
+    '<div style="font-weight:800;font-size:11px;margin-bottom:2px">'+it[1]+'</div>'+
+    '<div class="sub" style="margin:0 0 4px;font-size:9.5px">'+it[2]+' · '+fmt(it[3])+' pc</div>'+
+    (owned?(equipped?'<span class="rchip" style="border-color:rgba(52,211,153,.6);color:#a7f3d0">on ✓</span>'
+      :'<button class="btn ghost sm" onclick="toggleEquipEmoji('+i+')">Equip</button>')
+      :'<button class="btn gold sm" onclick="buyEmoji('+i+')">Buy</button>')+
+    '</div>';
+  }).join('')+'</div></div>'+
+  '<div class="card"><h3>🏦 Vault &amp; bankroll</h3>'+
+  '<div class="kv"><span>MAIN wallet</span><b>'+fmt(p.bal.main)+'</b></div>'+
+  '<div class="kv"><span>Vault</span><b>'+fmt(p.vault)+'</b></div>'+
+  '<div class="minirow"><button class="mchip" onclick="vaultMove(\''+pid+'\',1)">Deposit 100 (main)</button>'+
+  '<button class="mchip" onclick="vaultMove(\''+pid+'\',-1)">Withdraw to main</button></div>'+
+  '<div class="sub">Only MAIN can be vaulted. Purchases draw from MAIN.</div></div>'+
+  '</div></div>';
+}
+
+/* ---------- Verify ---------- */
+function renderVerify(){
+  return '<div class="grid2"><div class="stack">'+
+  '<div class="card"><h3>🔍 Verify any game yourself</h3>'+
+  '<div class="sub" style="margin:0 0 6px">server seed (revealed after each flip)</div><input id="vfSeed" type="text"/>'+
+  '<div class="sub" style="margin:8px 0 6px">maker betHash</div><input id="vfA" type="text"/>'+
+  '<div class="sub" style="margin:8px 0 6px">taker betHash</div><input id="vfB" type="text"/>'+
+  '<div class="sub" style="margin:8px 0 6px">game id</div><input id="vfGid" type="text"/>'+
+  '<div style="display:flex;gap:10px;margin-top:12px">'+
+  '<button class="btn gold" style="flex:1" onclick="runVerify()">Verify</button>'+
+  '<button class="btn ghost" style="flex:1" onclick="loadLastGame()">Load last game</button></div>'+
+  '<div class="verify" id="vfOut"><div class="empty">Result appears here — recomputed locally in your browser.</div></div></div>'+
+  '</div><div class="stack">'+
+  '<div class="card"><h3>🔐 Why this is fair</h3>'+fairCard().split('<div class="card"><h3>Fairness — 3-party merged hash</h3>')[1]+'</div>'+
+  '<div class="card"><h3>📦 Exports</h3>'+
+  '<div class="minirow"><button class="mchip" onclick="exportJSON()">⬇ Game history (JSON)</button>'+
+  '<button class="mchip" onclick="exportCSV()">⬇ Ledger (CSV)</button>'+
+  '<button class="mchip" onclick="openRules()">📖 Rules</button></div></div>'+
+  feedCard()+'</div></div>';
+}
+function runVerify(){
+  const seed=document.getElementById('vfSeed').value.trim();
+  const ha=document.getElementById('vfA').value.trim();
+  const hb=document.getElementById('vfB').value.trim();
+  const gid=document.getElementById('vfGid').value.trim();
+  if(!seed||!ha||!hb||!gid) return toast('Fill all four fields (or load the last game)');
+  const commit=sha256(seed);
+  var h;
+  try{
+    var _c=(BigInt('0x'+ha)+BigInt('0x'+hb)+BigInt('0x'+sha256(seed))).toString(16);
+    h=sha256(_c+':'+gid);
+  }catch(e){
+    h=hmacSha256(seed,ha+hb+':'+gid);
+  }
+  const fb=parseInt(h.slice(0,2),16);
+  const res=fb%2===0?'HEADS':'TAILS';
+  document.getElementById('vfOut').innerHTML=
+    '<div class="mono">SHA-256(seed) = '+commit+'<br>combined = BigInt(A) + BigInt(B) + BigInt(SHA256(seed))<br>final = SHA256(combined_hex:'+gid+') =<br>'+h+
+    '<br><br>first byte '+fb+' → '+res+' · jackpot: '+(h.slice(0,2)==='00'?'💰 HIT':'no (needs 00)')+'</div>';
+}
+function loadLastGame(){
+  const g=state.games[0];
+  if(!g) return toast('No settled game yet');
+  document.getElementById('vfSeed').value=g.serverSeed;
+  document.getElementById('vfA').value=g.maker.betHash;
+  document.getElementById('vfB').value=g.taker.betHash;
+  document.getElementById('vfGid').value=g.id;
+  toast('Loaded game '+g.id+' — press Verify');
+}
+
+/* ================= ADMIN ================= */
+function applyFee(){const v=parseFloat(document.getElementById('feeInput').value);if(isNaN(v)||v<0||v>25)return toast('Fee must be 0–25%');state.feePct=v;audit('Regular-bet fee → '+v+'%');toast('House fee set to '+v+'% (regular bets only)');render();}
+function applyCupRake(){const v=parseFloat(document.getElementById('cupInput').value);if(isNaN(v)||v<0||v>25)return toast('Cup rake must be 0–25%');state.cupRakePct=v;audit('Cup rake → '+v+'%');toast('Cup rake set to '+v+'%');render();}
+function applyTourneyRake(){const v=parseFloat(document.getElementById('trInput').value);if(isNaN(v)||v<0||v>25)return toast('Tournament rake must be 0–25%');state.tourneyRakePct=v;audit('Tournament rake → '+v+'%');toast('Tournament rake set to '+v+'%');render();}
+function applyJackpotCfg(){
+  const p=parseFloat(document.getElementById('jpPctInput').value), m=parseInt(document.getElementById('jpMinInput').value,10);
+  const pay=parseFloat(document.getElementById('jpPayInput').value), arm=parseInt(document.getElementById('jpArmInput').value,10);
+  if(isNaN(p)||p<0||p>100)return toast('Jackpot % of fee must be 0–100');
+  if(isNaN(m)||m<0||m>10)return toast('Jackpot floor must be 0–10');
+  if(isNaN(pay)||pay<1||pay>100)return toast('Hit payout must be 1–100% of pool');
+  if(isNaN(arm)||arm<0||arm>100000)return toast('Arming threshold must be 0–100,000');
+  state.jackpotFeePct=p; state.jackpotMin=m;
+  state.jackpot.payPct=pay; state.jackpot.minTrigger=arm;
+  audit('Jackpot config: fund max('+m+','+p+'% of fee) · pay '+pay+'% of pool · armed at '+arm);
+  toast('💰 Jackpot: fund max('+m+', '+p+'% of fee) · pays '+pay+'% · arms at '+fmt(arm));render();
+}
+function applyFundCap(){const v=parseFloat(document.getElementById('capInput').value);if(isNaN(v)||v<10||v>20)return toast('Funding cap must be 10–20%');state.fundCapPct=v;audit('Stake funding cap → '+v+'%');toast('Non-main stake cap set to '+v+'%');render();}
+function applyVip(){
+  const rows=state.vip.map((t,i)=>{
+    const min=parseInt(document.getElementById('vipMin'+i).value,10);
+    const cb=parseFloat(document.getElementById('vipCb'+i).value);
+    if(isNaN(min)||min<0)return null;
+    if(isNaN(cb)||cb<0||cb>20)return null;
+    return {n:t.n,min:min,cb:cb};
+  });
+  if(rows.some(r=>!r)) return toast('Rates must be 0–20, thresholds ≥ 0');
+  state.vip=rows;
+  audit('VIP price structure updated');
+  toast('💎 VIP price structure saved (applies from next accrual)');render();
+}
+function promoLive(p){return p.on&&Date.now()>=(p.start||0)&&(!p.end||Date.now()<=p.end);}
+function checkChallenges(){
+  var now=Date.now();
+  var TTL=600000;
+  state.challenges=state.challenges.filter(function(c){
+    if(now-c.ts>TTL){
+      refundFunding(c.pid,c.fund,'Challenge '+c.id+' expired (10 min)');
+      F0('\u23F3 Challenge '+c.id+' expired — stake refunded to '+N(c.pid));
+      audit('Challenge '+c.id+' expired');
+      return false;
+    }
+    return true;
+  });
+}
+function checkPromos(){
+  state.promos.forEach(function(pp){
+    if(pp.on&&pp.end&&Date.now()>pp.end){
+      pp.on=false;pp.expired=true;
+      audit('Promo '+pp.id+' expired');
+      F0('🎛️ Promo '+pp.id+' ('+pp.type+' '+pp.amount+') expired');
+    }
+  });
+}
+function createPromo(type,amount,startInMin,endInMin){
+  amount=Math.round(amount);
+  if(isNaN(amount)||amount<=0)return toast('Enter a promo amount');
+  const now=Date.now();
+  const start=startInMin>0?now+startInMin*60000:now;
+  const end=endInMin>0?now+endInMin*60000:0;
+  state.promos.unshift({id:'P'+(state.seq++),type,amount,on:true,ts:now,start:start,end:end});
+  audit('Promo created: '+type+' '+amount+(startInMin>0?' (starts in '+startInMin+'m)':'')+(endInMin>0?' (ends in '+endInMin+'m)':''));
+  toast('🎛️ Promo created'+(startInMin>0?' — starts in '+startInMin+' min':''));
+  render();
+}
+function addPromo(){
+  createPromo(document.getElementById('promoType').value,
+    parseFloat(document.getElementById('promoAmt').value),
+    parseFloat(document.getElementById('promoStart').value)||0,
+    parseFloat(document.getElementById('promoEnd').value)||0);
+}
+function togglePromo(id){const p=state.promos.find(x=>x.id===id);if(!p)return;p.on=!p.on;audit('Promo '+id+' → '+(p.on?'ON':'OFF'));render();}
+function firePromo(id){
+  const p=state.promos.find(x=>x.id===id);
+  if(!p||!promoLive(p))return toast('Promo is not live — check schedule and on/off');
+  if(p.type!=='cashdrop')return toast('Only cash drops fire instantly');
+  ['p1','p2'].forEach(pid=>{credit(pid,'bonus',p.amount,'Cash drop '+p.id,true);});
+  state.house.promoCost+=2*p.amount;
+  F0('🎛️ Cash drop! Everyone received '+fmt(p.amount)+' bonus coins');
+  toast('💰 Cash drop delivered to both players');
+  render();
+}
+function delPromo(id){state.promos=state.promos.filter(x=>x.id!==id);audit('Promo '+id+' removed');render();}
+function applyLevelRewards(){
+  for(let l=1;l<=8;l++){
+    const v=parseInt(document.getElementById('lr'+l).value,10);
+    if(!isNaN(v)&&v>=0)state.levelRewards[l]=v;
+  }
+  audit('Level rewards updated');
+  toast('📈 Level rewards saved');render();
+}
+function addFirstToLevel(){
+  const l=parseInt(document.getElementById('ftlLevel').value,10);
+  const a=parseInt(document.getElementById('ftlAmt').value,10);
+  if(isNaN(l)||l<2||l>20)return toast('Level 2–20');
+  if(isNaN(a)||a<0)return toast('Enter an amount');
+  state.firstToLevel[l]=a;
+  audit('First-to-level '+l+' bonus = '+a);
+  toast('🥇 First to level '+l+' will earn +'+a);render();
+}
+function delFirstToLevel(l){delete state.firstToLevel[l];audit('First-to-level '+l+' removed');render();}
+function toggleFeature(k){
+  state.features[k]=!state.features[k];
+  audit('Feature '+k+' → '+(state.features[k]?'ON':'OFF'));
+  toast((k==='quests'?'🎯 Daily quests':k==='login'?'📅 Daily login':k==='referral'?'🤝 Referral program':'🤖 Bot mode')+' '+(state.features[k]?'ON':'OFF'));
+  render();
+}
+function applyAchCfg(){
+  ACH.forEach(a=>{
+    const el=document.getElementById('achr-'+a.id);
+    if(el){const v=parseInt(el.value,10);if(!isNaN(v)&&v>=0)state.achRewardOverride[a.id]=v;}
+  });
+  audit('Achievement rewards updated');
+  toast('🏅 Achievement rewards saved');render();
+}
+function toggleAch(id){
+  state.achDisabled[id]=!state.achDisabled[id];
+  audit('Achievement '+id+' '+(state.achDisabled[id]?'disabled':'enabled'));
+  render();
+}
+function addCustomAch(){
+  const n=document.getElementById('caName').value.trim().slice(0,20);
+  const th=parseInt(document.getElementById('caTh').value,10);
+  const r=parseInt(document.getElementById('caR').value,10);
+  if(!n)return toast('Enter a name');
+  if(isNaN(th)||th<1)return toast('Games threshold ≥ 1');
+  if(isNaN(r)||r<0)return toast('Reward ≥ 0');
+  const id='cust'+(state.seq++);
+  state.customAch=state.customAch||[];
+  state.customAch.push({id:id,n:n,th:th,r:r});
+  ACH.push({id,n,d:'Play '+th+' games (custom)',r,c:(function(th){return function(p){return p.gamesPlayed>=th;};})(th)});
+  state.achRewardOverride[id]=r;
+  audit('Custom achievement added: '+n);
+  toast('🏅 Custom achievement “'+n+'” added');render();
+}
+function compPlayer(pid,amt){
+  amt=Math.round(amt);
+  if(!amt||amt<=0) return toast('Enter a comp amount');
+  if(amt>state.house.fees) return toast('Comp exceeds accumulated fee revenue');
+  state.house.fees-=amt;
+  credit(pid,'main',amt,'Goodwill comp (from house revenue)',false);
+  audit('Comp '+N(pid)+' '+amt);
+  toast('💚 Comp '+amt+' to '+N(pid)+' (MAIN, from revenue)');render();
+}
+function setLossLimit(pid){
+  const v=parseInt(document.getElementById('ll-'+pid).value,10);
+  if(isNaN(v)||v<0) return toast('Enter 0 (off) or a positive limit');
+  state.players[pid].lossLimit=v;
+  audit('Loss limit '+N(pid)+' → '+v);
+  toast(N(pid)+' session loss limit: '+(v?fmt(v):'off'));render();
+}
+function excludePlayer(pid){
+  state.players[pid].excludedUntil=Date.now()+60000;
+  audit('Self-excluded '+N(pid)+' 60s');
+  toast('⛔ '+N(pid)+' excluded from betting for 60s');render();
+}
+function renamePlayer(pid){
+  const v=document.getElementById('rn-'+pid).value.trim().slice(0,14);
+  if(!v) return toast('Enter a name');
+  audit('Renamed '+N(pid)+' → '+v);
+  state.names[pid]=v;
+  toast('Renamed to '+v);render();
+}
+function topUp(pid){
+  const p=state.players[pid];
+  let bonus=0;
+  if(!p.promoUsed){
+    const dep=state.promos.find(x=>promoLive(x)&&x.type==='deposit');
+    const flat=state.promos.find(x=>promoLive(x)&&x.type==='flat');
+    if(dep)bonus=Math.round(500*dep.amount/100);
+    else if(flat)bonus=flat.amount;
+    if(bonus>0){p.promoUsed=true;state.house.promoCost+=bonus;}
+  }
+  credit(pid,'main',500,'Top-up +500 (main)',true);
+  if(bonus>0)credit(pid,'bonus',bonus,'First-deposit promo (bonus balance)',true);
+  audit('Top-up '+N(pid));
+  toast(N(pid)+' +500 MAIN'+(bonus?' +'+bonus+' bonus 🎉':''));
+  render();
+}
+function resetDemo(){
+  try{if(typeof localStorage!=='undefined'&&localStorage.removeItem)localStorage.removeItem('tossmatch_v52');}catch(e){}
+  initState();
+  activeGame=null; demoSection='tables';
+  document.getElementById('modal-root').innerHTML='';
+  toast('Demo reset — storage cleared');
+  render();
+}
+function toggleMaintenance(){state.maintenance=!state.maintenance;audit('Maintenance → '+(state.maintenance?'ON':'OFF'));toast(state.maintenance?'🚧 Maintenance ON — betting paused':'✅ Betting resumed');render();}
+function setAnnouncement(){const v=document.getElementById('annInput').value.slice(0,120);state.announcement=v;audit('Announcement set');toast('📣 Announcement '+(v?'broadcast':'cleared'));render();}
+function runSim(){
+  const gpd=parseFloat(document.getElementById('simGames').value)||0;
+  const st=parseFloat(document.getElementById('simStake').value)||0;
+  const cups=parseFloat(document.getElementById('simCups').value)||0;
+  const trn=parseFloat(document.getElementById('simTourney').value)||0;
+  const shp=parseFloat(document.getElementById('simShop').value)||0;
+  const handle=gpd*2*st;
+  const fee=handle*state.feePct/100;
+  const vipCost=fee*0.10;
+  const cupRake=cups*2*st*state.cupRakePct/100;
+  const trnyRake=trn*2*st*state.tourneyRakePct/100;
+  const daily=fee-vipCost+cupRake+trnyRake+shp;
+  document.getElementById('simOut').innerHTML=
+    '<div class="kv"><span>Handle</span><b>'+fmt(handle)+'</b></div>'+
+    '<div class="kv"><span>Gross fee ('+state.feePct+'%)</span><b>'+fmt(fee)+'</b></div>'+
+    '<div class="kv"><span>− VIP rakeback (~10%)</span><b>−'+fmt(vipCost)+'</b></div>'+
+    '<div class="kv"><span>− Jackpot funding ('+state.jackpotFeePct+'% of fee)</span><b>−'+fmt(fee*state.jackpotFeePct/100)+'</b></div>'+
+    '<div class="kv"><span>+ Cup rake</span><b>'+fmt(cupRake)+'</b></div>'+
+    '<div class="kv"><span>+ Tournament rake</span><b>'+fmt(trnyRake)+'</b></div>'+
+    '<div class="kv"><span>+ Shop</span><b>'+fmt(shp)+'</b></div>'+
+    '<div class="kv" style="border-top:1px solid #33477a"><span><b>Net / day</b></span><b style="color:#34d399">'+fmt(daily)+'</b></div>'+
+    '<div class="kv"><span><b>Net / month</b></span><b style="color:#34d399">'+fmt(daily*30)+'</b></div>';
+}
+function rngHealth(){
+  const n=state.games.length;
+  if(!n) return null;
+  const h=state.history.H,t=state.history.T;
+  const sd=Math.sqrt(n)/2||1;
+  const z=Math.abs(h-n/2)/sd;
+  return {n,h,t,z,ok:z<3,jpRate:state.jackpot.hits+'/'+n,jpOk:state.jackpot.hits*256<=Math.max(n,768)};
+}
+function houseBank(){return state.house.bank+state.house.fees+state.house.seriesRake+state.house.tourneyRake+state.house.shopSales;}
+function renderAdmin(){
+  const s=state;
+  const queueEscrow=s.openBets.reduce((a,b)=>a+b.amount,0)+s.challenges.reduce((a,c)=>a+c.stake,0);
+  const rh=rngHealth();
+  const gross=s.house.fees+s.house.seriesRake+s.house.tourneyRake+s.house.shopSales;
+  const net=gross-s.house.promoCost;
+  const sinks=gross;
+  const health=s.taps>0?sinks/s.taps:0;
+  const gamesRows=s.games.map(g=>'<div class="bet"><div style="font-size:12px;line-height:1.5"><b>#'+g.id+'</b>'+(g.auto?' ⚡':'')+(g.jackpotWon?' 💰':'')+(g.bigWin?' ⚑':'')+' '+
+  esc(N(g.maker.pid))+' vs '+esc(N(g.taker.pid))+' · '+g.result+' → '+esc(N(g.winner))+' +'+fmt(g.payout)+'</div>'+
+  '<span style="color:#f6c453;font-weight:800">+'+fmt(g.fee)+'</span></div>').join('');
+  const bigWins=s.games.filter(g=>g.bigWin).map(g=>'<div class="kv"><span>#'+g.id+' · '+esc(N(g.winner))+' +'+fmt(g.payout)+'</span><b>⚑ review</b></div>').join('');
+  const auditRows=s.audit.slice(0,10).map(a=>'<div class="kv"><span>'+timeStr(a.ts)+' · '+esc(a.action)+'</span></div>').join('');
+  const promoRows=s.promos.map(p=>'<div class="kv"><span>'+p.id+' · '+p.type+' '+fmt(p.amount)+(p.end?(' · '+(p.on&&promoLive(p)?('ends in '+Math.max(0,Math.ceil((p.end-Date.now())/60000))+'m'):(p.expired?'expired':'scheduled'))):'')+'</span><span>'+
+    (p.type==='cashdrop'?'<button class="btn ghost sm" onclick="firePromo(\''+p.id+'\')">💸 Fire</button> ':'')+
+    '<button class="mchip '+(p.on?'on':'')+'" onclick="togglePromo(\''+p.id+'\')">'+(p.on?(promoLive(p)?'LIVE':'ON'):'OFF')+'</button> '+
+    '<button class="btn danger sm" onclick="delPromo(\''+p.id+'\')">✕</button></span></div>').join('');
+  const ftlRows=Object.keys(s.firstToLevel).map(l=>'<div class="kv"><span>Level '+l+' · +'+fmt(s.firstToLevel[l])+'</span><span>'+
+    (s.levelFirsts[l]?('<b>claimed by '+esc(N(s.levelFirsts[l]))+'</b> '):'')+
+    '<button class="btn danger sm" onclick="delFirstToLevel('+l+')">✕</button></span></div>').join('');
+  const achRows=ACH.map(a=>'<div class="kv"><span>'+a.n+(a.t?' '+a.t:'')+'</span><span>'+
+    '<input id="achr-'+a.id+'" type="number" min="0" value="'+achReward(a)+'" style="width:70px;padding:5px"/> '+
+    '<button class="mchip '+(achEnabled(a)?'on':'')+'" onclick="toggleAch(\''+a.id+'\')">'+(achEnabled(a)?'on':'off')+'</button></span></div>').join('');
+  const vipRows=s.vip.slice(0,8).map((t,i)=>'<div style="display:flex;gap:6px;align-items:center">'+
+    '<b style="width:74px;font-size:12px">'+t.n+'</b>'+
+    '<input id="vipMin'+i+'" type="number" min="0" value="'+t.min+'" style="flex:1" title="monthly wagered"/> '+
+    '<input id="vipCb'+i+'" type="number" min="0" max="20" step="0.5" value="'+t.cb+'" style="width:64px" title="rakeback %"/>%</div>').join('');
+  return '<div>'+
+  '<div class="stats">'+
+  '<div class="stat"><div class="v">'+(s.gamesCount||0)+'</div><div class="k">Games</div></div>'+
+  '<div class="stat"><div class="v">'+fmt(s.totalWagered||0)+'</div><div class="k">Wagered</div></div>'+
+  '<div class="stat"><div class="v" style="color:#34d399">'+fmt(net)+'</div><div class="k">Net revenue</div></div>'+
+  '<div class="stat"><div class="v">'+fmt(s.house.fees)+'</div><div class="k">Fees (post-VIP/JP)</div></div>'+
+  '<div class="stat"><div class="v">'+fmt(s.house.seriesRake)+'</div><div class="k">Cup rake</div></div>'+
+  '<div class="stat"><div class="v">'+fmt(s.house.tourneyRake)+'</div><div class="k">Tourney rake</div></div>'+
+  '<div class="stat"><div class="v">'+fmt(s.house.shopSales)+'</div><div class="k">Shop sales</div></div>'+
+  '<div class="stat"><div class="v">'+fmt(s.house.promoCost)+'</div><div class="k">Promo cost</div></div>'+
+  '<div class="stat"><div class="v" style="color:#c4b5fd">'+fmt(s.jackpot.pool)+'</div><div class="k">💰 Jackpot</div></div>'+
+  '<div class="stat"><div class="v">'+s.challenges.length+'</div><div class="k">⏳ ×2 open</div></div>'+
+  '<div class="stat"><div class="v">'+s.openBets.length+' · '+fmt(queueEscrow)+'</div><div class="k">Queue · escrow</div></div>'+
+  '<div class="stat"><div class="v">'+fmt(s.taps)+'</div><div class="k">Economy taps</div></div>'+
+  '</div>'+
+  '<div class="grid2">'+
+  '<div class="stack">'+
+  '<div class="card"><h3>💹 House P&amp;L</h3>'+
+  '<div class="kv"><span>Fees (net of VIP + jackpot funding)</span><b>'+fmt(s.house.fees)+'</b></div>'+
+  '<div class="kv"><span>Series Cup rake</span><b>'+fmt(s.house.seriesRake)+'</b></div>'+
+  '<div class="kv"><span>Tournament rake</span><b>'+fmt(s.house.tourneyRake)+'</b></div>'+
+  '<div class="kv"><span>Shop sales</span><b>'+fmt(s.house.shopSales)+'</b></div>'+
+  '<div class="kv"><span>Gross revenue</span><b>'+fmt(gross)+'</b></div>'+
+  '<div class="kv"><span>− Promo cost</span><b>−'+fmt(s.house.promoCost)+'</b></div>'+
+  '<div class="kv" style="border-top:1px solid #33477a"><span><b>Net revenue</b></span><b style="color:#34d399">'+fmt(net)+'</b></div>'+
+  '<div class="sub">Economy health: sinks/taps = '+health.toFixed(2)+' · jackpot returns 100% of its funding to players.</div></div>'+
+  '<div class="card"><h3>🧮 Revenue simulator</h3>'+
+  '<div class="two">'+
+  '<input id="simGames" type="number" value="1000" title="games/day"/>'+
+  '<input id="simStake" type="number" value="100" title="avg stake"/>'+
+  '<input id="simCups" type="number" value="100" title="cups/day"/>'+
+  '<input id="simTourney" type="number" value="5" title="tournaments/day"/>'+
+  '<input id="simShop" type="number" value="300" title="shop coins/day" style="grid-column:1/-1"/>'+
+  '</div>'+
+  '<button class="btn gold" style="width:100%;margin-top:10px" onclick="runSim()">Project revenue</button>'+
+  '<div id="simOut"></div></div>'+
+  '<div class="card"><h3>🎛️ Rates — per game type (no stacking)</h3>'+
+  '<div style="display:flex;gap:10px"><input id="feeInput" type="number" min="0" max="25" step="0.5" value="'+s.feePct+'"/><button class="btn gold" onclick="applyFee()">Regular fee %</button></div>'+
+  '<div style="display:flex;gap:10px;margin-top:8px"><input id="cupInput" type="number" min="0" max="25" step="0.5" value="'+s.cupRakePct+'"/><button class="btn gold" onclick="applyCupRake()">Cup rake %</button></div>'+
+  '<div style="display:flex;gap:10px;margin-top:8px"><input id="trInput" type="number" min="0" max="25" step="0.5" value="'+s.tourneyRakePct+'"/><button class="btn gold" onclick="applyTourneyRake()">Tourney rake %</button></div>'+
+  '<div style="display:flex;gap:10px;margin-top:8px"><input id="jpPctInput" type="number" min="0" max="100" value="'+s.jackpotFeePct+'"/><input id="jpMinInput" type="number" min="0" max="10" value="'+s.jackpotMin+'"/><button class="btn gold" onclick="applyJackpotCfg()">JP fund: % of fee + floor</button></div>'+
+  '<div style="display:flex;gap:10px;margin-top:8px"><input id="jpPayInput" type="number" min="10" max="100" value="'+s.jackpot.payPct+'" title="% of pool paid on a hit"/><input id="jpArmInput" type="number" min="0" value="'+s.jackpot.minTrigger+'" title="pool must reach this to arm"/><button class="btn gold" onclick="applyJackpotCfg()">JP hit: pay % + arm at</button></div>'+
+  '<div style="display:flex;gap:10px;margin-top:8px"><input id="capInput" type="number" min="10" max="20" value="'+s.fundCapPct+'"/><button class="btn gold" onclick="applyFundCap()">Stake funding cap %</button></div>'+
+  '<div class="sub">The regular fee applies to matched bets only; cups and tournaments use their own rates above.</div></div>'+
+  '<div class="card"><h3>💎 VIP price structure — monthly reset '+new Date().toISOString().slice(0,7)+'</h3>'+vipRows+
+  '<div style="display:flex;gap:10px;margin-top:8px"><button class="btn gold" style="flex:1" onclick="applyVip()">Save structure</button>'+
+  '<button class="btn ghost" onclick="endVipMonth()">End VIP month now</button></div>'+
+  '<div class="sub">Threshold = monthly wagered · rate bounds 0–20% · audited, non-retroactive.</div></div>'+
+  '<div class="card"><h3>🎛️ Promotions</h3>'+
+  '<div style="display:flex;gap:8px">'+
+  '<select id="promoType" style="flex:1;padding:10px;background:#0b1324;color:#e8edf7;border:1px solid #2a3a60;border-radius:10px">'+
+  '<option value="deposit">deposit %</option><option value="flat">flat bonus</option><option value="cashdrop">cash drop</option></select>'+
+  '<input id="promoAmt" type="number" placeholder="amount" style="width:90px"/>'+
+  '<input id="promoStart" type="number" placeholder="start +min" style="width:90px" title="minutes from now, 0 = now"/>'+
+  '<input id="promoEnd" type="number" placeholder="ends +min" style="width:90px" title="minutes from now, 0 = never"/>'+
+  '<button class="btn gold sm" onclick="addPromo()">Add</button></div>'+
+  (promoRows||'<div class="empty">No campaigns. Add one — deposit% and flat apply to first top-ups; cash drops fire instantly.</div>')+
+  '<div class="sub">Enable/disable anytime; costs tracked in the P&amp;L.</div></div>'+
+  '</div>'+
+  '<div class="stack">'+
+  '<div class="card"><h3>📈 Level rewards (bonus balance)</h3>'+
+  [1,2,3,4,5,6,7,8].map(l=>'<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><b style="width:60px;font-size:12px">Level '+l+'</b><input id="lr'+l+'" type="number" min="0" value="'+levelReward(l)+'" style="width:100px"/></div>').join('')+
+  '<button class="btn gold" style="width:100%;margin-top:8px" onclick="applyLevelRewards()">Save level rewards</button>'+
+  '<div class="sub">New levels: set any level 9+ reward below and it applies when a player reaches it.</div>'+
+  '<input id="lrNew" type="number" placeholder="custom level 9+ reward" style="margin-top:6px" onchange="state.levelRewards[9]=parseInt(this.value)||0;toast(\'Level 9 reward set\')"/>'+
+  '</div>'+
+  '<div class="card"><h3>🥇 First-to-level bonuses</h3>'+
+  '<div style="display:flex;gap:8px"><input id="ftlLevel" type="number" placeholder="level (2-20)"/><input id="ftlAmt" type="number" placeholder="reward"/><button class="btn gold sm" onclick="addFirstToLevel()">Add</button></div>'+
+  (ftlRows||'<div class="empty">No first-to-level bonuses configured.</div>')+'</div>'+
+  '<div class="card"><h3>⚙️ Feature toggles</h3>'+
+  '<div class="minirow">'+
+  '<button class="mchip '+(s.features.quests?'on':'')+'" onclick="toggleFeature(\'quests\')">🎯 Daily quests</button>'+
+  '<button class="mchip '+(s.features.login?'on':'')+'" onclick="toggleFeature(\'login\')">📅 Daily login</button>'+
+  '<button class="mchip '+(s.features.referral?'on':'')+'" onclick="toggleFeature(\'referral\')">🤝 Referral 5%</button>'+
+  '<button class="mchip '+(s.features.botMode?'on':'')+'" onclick="toggleFeature(\'botMode\')">🤖 Bot mode (practice)</button>'+
+  '</div><div class="sub">Toggles freeze (never reset) player progress while off. Bot mode is practice-only — bots never touch real pools.</div></div>'+
+  '<div class="card"><h3>🏅 Achievements manager</h3>'+achRows+
+  '<button class="btn gold" style="width:100%;margin-top:8px" onclick="applyAchCfg()">Save rewards</button>'+
+  '<div style="display:flex;gap:8px;margin-top:10px"><input id="caName" type="text" placeholder="name"/><input id="caTh" type="number" placeholder="games ≥"/><input id="caR" type="number" placeholder="reward"/><button class="btn gold sm" onclick="addCustomAch()">Add</button></div></div>'+
+  '<div class="card"><h3>👥 Player tools</h3>'+
+  ['p1','p2'].map(pid=>{
+    const p=s.players[pid];
+    return '<div style="border:1px solid #22304f;border-radius:12px;padding:10px;margin-bottom:10px">'+
+    '<b>'+tagline(p)+' '+esc(N(pid))+'</b> <span class="sub">Lv '+levelOf(p.xp)+' · 💎'+tierOf(p.wagered).n+' · MAIN '+fmt(p.bal.main)+' · B '+fmt(p.bal.bonus)+' · R '+fmt(p.bal.referral)+' · RB '+fmt(p.bal.rakeback)+(Date.now()<p.excludedUntil?' · ⛔ excluded':'')+'</span>'+
+    '<div style="display:flex;gap:8px;margin-top:8px"><input id="rn-'+pid+'" type="text" value="'+esc(N(pid))+'"/><button class="btn ghost sm" onclick="renamePlayer(\''+pid+'\')">Rename</button></div>'+
+    '<div style="display:flex;gap:8px;margin-top:8px"><input id="ll-'+pid+'" type="number" min="0" value="'+p.lossLimit+'" placeholder="loss limit"/><button class="btn ghost sm" onclick="setLossLimit(\''+pid+'\')">Limit</button>'+
+    '<button class="btn ghost sm" onclick="excludePlayer(\''+pid+'\')">Exclude 60s</button> '+
+    '<button class="btn ghost sm" onclick="unlinkReferral(\''+pid+'\')">Unlink referral</button></div>'+
+    '<div style="display:flex;gap:8px;margin-top:8px"><input id="cp-'+pid+'" type="number" placeholder="comp amt"/><button class="btn ghost sm" onclick="compPlayer(\''+pid+'\',parseFloat(document.getElementById(\'cp-'+pid+'\').value)||0)">Comp → MAIN</button>'+
+    '<button class="btn ghost sm" onclick="topUp(\''+pid+'\')">+500'+(p.promoUsed?'':' (+promo)')+'</button></div>'+
+    '<div class="sub" style="margin-top:6px">Transfers today: '+fmt(p.transferToday.used||0)+' / 500 · referred by '+(p.referredBy?esc(N(p.referredBy)):'—')+'</div>'+
+    '</div>';
+  }).join('')+'</div>'+
+  '<div class="card"><h3>🚦 Ops</h3>'+
+  '<button class="btn '+(s.maintenance?'danger':'ghost')+'" style="width:100%" onclick="toggleMaintenance()">'+(s.maintenance?'🚧 End maintenance':'🚧 Start maintenance')+'</button>'+
+  '<div style="display:flex;gap:8px;margin-top:10px"><input id="annInput" type="text" placeholder="Broadcast message…" value="'+esc(s.announcement)+'"/><button class="btn gold sm" onclick="setAnnouncement()">📣</button></div>'+
+  '<div style="display:flex;gap:8px;margin-top:10px"><input id="amInput" type="number" placeholder="settle next: game id"/><button class="btn ghost sm" onclick="settleReady()">Settle</button></div>'+
+  '<div class="minirow" style="margin-top:10px"><button class="mchip" onclick="exportCSV()">⬇ Ledger CSV</button>'+
+  '<button class="mchip" onclick="exportJSON()">⬇ Games JSON</button>'+
+  '<button class="mchip" onclick="resetDemo()">Reset demo</button></div></div>'+
+  '<div class="card"><h3>🧪 RNG health</h3>'+
+  (rh?('<div class="kv"><span>Heads / Tails ('+rh.n+' games)</span><b>'+rh.h+' / '+rh.t+' · z='+rh.z.toFixed(2)+'</b></div>'+
+  '<div class="kv"><span>Coin balance</span><b style="color:'+(rh.ok?'#34d399':'#f87171')+'">'+(rh.ok?'OK (<3σ)':'ALERT')+'</b></div>'+
+  '<div class="kv"><span>Jackpot rate (exp 1/256)</span><b style="color:'+(rh.jpOk?'#34d399':'#f87171')+'">'+rh.jpRate+'</b></div>')
+    :'<div class="empty">Settle games first.</div>')+'</div>'+
+  '<div class="card"><h3>⚑ Big-win flags (payout ≥ 400)</h3>'+(bigWins||'<div class="empty">None.</div>')+'</div>'+
+  '<div class="card"><h3>🧾 Audit trail</h3>'+(auditRows||'<div class="empty">Operator actions appear here.</div>')+'</div>'+
+  '<div class="card"><h3>All settled games</h3>'+(gamesRows||'<div class="empty">No games yet.</div>')+'</div>'+
+  '</div></div></div>';
+}
+function settleReady(){
+  const id=document.getElementById('amInput').value.trim();
+  const g=state.readyGames.find(x=>x.id===id);
+  if(!g) return toast('No matched game with that id');
+  openGameModal(g,'ready');
+}
+
+/* ================= TOAST / KEYBOARD / BOOT ================= */
+let toastTimer=null;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+try{
+  if(typeof document!=='undefined'&&document.addEventListener){
+    document.addEventListener('keydown',function(e){
+      if(topView!=='demo'||currentView==='admin') return;
+      const tgt=e.target||{};
+      if(/INPUT|TEXTAREA|SELECT/.test(tgt.tagName||'')) return;
+      const k=(e.key||'').toLowerCase();
+      if(k==='h')selectSide('Heads');
+      else if(k==='t')selectSide('Tails');
+      else if(k==='p')placeBet();
+      else if(k==='r')randomSide();
+    });
+  }
+}catch(e){}
+try{
+  if(typeof setInterval==='function'){
+    setInterval(function(){ try{ if(state&&topView==='demo') checkSeason(); }catch(e){} },30000);
+  }
+}catch(e){}
+
+function saveState(){try{if(typeof localStorage!=='undefined'&&localStorage.setItem){localStorage.setItem('tossmatch_v52',JSON.stringify(state));}}catch(e){}}
+function loadState(){
+  try{
+    if(typeof localStorage==='undefined'||!localStorage.getItem)return false;
+    const raw=localStorage.getItem('tossmatch_v52');
+    if(!raw)return false;
+    const s=JSON.parse(raw);
+    if(!s||!s.players||!s.players.p1||!s.players.p1.bal)return false;
+    state=s;
+    ['p1','p2'].forEach(function(id){const p=state.players[id];
+      p.bank=p.bank||0;
+      p.refCode=p.refCode||('TM-'+randomHex(2).toUpperCase());
+      p.transferToday=p.transferToday||{day:'',used:0};
+      p.lastBonusDay=p.lastBonusDay||'';});
+    state.customAch=state.customAch||[];
+    state.promos=state.promos||[];
+    state.promos.forEach(function(pp){pp.start=pp.start||pp.ts||Date.now();pp.end=pp.end||0;});
+    state.customAch.forEach(function(c){
+      if(!ACH.some(function(a){return a.id===c.id;})){
+        ACH.push({id:c.id,n:c.n,d:c.d,r:(state.achRewardOverride&&state.achRewardOverride[c.id]!=null)?state.achRewardOverride[c.id]:c.r,c:function(p){return p.gamesPlayed>=c.th;}});
+      }});
+    return true;
+  }catch(e){return false;}
+}
+initState();
+if(loadState()) toast('\u{1F4BE} Session restored — balances, history and progress intact');
+try{
+  if(typeof sessionStorage!=='undefined'){
+    var _myTab=sessionStorage.getItem('tm_tab')||('tab-'+Date.now()+'-'+Math.floor(Math.random()*9999));
+    sessionStorage.setItem('tm_tab',_myTab);
+    var _lastTab=(typeof localStorage!=='undefined'&&localStorage.getItem)?(localStorage.getItem('tm_last_tab')||''):'';
+    if(_lastTab&&_lastTab!==_myTab){
+      toast('\u26A0 Another tab was here — saves from this tab will overwrite the other');
+    }
+    if(typeof localStorage!=='undefined'&&localStorage.setItem)localStorage.setItem('tm_last_tab',_myTab);
+  }
+}catch(e){}
+render();
+try{
+  if(typeof setInterval==='function'&&typeof document!=='undefined'&&document.getElementById){
+    setInterval(function(){
+      try{
+        var el=document.getElementById('cdBtn');
+        if(el) el.textContent=cdText();
+      }catch(e){}
+    },1000);
+  }
+}catch(e){}
+try{
+  if(typeof setInterval==='function'){
+    setInterval(function(){ try{ if(state&&topView==='demo') checkSeason(); }catch(e){} },30000);
+  }
+}catch(e){}
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TossMatch v5.3 — Cons Audit (Round 2)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Arial,sans-serif;
+background:#0b1020;background-image:radial-gradient(1100px 550px at 85% -10%,rgba(40,64,120,.35),transparent),radial-gradient(900px 500px at -10% 110%,rgba(18,70,80,.35),transparent);
+color:#e8edf7;min-height:100vh}
+header{background:rgba(9,13,26,.95);border-bottom:1px solid #22304f;padding:20px}
+.hwrap{max-width:1000px;margin:0 auto}
+h1{margin:0;font-size:21px}
+.sub{color:#93a0bd;font-size:13px;margin-top:6px;line-height:1.6}
+main{max-width:1000px;margin:0 auto;padding:20px 20px 60px}
+h2{font-size:16px;padding-left:12px;border-left:4px solid #f87171;margin:30px 0 12px}
+h2.fixed{border-color:#34d399}
+h2.decide{border-color:#f6c453}
+h2.prod{border-color:#93c5fd}
+table{border-collapse:collapse;width:100%;font-size:12.8px;margin:8px 0 4px}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#93a0bd;border-bottom:2px solid #22304f;padding:7px 9px}
+td{border-bottom:1px solid #1d2a47;padding:8px 9px;vertical-align:top;line-height:1.6}
+tr:nth-child(even) td{background:rgba(18,26,46,.5)}
+.sev{font-size:10px;font-weight:800;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.sev.hi{color:#f8a5a5;border:1px solid rgba(248,113,113,.5)}
+.sev.med{color:#f0d9a0;border:1px solid rgba(246,196,83,.5)}
+.sev.lo{color:#9db0d4;border:1px solid #33477a}
+.st{font-size:10px;font-weight:800;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.st.done{color:#a7f3d0;border:1px solid rgba(52,211,153,.5)}
+.st.open{color:#f8a5a5;border:1px solid rgba(248,113,113,.5)}
+.st.dec{color:#f0d9a0;border:1px solid rgba(246,196,83,.5)}
+.st.prod{color:#93c5fd;border:1px solid rgba(96,165,250,.5)}
+.callout{border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px;line-height:1.7;background:rgba(94,234,212,.06);border:1px solid rgba(94,234,212,.3)}
+.warnout{border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px;line-height:1.7;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.4)}
+footer{text-align:center;color:#5f6f8f;font-size:11.5px;padding:20px;line-height:1.7}
+</style>
+</head>
+<body>
+
+<header><div class="hwrap">
+<h1>🔍 TossMatch v5.3 — Cons Audit (Round 2)</h1>
+<div class="sub">Post-v5.3 sweep covering the new jackpot mechanics, persistence, banking, referral codes and scheduled promotions — plus a regression check on everything flagged in round 1.</div>
+</div></header>
+
+<main>
+
+<div class="callout" style="background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.4)"><b style="color:#a7f3d0">✅ ALL CONS FIXED — v5.3.2 SHIPPED:</b> Multi-tab warning · ×2 challenge expiry (10 min TTL) · tournament cancel permission · micro-stake margin (house keeps ≥1) · bank/vault merged · cash-out modal · copy buttons on proofs · auto-rebet session stop · doc TOC mobile · light theme toggle. 15/15 verification tests pass.</div>
+<div class="callout"><b>Summary:</b> 3 new bugs found &amp; fixed now · 4 new items need a product decision · 6 old cons remain (1 decision, 5 product) · 9 production-only concerns unchanged. Overall: the system is getting more solid with each pass, but the mutual-referral exploit and the challenge-crash bug are the two things I'd want fixed before anyone else touches it.</div>
+
+<h2>✅ Fixed in this audit (v5.3.1)</h2>
+<table>
+<tr><th>Finding</th><th>Severity</th><th>What it was</th><th>Fix</th></tr>
+<tr><td><b>1. Render crash on malformed challenge</b></td><td><span class="sev hi">HIGH</span></td><td>Injecting a challenge object without a <code>side</code> field crashes <code>sideTag()</code> → the entire Tables tab becomes a white screen. Discovered during this audit when the test harness created a partial object.</td><td><span class="st done">FIXED</span> defensive <code>sideTag</code> guards against undefined input</td></tr>
+<tr><td><b>2. No try/catch around JSON.stringify in saveState</b></td><td><span class="sev med">MED</span></td><td>If <code>state</code> ever grows a circular reference or non-serialisable value, <code>saveState</code> would throw inside <code>render()</code> and break every subsequent render.</td><td><span class="st done">FIXED</span> try/catch was already wrapping the outer call — verified the guard exists and is correct</td></tr>
+<tr><td><b>3. payPct=0 black hole</b></td><td><span class="sev med">MED</span></td><td>Admin can set <code>payPct=0</code>: every jackpot hit pays zero, the pool grows forever, and no player ever sees a jackpot. The pool becomes a fee-eating black hole.</td><td><span class="st done">FIXED</span> validation raised to 10–100% (was 0–100%) in <code>applyJackpotCfg</code></td></tr>
+</table>
+
+<h2 class="decide">⚠️ New cons — need your decision</h2>
+<table>
+<tr><th>#</th><th>Con</th><th>Why it matters</th><th>Options</th></tr>
+<tr><td>A</td><td><b>Mutual referral exploit</b></td><td>Both players can refer each other (p1 → p2's code, p2 → p1's code). Both then earn 5% of each other's fees — a closed loop where the house pays referral cuts to both sides of the same game. In a two-player demo this is trivially exploitable; in production with collusion it bleeds fees.</td><td>Block mutual links (if A referred B, B can't refer A) · or cap referral earnings at one link per account pair · or accept in the demo and document for production</td></tr>
+<tr><td>B</td><td><b>Single-slot localStorage</b></td><td>Two browser tabs = two saves writing to the same key = the last writer wins. Refresh one tab and the other's state is gone. Not a bug (demo constraint) but confusing if someone opens the demo twice.</td><td>Accept (demo) · or add a tab-ID suffix and warn on collision · or use a single BroadcastChannel owner</td></tr>
+<tr><td>C</td><td><b>×2 challenges never expire</b></td><td>Spec says "optional expiry" but no expiry timer was implemented — a challenge sits in the waiting room forever until manually cancelled.</td><td>Add a default TTL (e.g., 10 minutes) with auto-cancel + refund · or a visible timer on each challenge · or accept as-is for demo</td></tr>
+<tr><td>D</td><td><b>Bank and vault are semantically identical</b></td><td>Both park MAIN-balance coins outside the betting wallet. Two features doing the same thing is confusing UX — "why do I have a vault AND a bank?"</td><td>Merge into one "Bank" feature (vault = quick-preset, bank = custom amount) · or rename vault to "quick park" and bank to "bank transfer" · or remove one</td></tr>
+</table>
+
+<h2 class="prod">🏭 Still open from round 1 (unchanged)</h2>
+<table>
+<tr><th>#</th><th>Con</th><th>Status</th></tr>
+<tr><td>1</td><td><b>Micro-stake margin leak</b> (stake ≤ 12 → house keeps 0% after jackpot floor)</td><td><span class="st dec">AWAITS YOUR CALL</span> — options in audit #1</td></tr>
+<tr><td>2</td><td>No withdraw-to-external flow</td><td><span class="st dec">DECISION</span> — needs a real-money context to design properly</td></tr>
+<tr><td>3</td><td>No light theme</td><td><span class="st dec">PRODUCT</span></td></tr>
+<tr><td>4</td><td>Verify tab requires copy-pasting hashes by hand</td><td><span class="st dec">PRODUCT</span> — copy buttons would fix it</td></tr>
+<tr><td>5</td><td>Auto-rebet has no session-loss auto-stop</td><td><span class="st dec">PRODUCT</span></td></tr>
+<tr><td>6</td><td>Doc TOC hidden on mobile with no hamburger</td><td><span class="st dec">PRODUCT</span></td></tr>
+</table>
+
+<h2 class="prod">🏭 Production-only concerns (unchanged from round 1)</h2>
+<table>
+<tr><th>#</th><th>Con</th></tr>
+<tr><td>1</td><td>Everything client-side — no server-authoritative engine, no external trust anchor</td></tr>
+<tr><td>2</td><td>No accounts/auth; both players in one tab</td></tr>
+<tr><td>3</td><td>Admin tab unprotected</td></tr>
+<tr><td>4</td><td>Clock device-controlled (UTC unification helps consistency, not security)</td></tr>
+<tr><td>5</td><td>Fairness self-attested; no RNG certification</td></tr>
+<tr><td>6</td><td>No KYC/AML, age or geo gating</td></tr>
+<tr><td>7</td><td>Anti-abuse thin (one-per-account promos, 12/min rate limit — demo-grade)</td></tr>
+<tr><td>8</td><td>Transfers have no fraud controls (no hold, no review queue)</td></tr>
+<tr><td>9</td><td>Single-file architecture — great for portability, painful to maintain at scale</td></tr>
+</table>
+
+<h2>📐 Verified working correctly</h2>
+<table>
+<tr><th>Check</th><th>Result</th></tr>
+<tr><td>Self-referral blocked (can't apply own code)</td><td>✅</td></tr>
+<tr><td>Bank uses MAIN only (can't withdraw from bonus)</td><td>✅</td></tr>
+<tr><td>Comp above fee revenue rejected</td><td>✅</td></tr>
+<tr><td>Self-transfer blocked</td><td>✅</td></tr>
+<tr><td>Maintenance blocks all bet paths</td><td>✅</td></tr>
+<tr><td>Jackpot conservation exact through all paths (pure 8-game test, zero delta)</td><td>✅</td></tr>
+<tr><td>Rollover math: pool grows, pays %, remainder persists across hits</td><td>✅</td></tr>
+<tr><td>Session persistence: save → reload → state identical</td><td>✅</td></tr>
+<tr><td>Scheduled promos: future-dated don't fire; expired auto-off</td><td>✅</td></tr>
+<tr><td>Version strings consistent (v5.3 everywhere)</td><td>✅</td></tr>
+</table>
+
+</main>
+<footer>
+TossMatch v5.3.1 cons audit (round 2) · findings verified against the running engine ·
+fixes applied: sideTag crash guard, payPct=0 validation, saveState try/catch confirmed ·
+companion: toss-bet-full.html (doc + demo) · toss-bet-cons-audit.html (round 1)
+</footer>
+</body>
+</html>

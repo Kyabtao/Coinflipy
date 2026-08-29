@@ -1,0 +1,456 @@
+{
+  "document": "TossMatch — Complete Feature List (machine-readable)",
+  "product": "TossMatch",
+  "type": "Play-money P2P coin-toss betting platform (specification + demo)",
+  "version": "8.0",
+  "generated": "2026-08-22",
+  "currency": "play coins",
+  "legal_note": "Play coins only. Real-money operation requires a licence where legal; games of chance for money are prohibited in most of India (Public Gambling Act 1867, state laws, 2025 IT rules).",
+  "totals": {
+    "active_features": 90,
+    "foundation_systems": 7,
+    "categories": 11,
+    "retired_features": 7,
+    "revenue_streams": 6,
+    "games_catalogued": 20,
+    "vip_tiers": 8,
+    "vip_rakeback": {
+      "min": "0%",
+      "max": "20%",
+      "reset": "monthly (1st, UTC)"
+    },
+    "cosmetic_categories": 8,
+    "cosmetic_items": 80,
+    "rarity_tiers": 7,
+    "fairness": {
+      "formula": "combined = BigInt(hashA) + BigInt(hashB) + BigInt(SHA256(serverSeed))",
+      "final_hash": "SHA256(combined.toString(16) + ':' + gameId)",
+      "result": "parseInt(finalHash.slice(0,2), 16) % 2 == 0 ? HEADS : TAILS",
+      "jackpot_trigger": "finalHash starts with byte 00 (1/256)",
+      "commit_reveal": "SHA256(serverSeed) published pre-flip; seed revealed post-flip"
+    },
+    "jackpot": {
+      "funding": "max(0, min(fee−1, max(floor, round(10% × fee))))",
+      "armed_when": "pool ≥ minTrigger (admin, default 50)",
+      "payout": "payPct% of pool (admin, default 50%) — remainder rolls over"
+    },
+    "fees": {
+      "regular_bet": "5% of pot (admin 0–25%)",
+      "series_cup": "5% of cup pot (admin 0–25%)",
+      "tournament": "10% of pool (admin 0–25%)",
+      "deposit_tax": "FREE (0%)",
+      "withdraw_tax": "FREE (0%)",
+      "transfer_fee": "2% of transfer amount (sender pays)"
+    },
+    "wallet": {
+      "segments": [
+        "MAIN",
+        "BONUS",
+        "REFERRAL",
+        "RAKEBACK",
+        "BANK"
+      ],
+      "stake_funding_cap": {
+        "non_main": "10–20% of stake",
+        "draw_order": [
+          "bonus",
+          "referral",
+          "rakeback"
+        ],
+        "winnings": "100% MAIN"
+      },
+      "transfer": {
+        "min": 10,
+        "daily_cap": 500,
+        "fee": "2%"
+      },
+      "deposit": {
+        "min": 10,
+        "tax": "5%"
+      },
+      "withdraw": {
+        "min": 10,
+        "tax": "5%"
+      }
+    },
+    "vip_structure": [
+      {
+        "tier": 1,
+        "name": "Starter",
+        "wagered": 0,
+        "rakeback": 0
+      },
+      {
+        "tier": 2,
+        "name": "Silver",
+        "wagered": 1000,
+        "rakeback": 4
+      },
+      {
+        "tier": 3,
+        "name": "Gold",
+        "wagered": 3000,
+        "rakeback": 6
+      },
+      {
+        "tier": 4,
+        "name": "Platinum",
+        "wagered": 8000,
+        "rakeback": 8
+      },
+      {
+        "tier": 5,
+        "name": "Diamond",
+        "wagered": 20000,
+        "rakeback": 12
+      },
+      {
+        "tier": 6,
+        "name": "Black Diamond",
+        "wagered": 50000,
+        "rakeback": 15
+      },
+      {
+        "tier": 7,
+        "name": "Royal",
+        "wagered": 75000,
+        "rakeback": 17
+      },
+      {
+        "tier": 8,
+        "name": "Legend",
+        "wagered": 100000,
+        "rakeback": 20
+      }
+    ],
+    "cosmetics": {
+      "categories": [
+        {
+          "id": "coin_skins",
+          "name": "Coin Skins",
+          "items": 25,
+          "price_range": "0–1200"
+        },
+        {
+          "id": "flags",
+          "name": "Flags",
+          "items": 12,
+          "price_range": "25–500"
+        },
+        {
+          "id": "avatars",
+          "name": "Personas/Avatars",
+          "items": 12,
+          "price_range": "25–1000"
+        },
+        {
+          "id": "frames",
+          "name": "Avatar Frames",
+          "items": 10,
+          "price_range": "0–600"
+        },
+        {
+          "id": "chat_colours",
+          "name": "Chat/Taunt Colours",
+          "items": 8,
+          "price_range": "0–1000"
+        },
+        {
+          "id": "victory_fx",
+          "name": "Victory Animations",
+          "items": 8,
+          "price_range": "0–1200"
+        },
+        {
+          "id": "table_themes",
+          "name": "Table Themes",
+          "items": 8,
+          "price_range": "0–1000"
+        },
+        {
+          "id": "sound_packs",
+          "name": "Sound Packs",
+          "items": 6,
+          "price_range": "0–500"
+        }
+      ],
+      "rarity_tiers": [
+        {
+          "name": "Free",
+          "range": "0",
+          "glow": "none"
+        },
+        {
+          "name": "Common",
+          "range": "25–50",
+          "glow": "subtle"
+        },
+        {
+          "name": "Uncommon",
+          "range": "50–100",
+          "glow": "soft"
+        },
+        {
+          "name": "Rare",
+          "range": "100–200",
+          "glow": "visible"
+        },
+        {
+          "name": "Epic",
+          "range": "200–400",
+          "glow": "strong"
+        },
+        {
+          "name": "Legendary",
+          "range": "400–800",
+          "glow": "animated"
+        },
+        {
+          "name": "Mythic",
+          "range": "400–800",
+          "glow": "rainbow pulsating"
+        }
+      ],
+      "vip_exclusive": 7,
+      "vip_discounts": {
+        "Black Diamond": "10%",
+        "Royal": "20%",
+        "Legend": "30%"
+      }
+    },
+    "quests": {
+      "window": "00:00–22:00 UTC",
+      "stop": "22:00 UTC or all 3 claimed",
+      "reset": "00:00 UTC next day",
+      "admin_toggle": true,
+      "rewards_destination": "BONUS balance"
+    },
+    "tournaments": {
+      "creation": "Admin only",
+      "sizes": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "rake": "10% default (admin 0–25%)",
+      "payouts": {
+        "champion": "75%",
+        "runner_up": "25%"
+      },
+      "bots": "never"
+    },
+    "bet_taunts": {
+      "max_chars": 24,
+      "optional": true
+    },
+    "emoji_reactions": {
+      "free": 3,
+      "premium_tiers": [
+        "Common",
+        "Uncommon",
+        "Rare",
+        "Epic",
+        "Legendary"
+      ],
+      "premium_count": 15,
+      "cooldown": "5 seconds"
+    },
+    "seasons": {
+      "auto_end": "last day of month 20:00 UTC",
+      "rewards": "500/250 → bonus"
+    }
+  },
+  "categories": [
+    {
+      "id": "found",
+      "name": "🏗️ Foundation systems (F1–F7)",
+      "feature_count": 7
+    },
+    {
+      "id": "rev",
+      "name": "💹 Revenue (1–14)",
+      "feature_count": 14
+    },
+    {
+      "id": "prog",
+      "name": "🏅 Progression (15–23)",
+      "feature_count": 9
+    },
+    {
+      "id": "game",
+      "name": "🎮 Gameplay & social (24–35)",
+      "feature_count": 12
+    },
+    {
+      "id": "trust",
+      "name": "🔐 Trust & integrity (36–42)",
+      "feature_count": 7
+    },
+    {
+      "id": "ops",
+      "name": "🚦 Ops & compliance (43–55)",
+      "feature_count": 13
+    },
+    {
+      "id": "v41",
+      "name": "🏟 v4.1 — tournaments/seasons (56–58)",
+      "feature_count": 3
+    },
+    {
+      "id": "v42",
+      "name": "⚔️ Series formats (63)",
+      "feature_count": 1
+    },
+    {
+      "id": "v45",
+      "name": "👛 v4.5 — wallet & transfers (64–68)",
+      "feature_count": 5
+    },
+    {
+      "id": "v46",
+      "name": "🎛 v4.6 — admin economy (69–81)",
+      "feature_count": 13
+    },
+    {
+      "id": "v52",
+      "name": "🔧 v5.2+ — reliability (82–87)",
+      "feature_count": 6
+    }
+  ],
+  "key_features": {
+    "vip_tiers": 10,
+    "cosmetic_categories": 8,
+    "rarity_tiers": 7,
+    "games_in_catalog": 20,
+    "fairness_formula": "BigInt-sum + SHA-256",
+    "jackpot_type": "Armed percentage payout with rollover",
+    "wallet_segments": 5,
+    "fee_types": 6
+  },
+  "retired": [
+    {
+      "title": "🛡️ Stake insurance",
+      "removed_in": "4.3",
+      "reason": "No premiums; payout = pot − fee"
+    },
+    {
+      "title": "🪜 Ladder",
+      "removed_in": "4.6",
+      "reason": "House holds no game positions"
+    },
+    {
+      "title": "⚖️ Over/Under (vs-house)",
+      "removed_in": "4.6",
+      "reason": "Same"
+    },
+    {
+      "title": "🎯 Lucky Byte (vs-house)",
+      "removed_in": "4.6",
+      "reason": "Same"
+    },
+    {
+      "title": "🔗 Parlay (vs-house)",
+      "removed_in": "4.6",
+      "reason": "Same"
+    },
+    {
+      "title": "🧾 House-game proofs",
+      "removed_in": "4.6",
+      "reason": "Retired with vs-house games"
+    },
+    {
+      "title": "🏦 House bankroll guard",
+      "removed_in": "4.6",
+      "reason": "No house positions to guard"
+    }
+  ],
+  "document_inventory": [
+    {
+      "file": "toss-bet-full.html",
+      "purpose": "System document + live demo (all features)",
+      "type": "HTML + JS",
+      "version": "7.1"
+    },
+    {
+      "file": "toss-bet-demo.html",
+      "purpose": "Standalone demo (no docs)",
+      "type": "HTML + JS",
+      "version": "7.1"
+    },
+    {
+      "file": "toss-bet-business-rules.html",
+      "purpose": "Business rules, fees, VIP, cosmetics, XP",
+      "type": "Pure HTML",
+      "version": "7.1"
+    },
+    {
+      "file": "toss-bet-games-catalog.html",
+      "purpose": "20-game catalog with rules + fairness",
+      "type": "Pure HTML",
+      "version": "7.1"
+    },
+    {
+      "file": "toss-bet-features.html",
+      "purpose": "Feature list (JS-rendered)",
+      "type": "HTML + JS",
+      "version": "7.1"
+    },
+    {
+      "file": "toss-bet-v5.html",
+      "purpose": "Master feature reference",
+      "type": "HTML + JS",
+      "version": "7.1"
+    },
+    {
+      "file": "toss-bet-features-categories.html",
+      "purpose": "Category-wise feature list (pure HTML)",
+      "type": "Pure HTML",
+      "version": "7.1"
+    },
+    {
+      "file": "toss-bet-features.json",
+      "purpose": "Machine-readable feature list",
+      "type": "JSON",
+      "version": "7.1"
+    },
+    {
+      "file": "toss-bet-cons-audit.html",
+      "purpose": "Cons audit round 1",
+      "type": "Pure HTML",
+      "version": "5.1"
+    },
+    {
+      "file": "toss-bet-cons-audit-2.html",
+      "purpose": "Cons audit round 2",
+      "type": "Pure HTML",
+      "version": "5.3.1"
+    },
+    {
+      "file": "toss-bet-cons-audit-3.html",
+      "purpose": "Cons audit round 3 (post-fix verification)",
+      "type": "Pure HTML",
+      "version": "5.3.2"
+    },
+    {
+      "file": "toss-bet-system-documentation.md",
+      "purpose": "Markdown source (legacy v2.1)",
+      "type": "Markdown",
+      "version": "2.1"
+    }
+  ],
+  "companion_files": {
+    "document_and_live_demo": "toss-bet-full.html",
+    "standalone_demo": "toss-bet-demo.html",
+    "business_rules": "toss-bet-business-rules.html",
+    "games_catalog": "toss-bet-games-catalog.html",
+    "feature_list_js": "toss-bet-features.html",
+    "master_reference": "toss-bet-v5.html",
+    "feature_list_pure_html": "toss-bet-features-categories.html",
+    "machine_readable": "toss-bet-features.json",
+    "cons_audit_1": "toss-bet-cons-audit.html",
+    "cons_audit_2": "toss-bet-cons-audit-2.html",
+    "cons_audit_3": "toss-bet-cons-audit-3.html",
+    "legacy_markdown": "toss-bet-system-documentation.md"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "TossMatch Play-Coin Demo",
+  "short_name": "TossMatch",
+  "description": "Offline-capable TossMatch v11.0 unified play-coin game and feature demonstration.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080d1a",
+  "theme_color": "#f6c453",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/favicon.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    }
+  ]
+}
