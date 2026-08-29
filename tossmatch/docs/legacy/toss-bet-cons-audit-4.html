@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TossMatch v7.1 — Cons Audit (Round 4: Spec vs Engine)</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Arial,sans-serif;background:#0b1020;background-image:radial-gradient(1100px 550px at 85% -10%,rgba(40,64,120,.35),transparent),radial-gradient(900px 500px at -10% 110%,rgba(18,70,80,.35),transparent);color:#e8edf7;min-height:100vh}body.light{background:#f5f6fa;background-image:none;color:#1a2035}header{background:rgba(9,13,26,.95);border-bottom:1px solid #22304f;padding:20px;position:relative}body.light header{background:rgba(255,255,255,.95);border-color:#d5dae8}.hwrap{max-width:1000px;margin:0 auto}h1{margin:0;font-size:21px}.sub{color:#93a0bd;font-size:13px;margin-top:6px;line-height:1.6}body.light .sub{color:#667}.theme-btn{cursor:pointer;border:1px solid #33477a;background:transparent;color:#93a0bd;padding:4px 10px;border-radius:8px;font-size:14px;position:absolute;top:14px;right:14px}main{max-width:1000px;margin:0 auto;padding:20px 20px 60px}h2{font-size:16px;padding-left:12px;border-left:4px solid #f87171;margin:30px 0 12px;color:#e8edf7}h2.warn{border-color:#f6c453}h2.ok{border-color:#34d399}h2.prod{border-color:#93c5fd}body.light h2{color:#333}body.light h2.ok{border-color:#0a0}body.light h2.warn{border-color:#a80}body.light h2.prod{border-color:#06c}table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0 4px}th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#93a0bd;border-bottom:2px solid #22304f;padding:7px 9px}body.light th{color:#667;border-color:#dde}td{border-bottom:1px solid #1d2a47;padding:8px 9px;vertical-align:top;line-height:1.6;color:#c7d2e8}body.light td{color:#334;border-color:#eef}tr:nth-child(even) td{background:rgba(18,26,46,.4)}body.light tr:nth-child(even) td{background:rgba(0,0,20,.03)}.sev{font-size:10px;font-weight:800;border-radius:6px;padding:2px 7px;white-space:nowrap}.sev.hi{color:#f8a5a5;border:1px solid rgba(248,113,113,.5)}.sev.med{color:#f0d9a0;border:1px solid rgba(246,196,83,.5)}.sev.lo{color:#9db0d4;border:1px solid #33477a}.sev.prod{color:#93c5fd;border:1px solid rgba(96,165,250,.5)}.callout{border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px;line-height:1.7}.callout.crit{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.4)}.callout.warn{background:rgba(246,196,83,.07);border:1px solid rgba(246,196,83,.4)}.callout.ok{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.3)}body.light .callout.crit{background:rgba(200,0,0,.04);border-color:rgba(200,0,0,.2)}body.light .callout.warn{background:rgba(200,150,0,.04);border-color:rgba(200,150,0,.2)}body.light .callout.ok{background:rgba(0,150,0,.04);border-color:rgba(0,150,0,.2)}.callout b{color:#f0d9a0}body.light .callout b{color:#8b6914}footer{text-align:center;color:#5f6f8f;font-size:11.5px;padding:20px;line-height:1.7}
+</style>
+</head>
+<body>
+<button class="theme-btn" onclick="document.body.classList.toggle('light')">&#128161;</button>
+<header><div class="hwrap">
+<h1>&#128269; TossMatch v7.1 — Cons Audit (Round 4: Spec vs Engine Alignment)</h1>
+<div class="sub">The spec has evolved through 5 major versions since the engine was last comprehensively updated. This audit measures the gap.</div>
+</div></header>
+<main>
+
+<div class="callout crit">
+<b>&#128680; CRITICAL FINDING:</b> The engine is at v6.0 but the specification is at v7.1. <b>12 major spec changes have not been implemented</b> — the demo does not reflect the current business rules. This is the single biggest con in the system.
+</div>
+
+<h2>&#128308; A. Engine vs Spec Drift (12 items not implemented)</h2>
+<table>
+<tr><th>#</th><th>Spec says</th><th>Engine does</th><th>Severity</th><th>Effort</th></tr>
+<tr><td>A1</td><td>10 VIP tiers (Starter&rarr;Legend)</td><td>6 tiers (Bronze&rarr;Legend)</td><td><span class="sev hi">HIGH</span></td><td>Medium</td></tr>
+<tr><td>A2</td><td>8 cosmetic categories</td><td>3 (skins, flags, avatars)</td><td><span class="sev hi">HIGH</span></td><td>Large</td></tr>
+<tr><td>A3</td><td>7 rarity tiers</td><td>~4 (no Uncommon, no Mythic)</td><td><span class="sev med">MED</span></td><td>Small</td></tr>
+<tr><td>A4</td><td>5% deposit tax</td><td>0% (no tax)</td><td><span class="sev med">MED</span></td><td>Small</td></tr>
+<tr><td>A5</td><td>5% withdraw tax</td><td>0% (no tax)</td><td><span class="sev med">MED</span></td><td>Small</td></tr>
+<tr><td>A6</td><td>2% transfer fee</td><td>0% (free transfers)</td><td><span class="sev med">MED</span></td><td>Small</td></tr>
+<tr><td>A7</td><td>Quest window 00:00&ndash;20:00 UTC</td><td>No time window</td><td><span class="sev lo">LOW</span></td><td>Small</td></tr>
+<tr><td>A8</td><td>Admin-only tournament creation</td><td>Players can create</td><td><span class="sev lo">LOW</span></td><td>Small</td></tr>
+<tr><td>A9</td><td>15 premium emoji reactions</td><td>3 free only</td><td><span class="sev lo">LOW</span></td><td>Medium</td></tr>
+<tr><td>A10</td><td>VIP-exclusive cosmetics (7 items)</td><td>None gated</td><td><span class="sev lo">LOW</span></td><td>Medium</td></tr>
+<tr><td>A11</td><td>VIP cosmetics discount (10&ndash;30%)</td><td>No discount</td><td><span class="sev lo">LOW</span></td><td>Small</td></tr>
+<tr><td>A12</td><td>6 VIP benefits beyond rakeback</td><td>Rakeback only</td><td><span class="sev med">MED</span></td><td>Large</td></tr>
+</table>
+
+<h2 class="warn">&#128992; B. Spec Design Issues (5 concerns)</h2>
+<table>
+<tr><th>#</th><th>Issue</th><th>Detail</th><th>Suggestion</th></tr>
+<tr><td>B1</td><td><b>Double taxation</b></td><td>5% deposit + 5% withdraw = 9.75% round-trip loss. Deposit 1000 &rarr; withdraw 902.50</td><td>Cap total round-trip at 5% (e.g., 2.5% each) &middot; or tax only withdrawals &middot; or free deposits</td></tr>
+<tr><td>B2</td><td><b>Transfer fee negligible</b></td><td>Max 10 coins/day (2% of 500 cap) &mdash; barely worth the UI friction</td><td>Raise transfer cap or remove the fee (use it as a retention feature instead)</td></tr>
+<tr><td>B3</td><td><b>VIP tier gaps too large</b></td><td>60k&rarr;80k&rarr;100k jumps are inaccessible to casual players</td><td>Compress top tiers (40k/60k/80k) or add intermediate milestones</td></tr>
+<tr><td>B4</td><td><b>Mythic items too expensive</b></td><td>800&ndash;1500 coins; at 50/game, needs ~15,000 monthly wagered for one item</td><td>Reduce Mythic range to 400&ndash;800 &middot; or make them event rewards instead of purchasable</td></tr>
+<tr><td>B5</td><td><b>Quest window excludes IST players</b></td><td>20:00 UTC = 1:30 AM IST &mdash; late-night Indian players miss quests entirely</td><td>Extend to 22:00 UTC (2:30 AM IST) &middot; or use IST-based window &middot; or run two windows</td></tr>
+</table>
+
+<h2 class="warn">&#128992; C. Economic Concerns (3 issues)</h2>
+<table>
+<tr><th>#</th><th>Issue</th><th>Math</th><th>Suggestion</th></tr>
+<tr><td>C1</td><td><b>Total fee burden ~15.5% per cycle</b></td><td>Deposit tax 5% + game fee 5% + withdraw tax 5% = 15%+ friction on a full deposit&rarr;play&rarr;withdraw cycle</td><td>Target 8&ndash;10% total; reduce deposit tax to 0% (tax only on withdrawals)</td></tr>
+<tr><td>C2</td><td><b>VIP exclusives = perceived pay-to-win</b></td><td>Legend-tier players with Mythic skins + animated frames create visible hierarchy</td><td>Make Mythic items earnable through achievements, not just wagering</td></tr>
+<tr><td>C3</td><td><b>Sound packs useless with default OFF</b></td><td>Player buys a sound pack but hears nothing until manually enabling sounds</td><td>Auto-enable sounds when a sound pack is purchased &middot; or play a preview on purchase</td></tr>
+</table>
+
+<h2 class="warn">&#128992; D. Responsible Gaming Concern (1)</h2>
+<table>
+<tr><th>Issue</th><th>Detail</th></tr>
+<tr><td><b>Cosmetics discount tied to wagering</b></td><td>VIP discount (10&ndash;30% off) incentivizes higher wagering volume to save on cosmetics. This is standard industry practice but borders on encouraging problem gambling. Consider: cap the discount at 20%, apply it to all players equally at certain levels, or decouple it from VIP entirely.</td></tr>
+</table>
+
+<h2 class="ok">&#128994; E. What's Working Well</h2>
+<table>
+<tr><th>Check</th><th>Status</th></tr>
+<tr><td>Code quality: braces, parens, no duplicates</td><td>&#9989; Clean</td></tr>
+<tr><td>All round 1&ndash;3 fixes still holding (7/7)</td><td>&#9989; Verified</td></tr>
+<tr><td>BigInt-sum fairness formula verified (11 tests)</td><td>&#9989; Working</td></tr>
+<tr><td>Conservation invariant exact through all paths</td><td>&#9989; Exact</td></tr>
+<tr><td>Session persistence with multi-tab guard</td><td>&#9989; Working</td></tr>
+<tr><td>Responsive on mobile devices</td><td>&#9989; Working</td></tr>
+<tr><td>Light/dark theme toggle</td><td>&#9989; Working</td></tr>
+<tr><td>Copy-to-clipboard on proofs</td><td>&#9989; Working</td></tr>
+<tr><td>Challenge TTL (10 min auto-expire)</td><td>&#9989; Working</td></tr>
+<tr><td>Tournament cancel permission</td><td>&#9989; Working</td></tr>
+</table>
+
+<h2 class="prod">&#127760; Production-Only Concerns (unchanged)</h2>
+<table>
+<tr><th>#</th><th>Concern</th></tr>
+<tr><td>1</td><td>Everything client-side &mdash; no server-authoritative engine</td></tr>
+<tr><td>2</td><td>No real accounts/auth (both players in one tab)</td></tr>
+<tr><td>3</td><td>Admin tab unprotected</td></tr>
+<tr><td>4</td><td>No KYC/AML, age or geo gating</td></tr>
+<tr><td>5</td><td>Fairness self-attested (no lab certification)</td></tr>
+<tr><td>6</td><td>No collusion detection</td></tr>
+</table>
+
+<div class="callout ok">
+<b>Recommended action plan (priority order):</b><br>
+1. <b>Align engine to spec</b> &mdash; implement the 12 missing changes (start with the quick wins: deposit/withdraw tax, transfer fee, VIP 10 tiers)<br>
+2. <b>Fix the double-taxation design</b> &mdash; reduce or eliminate deposit tax<br>
+3. <b>Fix quest window for IST timezone</b> &mdash; extend to 22:00 UTC minimum<br>
+4. <b>Review Mythic pricing</b> &mdash; make top-tier cosmetics more accessible<br>
+5. <b>Then update all documents again</b> to reflect whatever you decide
+</div>
+
+</main>
+<footer>
+TossMatch v7.1 cons audit round 4 &middot; spec-engine alignment check &middot;
+companion: toss-bet-business-rules.html (spec) &middot; toss-bet-full.html (engine)
+</footer>
+</body>
+</html>

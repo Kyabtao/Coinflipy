@@ -1,0 +1,11 @@
+{
+  "openapi": "3.0.3",
+  "info": {"title": "TossMatch Demo API", "version": "0.1.0-demo", "description": "Static specification for the in-browser API explorer. Production requires authenticated server endpoints."},
+  "servers": [{"url": "/api/v1"}],
+  "paths": {
+    "/status": {"get": {"summary": "Demo service and feature status", "responses": {"200": {"description": "Status payload"}}}},
+    "/leaderboard": {"get": {"summary": "Player and bot leaderboard", "responses": {"200": {"description": "Leaderboard rows"}}}},
+    "/results": {"get": {"summary": "Recent retained game results", "responses": {"200": {"description": "Result rows"}}}},
+    "/fairness/{gameId}": {"get": {"summary": "Retained proof for a game", "parameters": [{"name": "gameId", "in": "path", "required": true, "schema": {"type": "string"}}], "responses": {"200": {"description": "Proof record"}, "404": {"description": "Game not found"}}}}
+  }
+}

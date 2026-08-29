@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TossMatch v8.0 — Missing Features &amp; Enhancement Roadmap</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Arial,sans-serif;
+background:#0b1020;background-image:radial-gradient(1100px 550px at 85% -10%,rgba(40,64,120,.35),transparent),radial-gradient(900px 500px at -10% 110%,rgba(18,70,80,.35),transparent);
+color:#e8edf7;min-height:100vh}
+body.light{background:#f5f6fa;background-image:none;color:#1a2035}
+header{background:rgba(9,13,26,.95);border-bottom:1px solid #22304f;padding:20px;position:relative}
+body.light header{background:rgba(255,255,255,.95);border-color:#d5dae8}
+.hwrap{max-width:1100px;margin:0 auto}
+h1{margin:0;font-size:22px}
+.sub{color:#93a0bd;font-size:13.5px;margin-top:6px;line-height:1.6}
+body.light .sub{color:#667}
+.vbadge{display:inline-block;font-size:11px;font-weight:800;color:#332500;background:linear-gradient(135deg,#f6c453,#e0a52e);border-radius:999px;padding:4px 12px;letter-spacing:1px;vertical-align:3px;margin-left:10px}
+.theme-btn{cursor:pointer;border:1px solid #33477a;background:transparent;color:#93a0bd;padding:4px 10px;border-radius:8px;font-size:14px;position:absolute;top:14px;right:14px}
+main{max-width:1100px;margin:0 auto;padding:20px 20px 60px}
+h2{font-size:17px;padding-left:12px;border-left:4px solid #f6c453;margin:34px 0 12px;color:#e8edf7}
+h2.gap{border-color:#f87171}
+h2.idea{border-color:#34d399}
+h2.road{border-color:#93c5fd}
+body.light h2{color:#333}
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0 4px}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#93a0bd;border-bottom:2px solid #22304f;padding:7px 9px}
+body.light th{color:#667;border-color:#dde}
+td{border-bottom:1px solid #1d2a47;padding:8px 9px;vertical-align:top;line-height:1.6;color:#c7d2e8}
+body.light td{color:#334;border-color:#eef}
+tr:nth-child(even) td{background:rgba(18,26,46,.4)}
+body.light tr:nth-child(even) td{background:rgba(0,0,20,.03)}
+.tag{font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 7px;white-space:nowrap;letter-spacing:.5px}
+.tag.missing{color:#f8a5a5;border:1px solid rgba(248,113,113,.5);background:rgba(248,113,113,.06)}
+.tag.data{color:#f0d9a0;border:1px solid rgba(246,196,83,.5);background:rgba(246,196,83,.06)}
+.tag.idea{color:#a7f3d0;border:1px solid rgba(52,211,153,.5);background:rgba(52,211,153,.06)}
+.tag.epic{color:#c084fc;border:1px solid rgba(192,132,252,.5);background:rgba(192,132,252,.06)}
+.tag.new{color:#60a5fa;border:1px solid rgba(96,165,250,.5);background:rgba(96,165,250,.06)}
+.effort{font-size:9px;font-weight:800;border-radius:4px;padding:1px 6px;white-space:nowrap}
+.effort.s{color:#34d399;border:1px solid rgba(52,211,153,.4)}
+.effort.m{color:#fbbf24;border:1px solid rgba(251,191,36,.4)}
+.effort.l{color:#f87171;border:1px solid rgba(248,113,113,.4)}
+.effort.xl{color:#f43f5e;border:1px solid rgba(244,63,94,.5)}
+.callout{border-radius:12px;padding:14px 16px;margin:14px 0;font-size:13px;line-height:1.7}
+.callout.info{background:rgba(94,234,212,.06);border:1px solid rgba(94,234,212,.3)}
+.callout.warn{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.4)}
+.callout.ok{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.3)}
+body.light .callout.info{background:rgba(0,100,200,.04);border-color:rgba(0,100,200,.2)}
+body.light .callout.warn{background:rgba(200,0,0,.04);border-color:rgba(200,0,0,.2)}
+body.light .callout.ok{background:rgba(0,150,0,.04);border-color:rgba(0,150,0,.2)}
+.callout b{color:#f0d9a0}
+body.light .callout b{color:#8b6914}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:18px 0 8px}
+.stat{background:#121a2e;border:1px solid #22304f;border-radius:14px;padding:14px}
+body.light .stat{background:#fff;border-color:#d5dae8}
+.stat .v{font-size:20px;font-weight:800;color:#f6c453}
+body.light .stat .v{color:#885000}
+.stat .k{font-size:10px;color:#93a0bd;text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+body.light .stat .k{color:#667}
+.road{background:#121a2e;border:1px solid #22304f;border-radius:16px;padding:16px;margin:12px 0}
+body.light .road{background:#fff;border-color:#d5dae8}
+.road h3{margin:0 0 10px;font-size:14px;color:#f0d9a0}
+body.light .road h3{color:#8b6914}
+.road p{color:#93a0bd;font-size:12px;margin:0 0 8px;line-height:1.6}
+body.light .road p{color:#667}
+.road ul{color:#c7d2e8;font-size:12.5px;line-height:1.8;padding-left:18px;margin:6px 0}
+body.light .road ul{color:#334}
+footer{text-align:center;color:#5f6f8f;font-size:11.5px;padding:20px;line-height:1.7}
+@media(max-width:680px){main{padding:14px 12px 30px}table{font-size:11.5px}td,th{padding:6px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<button class="theme-btn" onclick="document.body.classList.toggle('light')">&#128161;</button>
+
+<header>
+<div class="hwrap">
+<h1>&#128640; TossMatch — Missing Features &amp; Enhancement Roadmap <span class="vbadge">v8.0</span></h1>
+<div class="sub">Everything that's not yet built but should be: gaps between spec and engine, plus new feature ideas organised by category with effort estimates and priority. Pure HTML &mdash; no JavaScript.</div>
+</div>
+</header>
+
+<main>
+
+<div class="stats">
+<div class="stat"><div class="v">12</div><div class="k">Gaps (spec'd, not built)</div></div>
+<div class="stat"><div class="v">35</div><div class="k">New feature ideas</div></div>
+<div class="stat"><div class="v">5</div><div class="k">Phases</div></div>
+<div class="stat"><div class="v">10</div><div class="k">Categories</div></div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<h2 class="gap">&#128308; PART A — Missing Features (In Spec, Not In Engine)</h2>
+<p>These are designed and documented in the business rules but the game engine does not yet implement them. Data arrays exist in some cases, but the gameplay/UI logic is missing.</p>
+
+<table>
+<tr><th>#</th><th>Feature</th><th>Status</th><th>What's missing</th><th>Effort</th><th>Impact</th></tr>
+
+<tr><td>A1</td><td><b>Avatar Frames equip system</b></td><td><span class="tag data">DATA EXISTS</span></td><td>FRAMES array is in the engine but no buy/equip/render logic — frames don't appear around avatars on the leaderboard or modals</td><td><span class="effort m">MED</span></td><td>Visual polish</td></tr>
+
+<tr><td>A2</td><td><b>Chat/Taunt Colours</b></td><td><span class="tag data">DATA EXISTS</span></td><td>CHAT_COLOURS array exists but taunts always render in default white — no colour selection or application</td><td><span class="effort s">SMALL</span></td><td>Personalisation</td></tr>
+
+<tr><td>A3</td><td><b>Victory Animations</b></td><td><span class="tag data">DATA EXISTS</span></td><td>VICTORY_FX array exists but all wins use standard confetti — no per-player animation selection</td><td><span class="effort m">MED</span></td><td>Feel &amp; polish</td></tr>
+
+<tr><td>A4</td><td><b>Table Themes</b></td><td><span class="tag data">DATA EXISTS</span></td><td>TABLE_THEMES array exists but the game table always uses the default dark background — no theme switching</td><td><span class="effort m">MED</span></td><td>Visual variety</td></tr>
+
+<tr><td>A5</td><td><b>Sound Packs</b></td><td><span class="tag data">DATA EXISTS</span></td><td>SOUND_PACKS array exists but all games use the standard WebAudio tones — no pack selection or switching</td><td><span class="effort m">MED</span></td><td>Audio polish</td></tr>
+
+<tr><td>A6</td><td><b>Premium Emoji Reactions</b></td><td><span class="tag data">DATA EXISTS</span></td><td>PREMIUM_EMOJIS array exists but the reaction bar only shows 3 free emojis — premium emojis not purchasable or selectable</td><td><span class="effort s">SMALL</span></td><td>Social depth</td></tr>
+
+<tr><td>A7</td><td><b>VIP-exclusive cosmetics gating</b></td><td><span class="tag missing">NOT BUILT</span></td><td>Spec says 7 items are VIP-gated (Platinum skin, Gold frame, Diamond skin, etc.) but the engine doesn't check VIP tier on any cosmetic</td><td><span class="effort s">SMALL</span></td><td>VIP value</td></tr>
+
+<tr><td>A8</td><td><b>VIP cosmetics discount</b></td><td><span class="tag missing">NOT BUILT</span></td><td>Spec says Black Diamond gets 10%, Royal 15%, Legend 20% off — engine doesn't apply any discount at checkout</td><td><span class="effort s">SMALL</span></td><td>VIP value</td></tr>
+
+<tr><td>A9</td><td><b>VIP benefits beyond rakeback</b></td><td><span class="tag missing">NOT BUILT</span></td><td>Chat colour unlock, avatar frame unlock, tournament discount, birthday bonus, priority support, early tournament access — none functional</td><td><span class="effort l">LARGE</span></td><td>VIP depth</td></tr>
+
+<tr><td>A10</td><td><b>Cosmetics discount auto-apply</b></td><td><span class="tag missing">NOT BUILT</span></td><td>Shop prices should auto-calculate VIP discount but currently show full price for everyone</td><td><span class="effort s">SMALL</span></td><td>UX</td></tr>
+
+<tr><td>A11</td><td><b>Sound auto-enable on purchase</b></td><td><span class="tag missing">NOT BUILT</span></td><td>When a sound pack is bought, sounds should auto-enable so the player hears their purchase immediately</td><td><span class="effort s">SMALL</span></td><td>UX</td></tr>
+
+<tr><td>A12</td><td><b>Shop UI for 5 new categories</b></td><td><span class="tag data">DATA EXISTS</span></td><td>The shop tab still renders only 3 categories (skins, flags, avatars) — frames, colours, animations, themes, sounds need shop grid sections</td><td><span class="effort m">MED</span></td><td>Core feature</td></tr>
+</table>
+
+<!-- ══════════════════════════════════════ -->
+<h2 class="idea">&#128994; PART B — New Feature Ideas (Not Yet Spec'd)</h2>
+<p>Features that would improve the platform but haven't been designed yet. Organised by category with effort estimates.</p>
+
+<h3>&#128101; B1. Social &amp; Community</h3>
+<table>
+<tr><th>#</th><th>Feature</th><th>Description</th><th>Effort</th><th>Revenue angle</th></tr>
+<tr><td>S1</td><td><b>Friend List &amp; Buddy System</b></td><td>Add friends, see when they're online, challenge them directly, filter queue to show friends' bets first</td><td><span class="effort l">LARGE</span></td><td>Retention</td></tr>
+<tr><td>S2</td><td><b>Private Rooms</b></td><td>Create invite-only game rooms with custom rules (stake range, game type, friends-only matching)</td><td><span class="effort m">MED</span></td><td>Retention</td></tr>
+<tr><td>S3</td><td><b>Player Profiles</b></td><td>Public profile page with stats, cosmetics showcase, achievements, recent games, win-rate graphs</td><td><span class="effort m">MED</span></td><td>Engagement</td></tr>
+<tr><td>S4</td><td><b>Spectator Mode</b></td><td>Watch live games in real-time — see the pot, both players' cosmetics, the coin flip animation</td><td><span class="effort l">LARGE</span></td><td>Engagement</td></tr>
+<tr><td>S5</td><td><b>Gifting</b></td><td>Send cosmetics or coins to friends (from MAIN only, daily limit, transfer fee applies)</td><td><span class="effort s">SMALL</span></td><td>Social commerce</td></tr>
+<tr><td>S6</td><td><b>Chat System</b></td><td>Lightweight chat in the waiting room / lobby (text + premium emojis, with mute/block)</td><td><span class="effort l">LARGE</span></td><td>Engagement</td></tr>
+<tr><td>S7</td><td><b>Clans / Teams</b></td><td>Form teams, team leaderboards, team vs team tournaments, clan tags next to names</td><td><span class="effort xl">XL</span></td><td>Retention</td></tr>
+</table>
+
+<h3>&#127918; B2. New Game Types</h3>
+<table>
+<tr><th>#</th><th>Feature</th><th>Description</th><th>Effort</th><th>Revenue angle</th></tr>
+<tr><td>G1</td><td><b>Lucky Wheel</b></td><td>Daily free spin on a prize wheel (coins, cosmetics, free bets, jackpot entries) — one free spin + paid spins</td><td><span class="effort m">MED</span></td><td>Paid spins</td></tr>
+<tr><td>G2</td><td><b>Scratch Cards</b></td><td>Buy a scratch card (various price tiers), scratch to reveal symbols, match 3 to win</td><td><span class="effort m">MED</span></td><td>Direct sale</td></tr>
+<tr><td>G3</td><td><b>Dice Roll</b></td><td>Pick a number 1-6, roll two dice, exact match pays 30x, sum range pays less</td><td><span class="effort s">SMALL</span></td><td>Game fee</td></tr>
+<tr><td>G4</td><td><b>Loteria / Raffle</b></td><td>Weekly raffle: buy tickets (1-100), one winner takes 80% of the pool, house keeps 20%</td><td><span class="effort m">MED</span></td><td>Raffle fee</td></tr>
+<tr><td>G5</td><td><b>Multiplier Ladder (P2P)</b></td><td>Both players climb the same ladder; higher rung wins. Bust = opponent takes all. P2P version of the retired Ladder</td><td><span class="effort m">MED</span></td><td>Game fee</td></tr>
+<tr><td>G6</td><td><b>War Card Game</b></td><td>Both players flip a card (byte 0-255 mapped to 2-Ace), higher card wins. Tie = war (3 face-down + 1 up)</td><td><span class="effort s">SMALL</span></td><td>Game fee</td></tr>
+</table>
+
+<h3>&#11088; B3. Progression &amp; Engagement</h3>
+<table>
+<tr><th>#</th><th>Feature</th><th>Description</th><th>Effort</th><th>Revenue angle</th></tr>
+<tr><td>P1</td><td><b>Battle Pass / Season Pass</b></td><td>Free track (quests, XP) + premium track (exclusive cosmetics, bonus coins) — seasonal, resets every month</td><td><span class="effort l">LARGE</span></td><td>Premium pass sale</td></tr>
+<tr><td>P2</td><td><b>7-Day Login Calendar</b></td><td>Visual calendar showing 7 days of escalating rewards (day 7 = guaranteed cosmetic or large bonus)</td><td><span class="effort s">SMALL</span></td><td>Retention</td></tr>
+<tr><td>P3</td><td><b>Weekly Challenges</b></td><td>Bigger than daily quests: win 10 games, play 5 different game types, win 3 in a row — bigger rewards</td><td><span class="effort s">SMALL</span></td><td>Engagement</td></tr>
+<tr><td>P4</td><td><b>Prestige System</b></td><td>Reset your level to 1 in exchange for a prestige badge + exclusive cosmetic + permanent +5% XP boost</td><td><span class="effort m">MED</span></td><td>Long-term goal</td></tr>
+<tr><td>P5</td><td><b>Skill Matchmaking</b></td><td>Queue shows skill tier (based on win rate); optionally match only within your tier</td><td><span class="effort m">MED</span></td><td>Fairness</td></tr>
+</table>
+
+<h3>&#128176; B4. Economy &amp; Monetization</h3>
+<table>
+<tr><th>#</th><th>Feature</th><th>Description</th><th>Effort</th><th>Revenue angle</th></tr>
+<tr><td>E1</td><td><b>Loot Boxes / Mystery Crates</b></td><td>Buy a crate (common/rare/epic/legendary) containing 1-3 random cosmetics with guaranteed rarity floor</td><td><span class="effort m">MED</span></td><td>Direct sale</td></tr>
+<tr><td>E2</td><td><b>Trading Post</b></td><td>Players list cosmetics for sale to other players (house takes 10% transaction fee)</td><td><span class="effort l">LARGE</span></td><td>Transaction fee</td></tr>
+<tr><td>E3</td><td><b>Staking / Interest</b></td><td>Park coins in a "staking vault" and earn 1% per week (paid from house revenue, capped)</td><td><span class="effort m">MED</span></td><td>Retention</td></tr>
+<tr><td>E4</td><td><b>Subscription Tiers</b></td><td>Monthly subscription: ad-free, exclusive table, monthly cosmetic drop, 2x quest rewards</td><td><span class="effort l">LARGE</span></td><td>Recurring revenue</td></tr>
+<tr><td>E5</td><td><b>Coin Boosters</b></td><td>Temporary XP or rakeback boosters purchasable with coins (2x XP for 1 hour, +5% rakeback for 24h)</td><td><span class="effort s">SMALL</span></td><td>Consumable sale</td></tr>
+</table>
+
+<h3>&#128736;&#65039; B5. Platform &amp; Tech</h3>
+<table>
+<tr><th>#</th><th>Feature</th><th>Description</th><th>Effort</th><th>Revenue angle</th></tr>
+<tr><td>T1</td><td><b>PWA / Mobile App</b></td><td>Installable progressive web app with offline support, push notifications, home screen icon</td><td><span class="effort m">MED</span></td><td>Mobile reach</td></tr>
+<tr><td>T2</td><td><b>Multi-language</b></td><td>English, Hindi, Bengali, Tamil, Telugu + more — i18n framework with community translations</td><td><span class="effort l">LARGE</span></td><td>Market reach</td></tr>
+<tr><td>T3</td><td><b>Public API</b></td><td>RESTful API for leaderboards, game results, fairness verification — for third-party tools and bots</td><td><span class="effort l">LARGE</span></td><td>Developer ecosystem</td></tr>
+<tr><td>T4</td><td><b>Real-time Analytics Dashboard</b></td><td>Admin sees live DAU, wager volume, GGR, popular games, retention curves, funnel metrics</td><td><span class="effort l">LARGE</span></td><td>Ops efficiency</td></tr>
+<tr><td>T5</td><td><b>Push Notifications</b></td><td>Notify when your bet is matched, when a friend is online, when jackpot is armed, daily quest reminder</td><td><span class="effort m">MED</span></td><td>Re-engagement</td></tr>
+</table>
+
+<h3>&#128737;&#65039; B6. Security &amp; Trust</h3>
+<table>
+<tr><th>#</th><th>Feature</th><th>Description</th><th>Effort</th><th>Revenue angle</th></tr>
+<tr><td>SEC1</td><td><b>Two-Factor Auth</b></td><td>TOTP-based 2FA for account login and large withdrawals</td><td><span class="effort m">MED</span></td><td>Security</td></tr>
+<tr><td>SEC2</td><td><b>Anti-Cheat Detection</b></td><td>Detect collusion (two accounts dumping to one), abnormal win rates, bot patterns</td><td><span class="effort xl">XL</span></td><td>Fraud prevention</td></tr>
+<tr><td>SEC3</td><td><b>Public Fairness Page</b></td><td>Standalone web page where anyone can verify any game without logging in</td><td><span class="effort s">SMALL</span></td><td>Trust</td></tr>
+<tr><td>SEC4</td><td><b>Monthly Activity Statements</b></td><td>Auto-generated PDF with total wagered, won, lost, fees paid, net P/L — emailed monthly</td><td><span class="effort m">MED</span></td><td>RG compliance</td></tr>
+</table>
+
+<h3>&#128101; B7. Responsible Gaming</h3>
+<table>
+<tr><th>#</th><th>Feature</th><th>Description</th><th>Effort</th><th>Revenue angle</th></tr>
+<tr><td>RG1</td><td><b>Deposit Limits</b></td><td>Self-set daily/weekly/monthly deposit caps that cannot be increased for 24 hours</td><td><span class="effort s">SMALL</span></td><td>Licence requirement</td></tr>
+<tr><td>RG2</td><td><b>Session Time Limits</b></td><td>Self-set max session duration; auto-logout with cool-off period</td><td><span class="effort s">SMALL</span></td><td>Licence requirement</td></tr>
+<tr><td>RG3</td><td><b>Self-Exclusion (real)</b></td><td>Permanent or timed self-exclusion with no undo during the period (currently only 60s demo)</td><td><span class="effort s">SMALL</span></td><td>Licence requirement</td></tr>
+<tr><td>RG4</td><td><b>Reality Check Graph</b></td><td>Visual chart showing net P/L over time with "you are down X coins" callout</td><td><span class="effort s">SMALL</span></td><td>RG compliance</td></tr>
+</table>
+
+<!-- ══════════════════════════════════════ -->
+<h2 class="road">&#128506; PART C — Implementation Roadmap</h2>
+
+<div class="road">
+<h3>&#127919; Phase 1 — Close the Gaps (1-2 weeks)</h3>
+<p>Finish what's already spec'd before adding new features.</p>
+<ul>
+<li>&#9989; VIP 8 tiers (done in v8.0)</li>
+<li>&#9989; Admin-only tournaments (done in v8.0)</li>
+<li>&#9989; Quest window 22:00 UTC (done in v8.0)</li>
+<li>&#9989; No deposit/withdraw tax (done in v8.0)</li>
+<li>&#11014; Shop UI for 8 cosmetic categories (A12)</li>
+<li>&#11014; Avatar frames equip system (A1)</li>
+<li>&#11014; Premium emoji reaction UI (A6)</li>
+<li>&#11014; VIP-exclusive gating + cosmetics discount (A7, A8, A10)</li>
+</ul>
+</div>
+
+<div class="road">
+<h3>&#127919; Phase 2 — Quick Wins (1 week)</h3>
+<p>High-impact features with small effort.</p>
+<ul>
+<li>Lucky Wheel daily free spin (G1) — instant engagement boost</li>
+<li>7-Day Login Calendar (P2) — visible progress on the wallet card</li>
+<li>Weekly Challenges (P3) — deeper than daily quests</li>
+<li>Coin Boosters (E5) — consumable revenue</li>
+<li>Dice Roll game (G3) — simplest new game type</li>
+<li>Chat/Taunt Colours (A2) — data exists, just needs rendering</li>
+<li>Public Fairness Page (SEC3) — trust feature</li>
+<li>Deposit Limits + Session Limits (RG1, RG2) — licence prep</li>
+</ul>
+</div>
+
+<div class="road">
+<h3>&#127919; Phase 3 — Medium Features (2-3 weeks)</h3>
+<p>Solid additions that need more design and code.</p>
+<ul>
+<li>Scratch Cards (G2) — new game category</li>
+<li>Loteria / Raffle (G4) — weekly community event</li>
+<li>Loot Boxes / Mystery Crates (E1) — cosmetics revenue</li>
+<li>Victory Animations (A3) + Table Themes (A4) + Sound Packs (A5)</li>
+<li>Player Profiles (S3) — public stats + cosmetics showcase</li>
+<li>Gifting (S5) — social commerce</li>
+<li>War Card Game (G6) — quick to build</li>
+<li>Push Notifications (T5) — re-engagement</li>
+<li>Reality Check Graph (RG4) — responsible gaming</li>
+</ul>
+</div>
+
+<div class="road">
+<h3>&#127919; Phase 4 — Major Features (3-6 weeks)</h3>
+<p>Significant investment, major payoff.</p>
+<ul>
+<li>Battle Pass / Season Pass (P1) — the retention king</li>
+<li>Friend List + Private Rooms (S1, S2) — social backbone</li>
+<li>Trading Post (E2) — player economy</li>
+<li>Subscription Tiers (E4) — recurring revenue</li>
+<li>PWA / Mobile App (T1) — platform expansion</li>
+<li>Spectator Mode (S4) — community building</li>
+<li>Real-time Analytics Dashboard (T4) — ops tooling</li>
+</ul>
+</div>
+
+<div class="road">
+<h3>&#127919; Phase 5 — Long-term Vision (6+ weeks)</h3>
+<p>Big bets for when the platform is stable and profitable.</p>
+<ul>
+<li>Chat System (S6) — full messaging</li>
+<li>Clans / Teams (S7) — team-based competition</li>
+<li>Multi-language (T2) — international expansion</li>
+<li>Public API (T3) — developer ecosystem</li>
+<li>Anti-Cheat Detection (SEC2) — fraud prevention at scale</li>
+<li>Skill Matchmaking (P5) — competitive integrity</li>
+<li>Staking / Interest (E3) — economy depth</li>
+</ul>
+</div>
+
+<div class="callout ok">
+<b>Priority recommendation:</b> Close Phase 1 gaps first &rarr; then Phase 2 quick wins (Lucky Wheel, Login Calendar, Chat Colours are the highest impact-per-effort) &rarr; Phase 3 for revenue features &rarr; Phase 4 for retention. Phase 5 only when the platform is stable and generating surplus revenue.
+</div>
+
+</main>
+
+<footer>
+TossMatch v8.0 missing features &amp; enhancement roadmap &middot; 12 gaps + 35 ideas across 10 categories &middot; 5 implementation phases &middot; pure HTML<br>
+companion: toss-bet-business-rules.html (spec) &middot; toss-bet-games-catalog.html (games) &middot; toss-bet-features.json (machine-readable)
+</footer>
+</body>
+</html>

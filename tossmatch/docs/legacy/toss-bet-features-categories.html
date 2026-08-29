@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TossMatch v8.0 — Category-Wise Feature List (Pure HTML)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Arial,sans-serif;
+background:#0b1020;background-image:radial-gradient(1100px 550px at 85% -10%,rgba(40,64,120,.35),transparent),radial-gradient(900px 500px at -10% 110%,rgba(18,70,80,.35),transparent);
+color:#e8edf7;min-height:100vh}
+body.light{background:#f5f6fa;background-image:none;color:#1a2035}
+header{background:rgba(9,13,26,.95);border-bottom:1px solid #22304f;padding:20px;position:relative}
+body.light header{background:rgba(255,255,255,.95);border-color:#d5dae8}
+.hwrap{max-width:1100px;margin:0 auto}
+h1{margin:0;font-size:22px}
+.sub{color:#93a0bd;font-size:13.5px;margin-top:6px;line-height:1.6}
+body.light .sub{color:#667}
+.vbadge{display:inline-block;font-size:11px;font-weight:800;color:#332500;background:linear-gradient(135deg,#f6c453,#e0a52e);border-radius:999px;padding:4px 12px;letter-spacing:1px;vertical-align:3px;margin-left:10px}
+.theme-btn{cursor:pointer;border:1px solid #33477a;background:transparent;color:#93a0bd;padding:4px 10px;border-radius:8px;font-size:14px;position:absolute;top:14px;right:14px}
+body.light .theme-btn{border-color:#ccd;color:#667}
+main{max-width:1100px;margin:0 auto;padding:20px 20px 60px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:18px 0 8px}
+.stat{background:#121a2e;border:1px solid #22304f;border-radius:14px;padding:14px}
+body.light .stat{background:#fff;border-color:#d5dae8}
+.stat .v{font-size:22px;font-weight:800;color:#f6c453}
+body.light .stat .v{color:#885000}
+.stat .k{font-size:10.5px;color:#93a0bd;text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+body.light .stat .k{color:#667}
+.rules{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:18px 0 6px}
+.rule{background:linear-gradient(135deg,#121a2e,#0e1a30);border:1px solid #2a3a60;border-radius:16px;padding:16px}
+body.light .rule{background:#fff;border-color:#d5dae8}
+.rule h3{margin:0 0 8px;font-size:13px;color:#f0d9a0}
+body.light .rule h3{color:#8b6914}
+.rule p{margin:0;color:#c7d2e8;font-size:12.6px;line-height:1.7}
+body.light .rule p{color:#334}
+.rule code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;background:#0b1324;border:1px solid #22304f;border-radius:6px;padding:1px 6px;color:#a8c7e8;word-break:break-all}
+body.light .rule code{background:#eef;border-color:#ccd;color:#225}
+.count{color:#93a0bd;font-size:12px;margin:6px 0 0}
+body.light .count{color:#667}
+.cat{margin-top:34px}
+.cat h2{font-size:17px;padding-left:12px;border-left:4px solid #f6c453;margin:0 0 4px;color:#e8edf7}
+body.light .cat h2{color:#333;border-color:#b8860b}
+.cat .cd{color:#93a0bd;font-size:12.5px;margin:0 0 14px;padding-left:16px}
+body.light .cat .cd{color:#667}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.card{background:#121a2e;border:1px solid #22304f;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
+body.light .card{background:#fff;border-color:#d5dae8}
+.card .top{display:flex;align-items:flex-start;gap:10px}
+.card .ico{font-size:22px;line-height:1.2}
+.card .num{font-size:10px;font-weight:800;color:#c4b5fd;border:1px solid rgba(167,139,250,.5);border-radius:6px;padding:1px 7px;letter-spacing:.5px;white-space:nowrap}
+body.light .card .num{color:#646;border-color:#cac}
+.card h3{margin:0;font-size:14.5px;line-height:1.35;flex:1;color:#e8edf7}
+body.light .card h3{color:#333}
+.card p{margin:0;color:#c7d2e8;font-size:12.8px;line-height:1.7}
+body.light .card p{color:#334}
+.facts{border-top:1px dashed #22304f;padding-top:8px;display:flex;flex-direction:column;gap:3px}
+body.light .facts{border-color:#dde}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:11.5px}
+.kv b{color:#93a0bd;font-weight:700;text-align:right}
+body.light .kv b{color:#667}
+.kv span{color:#6d7d9d}
+body.light .kv span{color:#889}
+.ver{font-size:10px;font-weight:800;border-radius:6px;padding:1px 7px;border:1px solid #33477a;color:#9db0d4;align-self:flex-start}
+body.light .ver{border-color:#ccd;color:#667}
+.ver.v53{color:#34d399;border-color:rgba(52,211,153,.5)}
+.ver.v52{color:#a7f3d0;border-color:rgba(52,211,153,.5)}
+.ver.v46{color:#c4b5fd;border-color:rgba(167,139,250,.5)}
+.ver.v45{color:#93c5fd;border-color:rgba(96,165,250,.5)}
+.ver.v4{color:#34d399;border-color:rgba(52,211,153,.5)}
+.retired{background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.3);border-radius:16px;padding:16px;margin-top:34px}
+.retired h2{font-size:15px;margin:0 0 10px;color:#f8a5a5;border:none;padding:0}
+body.light .retired h2{color:#c33}
+.retired p{color:#93a0bd;font-size:12.5px;line-height:1.7;margin:6px 0}
+body.light .retired p{color:#667}
+footer{text-align:center;color:#5f6f8f;font-size:11.5px;padding:20px;line-height:1.7}
+body.light footer{color:#889}
+@media(max-width:680px){
+  main{padding:14px 12px 30px}
+  .card{padding:13px}
+  .grid{gap:12px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .cat h2{font-size:15px}
+}
+@media(max-width:420px){
+  .stats{grid-template-columns:1fr 1fr}
+  .stat{padding:10px}
+  .stat .v{font-size:18px}
+  .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<button class="theme-btn" onclick="document.body.classList.toggle('light')">&#128161;</button>
+
+<header>
+<div class="hwrap">
+<h1>&#128203; TossMatch &mdash; Category-Wise Feature List <span class="vbadge">VERSION 8.0</span></h1>
+<div class="sub">All 90 features organised by category, in pure HTML &mdash; no JavaScript data arrays, no rendering logic, fully indexable and printable. Play-money P2P coin-toss platform. Live demo: <b style="color:#f6c453">toss-bet-full.html</b> &middot; JSON: <b style="color:#f6c453">toss-bet-features.json</b></div>
+</div>
+</header>
+
+<main>
+<div class="stats">
+<div class="stat"><div class="v">90</div><div class="k">Features detailed</div></div>
+<div class="stat"><div class="v">7</div><div class="k">Foundation systems</div></div>
+<div class="stat"><div class="v">11</div><div class="k">Categories</div></div>
+<div class="stat"><div class="v">5</div><div class="k">Revenue streams</div></div>
+<div class="stat"><div class="v">6</div><div class="k">VIP tiers (monthly)</div></div>
+<div class="stat"><div class="v">50/50</div><div class="k">Provable odds</div></div>
+</div>
+
+<div class="rules">
+<div class="rule"><h3>&#128176; Fees &mdash; admin per game type</h3><p>Regular-bet fee: <code>round(pot &times; feePct%)</code>, default 5% &mdash; the only game type it applies to. Series Cups and tournaments carry their own separate admin rates (5% / 10%). Nothing is ever double-charged. The house always keeps &ge;1 coin per fee.</p></div>
+<div class="rule"><h3>&#127920; Jackpot &mdash; armed, percentage-paid</h3><p>Every game adds <code>max(0, min(fee&minus;1, max(floor, 10%&times;fee)))</code>. Once the pool reaches the arming threshold (default 50), a <code>00</code> hash (1/256) pays <b>payPct%</b> of the pool (default 50%) &mdash; the remainder rolls over. Never from winnings.</p></div>
+<div class="rule"><h3>&#128142; VIP &mdash; 6 monthly tiers</h3><p>Bronze 0+ &middot; Silver 1k+ (5%) &middot; Gold 5k+ (10%) &middot; Platinum 15k+ (15%) &middot; Diamond 40k+ (18%) &middot; Legend 100k+ (20%). Resets at month end; unclaimed rakeback survives; admin-controlled within 0&ndash;20%.</p></div>
+<div class="rule"><h3>&#128096; Wallet &amp; stakes</h3><p>MAIN / REFERRAL / BONUS / RAKEBACK / BETTED / BANK segments. Transfers: main&to;main only (min 10, 500/day). Any stake: non-main &le; 10&ndash;20%, rest from main; <b>winnings &rarr; 100% main</b>.</p></div>
+<div class="rule"><h3>&#128273; Fairness &mdash; one proof</h3><p><code>combined = BigInt(hashA) + BigInt(hashB) + BigInt(SHA256(seed))</code>. Commit before the flip, seed revealed after. Same proof covers the jackpot trigger. Copy-to-clipboard on every proof.</p></div>
+<div class="rule"><h3>&#128336; Seasons &amp; real-player policy</h3><p>Seasons auto-end monthly at 20:00 UTC (500/250 + title). &times;2 room (10-min TTL) and tournaments (creator-only cancel) are real-players-only. Light/dark theme. Auto-rebet has a &minus;200 session stop.</p></div>
+</div>
+
+<div class="count">90 features &mdash; complete v5.3.2 reference.</div>
+
+    <section class="cat">
+      <h2>🏗️ Foundation systems</h2>
+      <p class="cd">The core every feature runs on: matching, escrow, fairness, fees, fee-funded jackpot, ledger. &middot; 7 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">⚡</span><h3>P2P auto-match queue</h3><span class="num">F1</span></div>
+          <p>Every posted bet joins a FIFO queue. The engine instantly pairs a new bet with the oldest waiting bet from a different owner that has the exact same amount and the opposite side — matching fires in under a second, publishes the fairness commitments and auto-flips. If nothing matches, the bet waits visibly (queue position, amount, side, wait timer) and can be cancelled for a full refund at any time. Manual “Take” buttons always remain available, and the admin can toggle auto-match off (manual only) or back on, which sweeps every compatible waiting pair and settles it in the background.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Tables tab</b></div>
+            <div class="kv"><span>Parameters</span><b>Rules: exact amount equality · opposite side only · no self-match · one match per bet (UNIQUE game_id in production)</b></div>
+          </div>
+          <span class="ver ">v1</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏦</span><h3>Escrow wallets</h3><span class="num">F2</span></div>
+          <p>Stakes never sit in the betting wallet: the moment a bet is posted, the stake leaves the player’s wallet into escrow and appears in the ledger. Escrow is atomic with posting and with matching, so a bet can never exist unbacked. Cancelling an unmatched bet refunds the stake in full; cancelling a matched-but-unflipped game refunds both players. Settlement releases the full pot − fee to the winner in the same atomic step. Stakes are funded per the v4.5 rule: 80–90% must come from the MAIN balance, with at most 10–20% (admin cap) drawn from bonus/referral/rakeback together — and winnings always land back in main (feature 66).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>All betting</b></div>
+            <div class="kv"><span>Parameters</span><b>main ≥ 80–90% of stake · nonMain ≤ cap% · one transaction · CHECK (≥ 0)</b></div>
+          </div>
+          <span class="ver ">v1</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🔐</span><h3>3-party merged-hash fairness</h3><span class="num">F3</span></div>
+          <p>The coin result mathematically requires all three parties. Each player’s secret seed is hashed into a frozen bet fingerprint (SHA-256 of seed:betId:amount:side) at post time. When the match forms, the system generates a 256-bit CSPRNG server seed and publishes only SHA-256(serverSeed). The result is the first byte of HMAC-SHA256(serverSeed, makerHash + takerHash : gameId) — even = HEADS, odd = TAILS. Because every party contributes entropy that is committed before the flip, no one (including the house) can see or steer the outcome in advance; changing any single input avalanches the hash and is instantly detectable.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Every flip</b></div>
+            <div class="kv"><span>Parameters</span><b>combined = BigInt(hashA)+BigInt(hashB)+BigInt(SHA256(seed)) · final = SHA256(combined:gameId)</b></div>
+          </div>
+          <span class="ver ">v2</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🔍</span><h3>Commit–reveal proofs</h3><span class="num">F4</span></div>
+          <p>After every flip the full proof panel reveals all inputs step by step: the committed hash, the revealed server seed, both preimages and fingerprints, the BigInt sum in hex, the final SHA-256, and the first byte’s parity mapping — so anyone can recompute the coin by hand. The same single proof also covers the jackpot trigger (byte prefix “00”), and a standalone verifier accepts any game’s four inputs to re-derive the result locally. In production the verifier is a public web page; player seeds should be hashed client-side and revealed only after settlement.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Game modal · Verify tab</b></div>
+            <div class="kv"><span>Parameters</span><b>One proof covers result + jackpot · verified vectors (SHA-256/HMAC) in Appendix B of the docs</b></div>
+          </div>
+          <span class="ver ">v2</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💰</span><h3>House fee engine</h3><span class="num">F5</span></div>
+          <p>The admin-controlled core revenue line, applied ONLY to regular matched bets (v4.4 scope). A configurable percentage of every pot (default 5%, range 0–25%) is deducted at settlement into segregated house revenue. Series Cups and tournaments never pay this fee — they carry their own separate admin rates (features 4 and 56) — and house games are RTP-priced, so no bet is ever double-charged. The rate is snapshotted per game at match time, mid-session changes never touch running games, and every change is audited. At defaults a 100-vs-100 game: pot 200 → fee 10 → winner 190, with the jackpot contribution coming out of that fee (F6).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → rates</b></div>
+            <div class="kv"><span>Parameters</span><b>fee = round(pot × feePct%) · default 5% · regular bets only (v4.4) · funds the 💰 pool</b></div>
+          </div>
+          <span class="ver ">v1</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🎰</span><h3>Hash-triggered jackpot</h3><span class="num">F6</span></div>
+          <p>A growing prize pool funded from the house fee of regular bets: each game contributes min(fee, max(1 coin, round(10% × fee))) — a 1-coin floor for small games, capped at the fee, never deducted from the winner’s payout. From v5.3 the jackpot is ARMED and percentage-paid: the trigger only fires once the pool reaches the admin-set arming threshold (default 50 coins) — below it a “00” byte hits for nothing and the pool keeps building. A hit pays the winner a configurable percentage (default 50%, floor 1%) while the remainder rolls over. The house always keeps at least 1 coin of every fee (v5.3.2), so micro-stakes no longer produce zero-margin games. The trigger rides the same merged hash (byte “00”, 1 in 256) and cannot be aimed at or read in advance; long-run, the funding is still returned 100% to players.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Header meter · every game</b></div>
+            <div class="kv"><span>Parameters</span><b>fund = min(fee, max(1, 10% × fee)) · armed when pool ≥ min (def 50) · pays payPct% of pool (def 50), remainder rolls over (v5.3)</b></div>
+          </div>
+          <span class="ver ">v3</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🧾</span><h3>Conservation ledger</h3><span class="num">F7</span></div>
+          <p>Every single coin movement — escrow, refund, payout, fee, rake, jackpot, premium, claim, rakeback, shop, vault, comp, promo, reward — is a ledger entry with a running balance. The conservation invariant asserts at every instant that wallets + vaults + all escrow (queue, games, cups, tournaments, ladders) + house accounts (capital, fees, rakes, shop) + jackpot pool + rakeback liability equals every coin ever created. The automated test suite validates it across all 15 buckets on every code path; in production it becomes a nightly reconciliation job where any drift is a P0 incident.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Stats · Admin P&amp;L</b></div>
+            <div class="kv"><span>Parameters</span><b>Σ accounts = Σ deposits + taps · tested on every path</b></div>
+          </div>
+          <span class="ver ">v2</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>💹 Revenue (features 1–14)</h2>
+      <p class="cd">How the house earns sustainably with zero game risk on P2P, plus bankroll-guarded house-edge games. &middot; 14 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">💎</span><h3>VIP tier engine</h3><span class="num">1</span></div>
+          <p>Six tiers (v4.4) ranked by MONTHLY wagered — Bronze 0+, Silver 1,000+, Gold 5,000+, Platinum 15,000+, Diamond 40,000+, Legend 100,000+ — setting each player’s rakeback rate from a 0% floor to a 20% maximum. The counter resets at every month end (plus an admin “End VIP month” action), so status is re-earned fresh each month and drops if volume drops; accrued-but-unclaimed rakeback always survives a reset. The tier appears on the leaderboard, queue and admin tools with a progress bar to the next tier, and the whole table is an admin-controlled price structure — thresholds and rates editable within the 0–20% bounds (feature 80).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Season tab · leaderboard</b></div>
+            <div class="kv"><span>Parameters</span><b>6 tiers · monthly wagered 0/1k/5k/15k/40k/100k · rakeback 0/5/10/15/18/20% · resets month-end (v4.4)</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💎</span><h3>Rakeback accrual</h3><span class="num">2</span></div>
+          <p>Every settled game instantly accrues each player round(their tier% × half the fee) from house revenue into a claimable pending balance. Silver+ players therefore get a permanent effective discount of their tier rate on fees — loyalty pricing that rewards exactly the players who generate the fee volume. The accrual is ledgered, shows live in the Season tab, and follows the monthly VIP reset — tiers recalculate as each month’s counter zeroes (feature 1).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Automatic on settle</b></div>
+            <div class="kv"><span>Parameters</span><b>accrual = tier% × ½·fee per game · funded from income line #1</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💎</span><h3>Rakeback claim</h3><span class="num">3</span></div>
+          <p>One tap moves the entire accrued rakeback into the dedicated RAKEBACK balance, ledgered as RAKEBACK. Instant and uncapped in frequency, with the exact pending amount on the button. Rakeback money is not transferable and can only part-fund stakes within the 10–20% cap (features 65–66) — drip-payments that give players a recurring reason to return without becoming a withdrawal leak.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Season tab</b></div>
+            <div class="kv"><span>Parameters</span><b>Claims → rakeback balance · part-funds stakes within the cap</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⚔️</span><h3>Series Cup (Bo3/Bo5/Bo7)</h3><span class="num">4</span></div>
+          <p>A head-to-head cup where both players escrow identical entries up front and flip repeated games until one side clinches the required wins (best-of-3 default; Bo5 and Bo7 supported, plus the Advantage variant, feature 63). Every cup game is a full, independently provable 3-party hash flip. Entries can be cancelled pre-completion for a full refund of both stakes.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Series tab</b></div>
+            <div class="kv"><span>Parameters</span><b>Both escrow at start · cancel = full refund</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⚔️</span><h3>Cup rake — income line #4</h3><span class="num">5</span></div>
+          <p>When a cup completes, the house takes round(cupRakePct% of the cup pot) — its own admin-controlled rate (default 5%), entirely separate from the regular-bet house fee which never applies to cups (v4.4) — and the winner receives the rest in one ledgered payout. Because cups chain multiple flips per session, they deepen engagement (more volume per visit) while adding an event-driven revenue stream of their own.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Series settle</b></div>
+            <div class="kv"><span>Parameters</span><b>cupRake = round(cupPot × cupRakePct%) · default 5% · admin-controlled, separate from house fee (v4.4)</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🛍</span><h3>Cosmetics shop</h3><span class="num">6</span></div>
+          <p>Shop 2.0 (v4.5) spans three affordable categories — coin skins (Classic free, Silver 25, Neon 50, Arctic 50, Ember 75, Bitcoin 100, animated Rainbow 150), country flags and persona avatars (feature 67). Deliberately low pricing maximises take-up so the sink actually sinks: most players can afford their first cosmetic within a day of casual play. Every purchase moves coins from the player economy into house shop revenue at 100% margin, ledgered and visible in the P&amp;L; The v4.6 catalog expands the skin range further — gems, nature, cosmic and festive finishes (feature 81) — and in a real-money build the same slots sell for currency at zero marginal cost.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Shop tab</b></div>
+            <div class="kv"><span>Parameters</span><b>skins 0–150 · flags 50–120 · avatars 75–200 · 100% margin sink</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🎨</span><h3>Skin equip</h3><span class="num">7</span></div>
+          <p>Equipping recolours the actual flipping coin — match modal, toss animation, done screen and shop previews — so the purchase is visible every single game. From v4.5 the equipped FLAG and PERSONA AVATAR also render beside the player’s name on the leaderboard, in the queue and in match modals, and all three cosmetic slots (coin · flag · avatar) are independently equippable, re-equipable and persist per player across sessions.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Shop tab</b></div>
+            <div class="kv"><span>Parameters</span><b>coin skin + flag + avatar · independently equippable</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏅</span><h3>Achievement titles</h3><span class="num">8</span></div>
+          <p>Certain achievements unlock equippable titles — 🔥 Hot Streak, ⚡ Unstoppable, 💰 Pool Shark, 🏆 Cup Champ, 🕶️ Baller, 👑 High Roller, 👑 Champion — displayed on the leaderboard and queue. Titles are permanent status symbols (and season champions add theirs, feature 57), giving the shop-free status ladder that keeps competition visible.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Season tab</b></div>
+            <div class="kv"><span>Parameters</span><b>7+ unlockable titles · equip / unequip anytime</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏦</span><h3>Vault</h3><span class="num">9</span></div>
+          <p>Players can park MAIN-balance coins in a vault (deposit/withdraw 100 at a time) that sits outside the betting wallet and inside the conservation invariant — bonus, referral and rakeback money can never be vaulted (v4.5). The small friction of moving money back out measurably reduces tilt-spending and protects bankrolls — which protects the player relationship and therefore lifetime value.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Shop tab</b></div>
+            <div class="kv"><span>Parameters</span><b>Main balance only · 100 per action · counted in conservation</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📈</span><h3>Economy health monitor</h3><span class="num">10</span></div>
+          <p>Live gauge of the play economy: total taps (coins created — bonuses, rewards, promos, bot feeding, house capital) versus sinks (fees, rakes, shop). The verdict reads healthy / balanced / inflationary with a numeric sinks/taps ratio, so the operator can tune faucets down or sinks up before play-coins lose meaning. This is the discipline that keeps a game economy alive for years.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>health = sinks ÷ taps · verdict thresholds 0.15 / 0.5</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🧮</span><h3>Revenue simulator</h3><span class="num">11</span></div>
+          <p>A what-if calculator for the whole business: inputs for games/day, average stake, cups/day, tournaments/day and shop coins/day feed a formula that itemises gross fee, VIP rakeback cost, jackpot funding, cup rake, tournament rake and shop income into net-per-day and net-per-month, using the currently configured live rates. It is the pricing tool for deciding fee changes before touching production.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>Output: itemised daily + monthly net revenue projection</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💹</span><h3>House P&amp;L panel</h3><span class="num">12</span></div>
+          <p>A live statement across every stream: fees (already net of accrued rakeback and jackpot funding), Series Cup rake, tournament rake, shop sales, gross revenue, promotional cost and net revenue, plus the current house bankroll (operating capital + net). vs-house game results flow through the same accounts, so drawdowns and edges are visible in one place.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>7 revenue lines + promo costs + bankroll in one view</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🎁</span><h3>First-deposit promo</h3><span class="num">13</span></div>
+          <p>The first top-up for each player pays a +50% bonus — 500 to main plus 250 into the bonus balance — once per account, ever (v4.5 routing). The 250-coin cost is booked immediately as promo cost in the P&amp;L so marketing spend is never hidden. Promos are admin-scheduled campaigns — start/end times, enable/disable anytime (feature 69) — and in production the one-per-account mechanic plus velocity checks is the standard defence against bonus abuse.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin top-up</b></div>
+            <div class="kv"><span>Parameters</span><b>Once per player · +50% (250 → bonus balance) · cost tracked</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📏</span><h3>Level-based stake limits</h3><span class="num">14</span></div>
+          <p>Minimum stake is 10; the maximum is 100 + level×100 (hard cap 1,000). A brand-new player can therefore not dump their whole bankroll in one flip, while proven players unlock bigger action as they level — a risk-tiering mechanism that protects newcomers (a compliance plus) and gives progression tangible value. The current cap shows right on the bet card and guards every bet path including house games.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Bet validation</b></div>
+            <div class="kv"><span>Parameters</span><b>max = min(1000, 100 + level×100) · min 10</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>🏅 Progression (15–23)</h2>
+      <p class="cd">XP, levels, quests, achievements, streaks and trophies that build the retention flywheel. &middot; 9 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">⭐</span><h3>XP engine</h3><span class="num">15</span></div>
+          <p>XP equals stake: every settled game awards both players XP equal to the amount wagered, and Series Cup winners earn XP for the cup stake too. Wagering is therefore rewarded even in defeat, which keeps losing sessions feeling progressive — the psychological core of the retention flywheel.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Automatic</b></div>
+            <div class="kv"><span>Parameters</span><b>XP = coins wagered · both sides earn</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⭐</span><h3>Levels</h3><span class="num">16</span></div>
+          <p>Level = √(XP/60) + 1 on a quadratic curve, so early levels come fast and later ones take real volume. The wallet card shows the level, total XP and a progress bar to the next level. Levels gate the max stake (feature 14) and the High Roller achievement, and every level’s reward is admin-editable with new levels addable anytime (feature 70), including per-level first-to-reach bonuses (feature 71).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Wallet card</b></div>
+            <div class="kv"><span>Parameters</span><b>Curve 60·(level−1)² · √ progression</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⭐</span><h3>Level-up rewards</h3><span class="num">17</span></div>
+          <p>Crossing a level instantly pays level × 50 coins into the bonus balance with a toast, a live-feed announcement and a LEDGER entry. The reward is a capped, tracked tap — visible rules only, never a hidden bonus — gives every level a concrete payoff, and is fully admin-managed via the level editor (feature 70).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Automatic</b></div>
+            <div class="kv"><span>Parameters</span><b>reward = new level × 50 coins</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🎯</span><h3>Daily quests</h3><span class="num">18</span></div>
+          <p>Three quests rotate daily and reset at local midnight: settle 3 games (50), win 1 game (75), play 1 Series Cup game (50). The whole system runs behind an admin on/off toggle with progress frozen while off (feature 72), and more quest types arrive in future. Progress bars fill live from real actions; the day’s state is stored per player so partial progress survives reloads within the day. All quest rewards land in the bonus balance (v4.5). Quests are the daily-habit engine — a reason to open the tab every day.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Season tab</b></div>
+            <div class="kv"><span>Parameters</span><b>3/day · rewards 50–75 → bonus balance · reset at midnight</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">✅</span><h3>Quest claims</h3><span class="num">19</span></div>
+          <p>Completed quests flip to a gold Claim button; claiming pays instantly (ledgered, tap-tracked) and marks the quest collected for the day so it cannot double-pay. Unfinished quests show exact progress so the next action is always obvious.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Season tab</b></div>
+            <div class="kv"><span>Parameters</span><b>One claim per quest per day</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏅</span><h3>Achievements (12)</h3><span class="num">20</span></div>
+          <p>The full set: First Flip, On Fire (3 streak), Unstoppable (5 streak), Jackpot! (win the pool), Cup Winner, Champion (win a tournament), Big Baller (stake 500+), Night Owl (10 games), Frequent Flipper (25 games), Double Digits (10 wins), High Roller (level 5) and Comeback Kid (win after two straight losses). Each is checked automatically after every game, cup and tournament, unlocks are broadcast to the live feed, and the entire catalogue — rewards, additions, removals — is admin-managed (feature 73).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Automatic</b></div>
+            <div class="kv"><span>Parameters</span><b>13 achievements · auto-evaluated on every settle</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏅</span><h3>Achievement rewards</h3><span class="num">21</span></div>
+          <p>Every unlock pays coins (30–300 depending on difficulty) into the bonus balance, and several also grant equippable titles. All rewards are fixed, published amounts — visible rules only — and every payout is a tracked tap in the economy ledger, so generosity stays inside the tap/sink budget.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Automatic</b></div>
+            <div class="kv"><span>Parameters</span><b>30–300 coins · 7 grant titles</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🎁</span><h3>Daily login streak</h3><span class="num">22</span></div>
+          <p>Returning on a new day pays 50 + 25×(streak day − 1), capped at 175 from day 6 onward. Consecutive days extend the streak; skipping a day resets it — the classic streak mechanic that converts players into a daily habit. Claiming happens the moment you switch to your player tab, lands in the bonus balance (v4.5), and the feature runs behind an admin affordability toggle that freezes streaks while off (feature 74).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Switch to your tab</b></div>
+            <div class="kv"><span>Parameters</span><b>50 → 175/day cap → bonus balance · resets on a missed day</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏆</span><h3>Trophy cabinet</h3><span class="num">23</span></div>
+          <p>Series Cup and tournament victories are counted per player and displayed in the Series tab trophy cabinet and on leaderboard rows. Trophies never reset — even when seasons roll over — so long-term prestige accumulates alongside the per-season leaderboard races.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Series tab</b></div>
+            <div class="kv"><span>Parameters</span><b>Permanent per-player counters</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>🎮 Gameplay &amp; social (24–35)</h2>
+      <p class="cd">Game modes and social layer — from double-or-nothing to sounds, confetti and keyboard play. &middot; 12 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">×2</span><h3>Double or nothing + rematch</h3><span class="num">24</span></div>
+          <p>From any settled game’s proof modal, ×2 posts a double-stakes challenge into the ⏳ waiting room where only REAL players can accept it — house bots never fade a double (v4.6). The 🔁 Again button rebets the identical stake and side into the normal queue. Both respect every guard — maintenance, limits, rate, balance — and the waiting room turns the tilt-button into a social duel: someone real always has to step up.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Result modal</b></div>
+            <div class="kv"><span>Parameters</span><b>×2 capped at level max · same side</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🔁</span><h3>Auto-rebet</h3><span class="num">25</span></div>
+          <p>With the toggle on, a player’s bet is automatically re-posted ~1.6 seconds after each of their games settles — same stake and side, re-validated against every guard each time. From v5.3.2 a session-loss safety stop is built in: if the player’s session net reaches −200 coins or worse, auto-rebet turns itself off with a clear message, preventing silent tilt-spending. Volume for the fee model — with a brake.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Bet card toggle</b></div>
+            <div class="kv"><span>Parameters</span><b>Auto re-post after settle · all guards re-checked</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⚡</span><h3>Instant mode</h3><span class="num">26</span></div>
+          <p>Skips the 2.3-second toss animation: flips settle in ~250 ms and auto-matched games start their flip after 400 ms instead of 1.1 s. Speed players get many more games per minute; the full proof is unchanged because fairness never depended on the animation.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Bet card toggle</b></div>
+            <div class="kv"><span>Parameters</span><b>Settle ≈ 250 ms · proof identical</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🔒</span><h3>Private bets</h3><span class="num">27</span></div>
+          <p>A private bet is excluded from auto-matching and from queue sweeps — it can only be settled by another player deliberately taking it from the queue (shown with a 🔒 marker). Use cases: agreed duels, settled grudge matches, or bets you only want a specific rival to see.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Bet card toggle</b></div>
+            <div class="kv"><span>Parameters</span><b>Manual-match only · visible with 🔒</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💬</span><h3>Bet taunts</h3><span class="num">28</span></div>
+          <p>Attach a note up to 24 characters to your bet; it rides the queue silently and is delivered inside the match modal when your rival takes the bait. Pure social spice — stored with the game record so it survives in history.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Bet card</b></div>
+            <div class="kv"><span>Parameters</span><b>≤24 chars · shown on match</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">😀</span><h3>Emoji reactions</h3><span class="num">29</span></div>
+          <p>React 👍 😂 😱 to any settled game with a 5-second global cooldown. Reactions are stored on the game record and render as chips beside the result, with the reactor’s name — lightweight, toxic-proof (no free text) social layer.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Settled games list</b></div>
+            <div class="kv"><span>Parameters</span><b>3 emojis · 5s cooldown · stored per game</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📡</span><h3>Live activity feed</h3><span class="num">30</span></div>
+          <p>A rolling feed of the last ~40 events: settled games, ⚡ auto-matches, jackpot hits, big-win flags, streak broadcasts, cup and tournament results, ladder cash-outs, achievements and daily-claim celebrations. The feed gives the room its ambient energy — activity breeds activity.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Tables · Stats · Verify</b></div>
+            <div class="kv"><span>Parameters</span><b>Last 40 events · timestamped</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🔥</span><h3>Streak broadcasts</h3><span class="num">31</span></div>
+          <p>The moment any player hits an exactly-3 win streak, the feed broadcasts “🔥 X is on a 3-win streak!”. Streaks are the most shareable moment in a coin-toss game; broadcasting them turns individual luck into room-wide drama (and the streaker’s 🔥 counter is visible on leaderboard and wallet).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Live feed</b></div>
+            <div class="kv"><span>Parameters</span><b>Fires at exactly 3 wins</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🎲</span><h3>Random side picker</h3><span class="num">32</span></div>
+          <p>One tap (or the R shortcut) flips a 50/50 coin in the UI and selects your side for the next bet. Half ritual, half decision-fatigue killer — and a perfect demo that the side choice carries no information.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Bet card · R key</b></div>
+            <div class="kv"><span>Parameters</span><b>UI-level 50/50 · shortcut R</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⌨️</span><h3>Keyboard shortcuts</h3><span class="num">33</span></div>
+          <p>H = HEADS, T = TAILS, P = post bet, R = random side. Shortcuts are active only in the demo view while a player tab is open and no text input is focused, so typing a taunt or seed never triggers actions.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Global in demo</b></div>
+            <div class="kv"><span>Parameters</span><b>H / T / P / I / R · input-safe</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🔊</span><h3>Sound FX</h3><span class="num">34</span></div>
+          <p>A tiny WebAudio synthesiser — no audio files — plays a descending flip tone on tosses, an ascending major arpeggio on wins and a five-note fanfare on jackpots. Fully toggleable from the bet card or the S-era chip row; generated tones keep the whole app a single self-contained file.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Bet card toggle</b></div>
+            <div class="kv"><span>Parameters</span><b>WebAudio synth · zero assets · toggleable</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🎊</span><h3>Confetti celebrations</h3><span class="num">35</span></div>
+          <p>Emoji confetti (🎉💰✨🪙🔥) rains from the top of the screen on jackpot hits, big wins (payout ≥ 400), tournament victories and ladder cash-outs — 24–40 pieces with randomised fall times. Toggleable for players who find it much.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Automatic</b></div>
+            <div class="kv"><span>Parameters</span><b>24–40 pieces · big-win &amp; jackpot triggers</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>🔐 Trust &amp; integrity (36–42)</h2>
+      <p class="cd">Proofs, verification, monitoring and exports that make the system auditable. &middot; 9 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">🔍</span><h3>Standalone verifier tool</h3><span class="num">36</span></div>
+          <p>Paste any game’s four public inputs — revealed server seed, maker betHash, taker betHash, game id — and the tool locally recomputes SHA-256(seed) to check the original commitment, then HMAC-SHA256(seed, A+B:id), then the first byte’s parity and “00” jackpot check (including arming status), printing every intermediate value. A “load last game” button autofills from history and a 📋 Copy-all button copies all four fields to the clipboard in one tap (v5.3.2). Nothing is trusted from the server; the math runs in your browser.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Verify tab</b></div>
+            <div class="kv"><span>Parameters</span><b>Recomputes commit · merged hash · result · jackpot</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🧪</span><h3>RNG health monitor</h3><span class="num">37</span></div>
+          <p>Continuous statistical audit: heads vs tails counts across all settled games with a z-score against the binomial expectation (alert beyond 3σ), and the jackpot hit-rate against its theoretical 1-in-256. This is the operator’s early-warning system — and exactly the kind of evidence an auditor or regulator asks for.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>z &lt; 3 = OK · jackpot rate vs 1/256</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🧾</span><h3>Admin audit trail</h3><span class="num">38</span></div>
+          <p>Every operator action is timestamped into an immutable-style log (last 50): rate changes, auto-match toggles, maintenance, announcements, exclusions, comps, renames, season ends, bot feeding. Combined with the append-only ledger, it makes “who changed what, when” answerable forever — a licence requirement in regulated markets.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>Last 50 actions · timestamped</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📦</span><h3>Game history JSON export</h3><span class="num">39</span></div>
+          <p>One click exports the complete settled-game history — every game with all fairness inputs (commits, revealed seeds, preimages, merged hashes, results, payouts) — as formatted JSON in a copyable modal. Ideal for third-party auditing, player disputes, or feeding an external verifier.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Verify tab · Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>Full proofs included · copyable</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📄</span><h3>Ledger CSV export</h3><span class="num">40</span></div>
+          <p>Exports both players’ complete ledgers (timestamp, player, type, delta, running balance) as CSV ready for a spreadsheet or accounting system. Every coin’s life story is one download away — the same export a payment provider or auditor would request.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Verify · Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>Accounting-ready · ISO timestamps</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📖</span><h3>Rules &amp; fairness modal</h3><span class="num">41</span></div>
+          <p>A one-screen explainer covering the matching rules, the escrow model, the exact fairness formula (HMAC parity and the “00” jackpot byte), the fee math, and responsible-play guidance. Rules knowledge correlates with trust, and trust with retention.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Bet card</b></div>
+            <div class="kv"><span>Parameters</span><b>6-point rules + fairness explainer</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">✓</span><h3>Per-game fair badges</h3><span class="num">42</span></div>
+          <p>Every settled-game row re-derives its own result from the stored hash inline at render time and displays a green ✓ fair chip when the recomputation matches — a continuous, visible self-audit across the whole history. The game’s proof modal also carries a 📋 Seed copy button (v5.3.2) so anyone can extract the revealed server seed with one tap for external verification.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Games list</b></div>
+            <div class="kv"><span>Parameters</span><b>Inline recompute on every render</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📊</span><h3>Stats center</h3><span class="num">54</span></div>
+          <p>Full career card per player: games, wins and win-rate, net P/L, best streak, comebacks, biggest stake, jackpots, session net, XP/level/tier, lifetime wagered and accrued rakeback. Plus global coin-bias bars (heads vs tails across all games) and the head-to-head record. The same numbers power retention analytics in production.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Stats tab</b></div>
+            <div class="kv"><span>Parameters</span><b>Career · bias bars · head-to-head</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏆</span><h3>Leaderboard filters</h3><span class="num">55</span></div>
+          <p>Rank players four ways — net profit, wins, current streak, level — with medals 🥇🥈🥉, equipped titles, streak flames and live balances on every row. Season resets (feature 57) clear net/wins/streaks so each season crowns a fresh champion while levels persist.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Tables tab</b></div>
+            <div class="kv"><span>Parameters</span><b>4 sort keys · medals · titles</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>🚦 Ops &amp; compliance (43–55)</h2>
+      <p class="cd">Operator tooling and the responsible-gaming stack that keeps a real licence safe. &middot; 11 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">🚧</span><h3>Maintenance mode</h3><span class="num">43</span></div>
+          <p>One switch pauses all new betting — queue posts, takes, cups, tournaments and house games — with a red banner for players, while in-flight games still settle and payouts still process. Ideal for deployments and incident response; every toggle is audited.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin toggle</b></div>
+            <div class="kv"><span>Parameters</span><b>Blocks new bets only · settles in-flight</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📣</span><h3>Announcement broadcasts</h3><span class="num">44</span></div>
+          <p>The operator broadcasts a message (≤120 chars) that appears as a teal banner above every player’s screen until changed or cleared — jackpot promos, cup nights, tournament announcements or maintenance warnings. Setting or clearing a broadcast is written to the audit trail with a timestamp, and the banner renders on every section (Tables, Series, House, Season) so no player can miss it. In production this is the CRM channel for promotions and incident communication.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>≤120 chars · global banner · audited on set</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🛑</span><h3>Session loss limits</h3><span class="num">45</span></div>
+          <p>Each player can carry a session net-loss cap (0 = off). When their session P/L reaches −limit, betting is blocked with a clear take-a-break message until the admin resets it. A licence condition in most regulated markets and genuinely good practice — shipped in the demo because it should never be an afterthought.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin per player</b></div>
+            <div class="kv"><span>Parameters</span><b>Blocks at sessionNet ≤ −limit</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⛔</span><h3>Self-exclusion</h3><span class="num">46</span></div>
+          <p>A 60-second betting lock per player (representing the real product’s hours/days/weeks), applied instantly, banner-flagged in admin tools and audited. Self-exclusion is the single most regulator-scrutinised feature in real-money gaming.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>60s demo lock · audited</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🐢</span><h3>Bet rate limiting</h3><span class="num">47</span></div>
+          <p>A hard cap of 12 bets per rolling minute per player across every bet path (queue, manual takes, house games, auto-rebet), enforced in the shared guard with a friendly throttle message. Prevents both bot abuse and genuinely problematic play patterns.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>betGuard</b></div>
+            <div class="kv"><span>Parameters</span><b>12 bets / 60s rolling</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💚</span><h3>Comp tool</h3><span class="num">48</span></div>
+          <p>Goodwill credits funded strictly from accumulated house revenue — a comp larger than the revenue account is refused, so generosity never creates coins. Every comp is ledgered and audited, making support gestures safe and traceable.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>Capped by house revenue · audited</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⚑</span><h3>Big-win review flags</h3><span class="num">49</span></div>
+          <p>Any game with payout ≥ 400 (or a jackpot) is automatically flagged ⚑ in the admin review list and the live feed. The list is the manual-review queue for fraud/AML checks on outsized wins — standard procedure in real gaming operations.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>Threshold payout ≥ 400</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📊</span><h3>Queue analytics</h3><span class="num">50</span></div>
+          <p>Live liquidity metrics: queue depth, total coins escrowed in the queue, and the average match wait time computed from every game’s maker-wait measurement. Rising waits are the earliest signal to enable the liquidity bots (feature 58) or run a promo.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>Depth · escrow · avg wait seconds</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">✏️</span><h3>Player rename</h3><span class="num">51</span></div>
+          <p>The operator can rename either player (≤14 chars) and the new name propagates instantly everywhere — leaderboard, queue, feed, ledgers, proofs. Audited, because identity changes are sensitive in real systems.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>≤14 chars · instant global</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⏰</span><h3>Reality-check timer</h3><span class="num">52</span></div>
+          <p>A session clock runs from first load and periodically surfaces a “you’ve been playing X minutes — take a break” reminder. Paired with loss limits and self-exclusion it completes the responsible-gaming triad regulators expect to see functioning, not documented.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Background</b></div>
+            <div class="kv"><span>Parameters</span><b>Periodic reminders · session elapsed</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💸</span><h3>Promo cost tracking</h3><span class="num">53</span></div>
+          <p>Every coin created from nothing is itemised as a tap: faucet bonuses, login streaks, quests, achievements, level rewards, first-deposit promo and bot feeding — with the total visible in the P&amp;L against sinks. Marketing spend that can’t hide is marketing spend that gets managed.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin P&amp;L</b></div>
+            <div class="kv"><span>Parameters</span><b>All taps itemised vs sinks</b></div>
+          </div>
+          <span class="ver v4">v4</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>🆕 v4.1 — tournaments · seasons · bots (56–58)</h2>
+      <p class="cd">8-player brackets, season resets with champion rewards, and queue liquidity bots. &middot; 3 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">🏟</span><h3>8-player tournaments</h3><span class="num">56</span></div>
+          <p>Single-elimination brackets whose size is chosen at creation — 2, 4, 8 or 16 slots (v4.6) — filled strictly by REAL players (no bots); the lobby fills with a visible entrants list and entries refund in full if the bracket never completes. From v5.3.2 only the tournament creator or the admin can cancel (permission check blocks other players from killing someone else’s lobby). Every match is its own commit–reveal 3-party flip with proof shown, played round by round. Payouts are 75/25 of pool − tournament rake (admin-controlled). Champions earn the 👑 Champion achievement and title.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Series tab</b></div>
+            <div class="kv"><span>Parameters</span><b>8 slots · 10% rake · 75/25 payouts · bot shares → carry bounty</b></div>
+          </div>
+          <span class="ver ">v4.1</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏁</span><h3>Season resets with rewards</h3><span class="num">57</span></div>
+          <p>Seasons end automatically on the last day of every month at 20:00 UTC (v4.6; a manual admin end remains): final standings are archived to a history wall, the top two players by net receive 500 and 250 coins into the bonus balance, the champion permanently earns the 👑 S#-Champ title, and the competitive leaderboards (net, wins, streaks) reset to zero for a fresh race — while XP, levels, VIP progress, achievements and trophies all persist. A visible countdown shows the next rollover. Seasons give the leaderboard meaning (a finite race) and create a recurring headline moment for the community.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Season tab · Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>500/250 rewards · title · leaderboards reset, progress persists</b></div>
+          </div>
+          <span class="ver ">v4.1</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🤖</span><h3>Liquidity bots</h3><span class="num">58</span></div>
+          <p>Re-scoped in v4.6: liquidity bots may ONLY operate inside demo/practice games — they never post into the real-player queue, never join tournaments or ×2 challenges, and never touch transfers. Six named bots remain available for demo modes so the matching engine can always be showcased, with wallets funded by tracked taps and counted in the conservation invariant. Real liquidity is built with promotions and the ×2 waiting room instead — the real economy stays humans-only (bot mode arrives separately, feature 77).</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>6 bots · opposite-side priority · wallets tracked</b></div>
+          </div>
+          <span class="ver ">v4.1</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>⚔️ Series formats (63)</h2>
+      <p class="cd">Bo3 / Bo5 / Bo7 cups and the Advantage (win-by-2) variant. The four vs-house games of v4.2 (Ladder, Over/Under, Lucky Byte, Parlay) were removed in v4.6 — the house holds no game positions. &middot; 1 feature</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">⚔️</span><h3>Series formats — Bo5, Bo7 &amp; Advantage</h3><span class="num">63</span></div>
+          <p>Series Cups now support three formats — Bo3 (first to 2), Bo5 (first to 3) and Bo7 (first to 4) — plus the Advantage variant where you must also win by two, with a hard game cap to keep cups finite. The 5% cup rake and escrow model are unchanged, so longer formats simply mean deeper, more dramatic sessions per escrowed entry.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Series tab</b></div>
+            <div class="kv"><span>Parameters</span><b>Bo3/Bo5/Bo7 · win-by-2 variant · 5% rake</b></div>
+          </div>
+          <span class="ver ">v4.2</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>👛 v4.5 — wallet, transfers &amp; shop 2.0 (64–68)</h2>
+      <p class="cd">The segmented wallet, main-only transfers, the stake funding cap, the referral program and the affordable flags/avatars shop. &middot; 5 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">👛</span><h3>Segmented wallet</h3><span class="num">64</span></div>
+          <p>The wallet splits into labelled balances with different rules: MAIN holds deposits, top-ups, transfers in and 100% of winnings — the only transferable and withdrawable balance; REFERRAL holds referral-program credits; BONUS holds faucet, quest, achievement, login-streak, level and season rewards plus promos; RAKEBACK holds VIP claims; and BETTED shows stakes currently locked in open bets, cups, tournaments and ladders. Total balance = main + referral + bonus + rakeback (+ in-play). Every segment is a separate ledger column, keeping accounting, bonus-abuse audits and the conservation invariant exact.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Wallet · Admin · API</b></div>
+            <div class="kv"><span>Parameters</span><b>main · referral · bonus · rakeback · betted (in play) · total</b></div>
+          </div>
+          <span class="ver v45">v4.5</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💸</span><h3>Player-to-player transfers</h3><span class="num">65</span></div>
+          <p>Players send coins to friends straight from the MAIN balance — referral, bonus and rakeback money can never be transferred (v4.5). Transfers carry a minimum (10), a daily cap (admin-set, default 500), land instantly in the recipient’s main balance, are blocked during maintenance or self-exclusion, and write ledger entries on both sides plus an audit record. Deposits and withdrawals likewise touch only main, keeping promotional money inside the play economy where it can do its job.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Wallet tab</b></div>
+            <div class="kv"><span>Parameters</span><b>main → main only · min 10 · daily cap 500 (admin) · fully ledgered</b></div>
+          </div>
+          <span class="ver v45">v4.5</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🧢</span><h3>Stake funding cap (10–20%)</h3><span class="num">66</span></div>
+          <p>On any bet, the non-main balances together may fund at most 10–20% of the stake (admin cap, default 20%) — the remaining 80–90% must always come from main, and the bet is rejected if main cannot cover it. Draw order for the capped slice: bonus first, then referral, then rakeback. All winnings — game payouts, jackpots, tournament prizes — are credited 100% to main. Example at the 20% cap: a 100-coin stake can use up to 20 bonus/referral/rakeback coins with ≥80 from main, and a 190-coin win lands entirely in main. This is the core bonus-abuse control: promotional money can sweeten stakes but never drive them.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Every bet</b></div>
+            <div class="kv"><span>Parameters</span><b>nonMain ≤ round(stake × cap%) · cap 10–20 (def 20) · winnings → main</b></div>
+          </div>
+          <span class="ver v45">v4.5</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏳️</span><h3>Flags &amp; person avatars</h3><span class="num">67</span></div>
+          <p>The shop grows beyond colour: country FLAG badges (India, Brazil, UK, USA, Japan, UAE, Australia, Canada, Germany and the Earth flag) render beside the player’s name on the leaderboard, queue and match modal, and PERSONA avatars (Hero, Ninja, Wizard, Officer, Astronaut, Robot, Mask, Royal) become the player’s display image. Affordable pricing — flags 50–120, avatars 75–200, coin skins 25–150 — means most players can buy something within a day of play, which is exactly the point of a cosmetics sink: broad take-up beats premium pricing.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Shop tab</b></div>
+            <div class="kv"><span>Parameters</span><b>10 flags (50–120) · 8 personas (75–200) · shown everywhere names appear</b></div>
+          </div>
+          <span class="ver v45">v4.5</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🤝</span><h3>Referral program</h3><span class="num">68</span></div>
+          <p>Every player gets a referral code; friends who join with it are linked permanently, and the referrer earns 5% of all house fees generated by referred friends — credited to the REFERRAL balance (never main, never transferable, usable only within the 10–20% stake cap). One link per account, self-referral blocked, linkage audited. Because the payout is a slice of actual fee revenue the program is ROI-positive by construction — a customer-acquisition cost that only fires when the referred player generates value.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Profile · invite link</b></div>
+            <div class="kv"><span>Parameters</span><b>5% of referred fees → referral balance · one link per account</b></div>
+          </div>
+          <span class="ver v45">v4.5</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>🔧 v5.2 — reliability &amp; account flows (82–85)</h2>
+      <p class="cd">Session persistence, banking, referral codes, scheduled promotions, light/dark theme, copy-to-clipboard proofs — the reliability and UX fixes from both cons-audit rounds. &middot; 6 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">💾</span><h3>Session persistence</h3><span class="num">82</span></div>
+          <p>Every state change is auto-saved to browser storage — balances, open bets, game history with all fairness proofs, VIP month progress, challenges, promo campaigns and admin settings. Reloading the page restores the exact session; admin Reset clears storage for a fresh start; a version-stamped key plus migration pass keeps old saves loadable after engine updates. From v5.3.2 a multi-tab guard detects when a second browser tab opens (sessionStorage tab ID + localStorage heartbeat) and warns that saves will overwrite each other, preventing silent state loss.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Automatic</b></div>
+            <div class="kv"><span>Parameters</span><b>Auto-save on every action · version-stamped key · migrations · Reset clears</b></div>
+          </div>
+          <span class="ver v52">v5.2</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏦</span><h3>Deposit &amp; withdraw (bank ↔ MAIN)</h3><span class="num">83</span></div>
+          <p>The real-money account flow, in demo form: players park MAIN-balance coins in a BANK account outside the betting wallet and unpark with custom amounts (minimum 10), both fully ledgered. The vault and bank were merged into one feature in v5.3.2 (they did the same thing); the wallet card shows a combined BANK/VAULT balance, quick 100-coin park buttons, custom-amount inputs, and a 🏧 Cash Out button that opens the real-money withdrawal flow modal (method selection, KYC verification, processing time) for when a payment processor is connected. Maintenance blocks all banking during downtime.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Wallet card</b></div>
+            <div class="kv"><span>Parameters</span><b>MAIN ↔ bank · min 10 · maintenance-guarded · fully ledgered</b></div>
+          </div>
+          <span class="ver v52">v5.2</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🔗</span><h3>Referral codes</h3><span class="num">84</span></div>
+          <p>Every player gets a unique referral code (TM-XXXX) displayed in their wallet card. A player who is not yet referred can paste a friend’s code to permanently link — from then on the friend earns 5% of the player’s fee activity, credited to their referral balance (usable only within the 10–20% stake cap). Admin can unlink any player’s referral for support or testing. Self-referral is impossible by construction and every link/unlink is audited.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Wallet card · Admin</b></div>
+            <div class="kv"><span>Parameters</span><b>code per player · apply once · 5% of fees → referrer · admin unlink · audited</b></div>
+          </div>
+          <span class="ver v52">v5.2</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💡</span><h3>Light / dark theme toggle</h3><span class="num">86</span></div>
+          <p>A one-tap theme toggle (💡 in the top navigation) switches the entire application — documentation, demo, cards, tables, inputs, modals, the works — between the default dark mode and a fully-styled light mode with readable contrast on every surface. The preference is visual only (not persisted to the save state) and both themes are print-friendly. No system-preference detection: the user decides, and the toggle is always visible.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Top nav button</b></div>
+            <div class="kv"><span>Parameters</span><b></b></div>
+          </div>
+          <span class="ver v53">v5.3.2</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📋</span><h3>Copy-to-clipboard on proofs</h3><span class="num">87</span></div>
+          <p>One-tap clipboard access to fairness data: the Verify tab gets a “Copy all” button that copies all four proof inputs (server seed, both bet hashes, game id) in one tap, and every game’s proof modal carries a “📋 Seed” button for extracting the revealed server seed for external verification. Uses the Clipboard API with a fallback to the legacy execCommand path, and always confirms with a toast — no silent failures. Closes the biggest usability gap for third-party auditors.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Verify tab · game modal</b></div>
+            <div class="kv"><span>Parameters</span><b></b></div>
+          </div>
+          <span class="ver v53">v5.3.2</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⏱</span><h3>Scheduled promotions</h3><span class="num">85</span></div>
+          <p>Campaigns finally carry real schedules: the promo builder takes a start offset and end offset in minutes (0 = now / never), stores absolute timestamps, and the manager shows a LIVE badge plus an “ends in Xm” countdown per campaign. Expired campaigns switch themselves off automatically with an audit entry and a live-feed announcement — no operator action needed. Top-ups and cash drops only honour campaigns that are actually live, so a future-dated promo can be prepared safely and fires on schedule.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → Promotions</b></div>
+            <div class="kv"><span>Parameters</span><b>start/end timestamps · auto-expiry (audited) · LIVE badge + countdown</b></div>
+          </div>
+          <span class="ver v52">v5.2</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="cat">
+      <h2>🎛️ v4.6 — admin economy, real-player modes &amp; shop (69–81)</h2>
+      <p class="cd">Everything the operator controls: promo campaigns, level &amp; achievement managers, feature toggles, first-to-level bonuses, real-player-only ×2 room &amp; resizable tournaments, monthly 20:00 UTC seasons, demo-only bots, VIP price structure and the expanded skin catalog. &middot; 13 features</p>
+      <div class="grid">
+        <article class="card">
+          <div class="top"><span class="ico">🎛️</span><h3>Promo campaign manager</h3><span class="num">69</span></div>
+          <p>Promotions become admin-scheduled campaigns instead of hard-coded behaviour: the operator creates a campaign (deposit % bonus, flat credit or cash drop), sets its amount, an optional start and end time, and can enable, disable or extend it at any moment from the Promotions panel. Campaigns auto-expire at their end time, every payout is booked as promo cost in the P&amp;L, and the whole lifecycle (create/edit/pause/resume) is audited. When nothing is affordable, everything sits disabled at zero cost.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → Promotions</b></div>
+            <div class="kv"><span>Parameters</span><b>type + amount + start/end + on/off · auto-expiry · audited · P&amp;L-tracked</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📈</span><h3>Level reward manager</h3><span class="num">70</span></div>
+          <p>A full editor table for the XP ladder: the operator can change any level’s reward amount, add brand-new levels with custom rewards, or edit existing ones — changes apply to future level-ups immediately and every edit is audited. The default curve (level × 50 into the bonus balance) is just the starting configuration, so the reward economy can be tuned live against the economy-health gauge without touching code.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → Levels</b></div>
+            <div class="kv"><span>Parameters</span><b>edit reward per level · add new levels · audited · applies to future level-ups</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🥇</span><h3>First-to-level bonuses</h3><span class="num">71</span></div>
+          <p>For any level the admin flags, the FIRST player in history to reach it receives a special extra reward (world-first bonus) — the system detects first achievers automatically and pays once per level. The operator decides which levels carry the bonus, sets each amount, and can add or remove levels from the scheme at any time; already-awarded firsts are never retroactively changed. A pure prestige mechanic that turns progression into a race worth watching on the live feed.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → Levels</b></div>
+            <div class="kv"><span>Parameters</span><b>per-level flag + amount · one payout ever per level · add/remove anytime</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🎯</span><h3>Daily quests toggle</h3><span class="num">72</span></div>
+          <p>A master on/off switch for the daily quest system (which will grow more quest types in future). While paused, no quest progress accrues and claims are hidden, but each player’s progress is frozen — not reset — so switching quests back on resumes exactly where everyone left off. Part of the operator’s affordability toolkit: engagement taps run only when the house economy can fund them.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → Features</b></div>
+            <div class="kv"><span>Parameters</span><b>on/off · progress frozen (not reset) while off · audited</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏅</span><h3>Achievement manager</h3><span class="num">73</span></div>
+          <p>The full achievement set becomes operator-managed: edit any achievement’s coin reward, add brand-new achievements (name, description, icon, unlock condition and reward), or disable existing ones — disabled achievements stop unlocking going forward and disappear from the Season grid without stripping past unlocks. New conditions plug into the same event hooks the built-in set uses, so the catalogue can grow with the game. Every change is audited.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → Achievements</b></div>
+            <div class="kv"><span>Parameters</span><b>edit rewards · add/remove achievements · condition hooks · audited</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">📅</span><h3>Daily login toggle</h3><span class="num">74</span></div>
+          <p>The daily login streak bonus gets its own on/off switch so the house can run it only when affordable. While off, streaks are frozen rather than broken — a player who returns after a pause continues their streak instead of resetting, which keeps the habit mechanic intact across lean periods. Rewards continue landing in the bonus balance within the stake-funding cap when re-enabled.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → Features</b></div>
+            <div class="kv"><span>Parameters</span><b>on/off · streaks frozen while off · rewards → bonus balance</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">⏳</span><h3>×2 Challenge waiting room</h3><span class="num">75</span></div>
+          <p>Double-or-nothing becomes strictly real-player business: pressing ×2 after a game posts an open challenge (same stake ×2, opposite side available) to a waiting room that any real player can accept — house bots NEVER take ×2 challenges (v4.6 policy). From v5.3.2 every challenge carries a 10-minute TTL: expired challenges auto-cancel and refund the held stake to the same balance segments it came from, with a visible live countdown on each card. Manual cancel also refunds at any time. The room turns a solo tilt-button into a social feature — someone real always has to step up, and now they can’t sit forever.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Tables → ×2 button</b></div>
+            <div class="kv"><span>Parameters</span><b>real players only · no bots · optional expiry · cancel anytime</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🏟</span><h3>Tournament creator (real players only)</h3><span class="num">76</span></div>
+          <p>Bracket size becomes a creation parameter — 2, 4, 8 or 16 slots — chosen when the tournament is created, and entry is strictly REAL players: the six house bots of v4.1 are retired from tournaments (v4.6 policy), so every prize is fully player-funded. The tournament sits in a lobby until the bracket fills; if it cannot fill, entries are refunded in full and the creator can re-open a smaller size. Rake remains its own admin-controlled %; payouts stay 75/25 of pool − rake.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Series → Tournaments</b></div>
+            <div class="kv"><span>Parameters</span><b>size 2/4/8/16 at creation · real entrants only · lobby + full refunds · rake admin-set</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🤖</span><h3>Bot mode (future — disabled)</h3><span class="num">77</span></div>
+          <p>A dedicated “play vs bot” mode, strictly opt-in and disabled by default: when the house is profitable enough to fund it, the operator can enable a separate bot lobby where players can face house bots for practice or promotional play. Bots in this mode NEVER appear in the real-player queue, tournaments, ×2 challenges or transfers — the two pools are hard-separated, so real liquidity and leaderboards stay pure. Until enabled it ships dark, costing nothing.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Roadmap</b></div>
+            <div class="kv"><span>Parameters</span><b>off by default · separate lobby · never mixed with real pools</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🕗</span><h3>Season auto-end (monthly, 20:00 UTC)</h3><span class="num">78</span></div>
+          <p>Seasons close themselves: on the last day of every month at exactly 20:00 UTC the system archives final standings, pays the 500/250 champion rewards into the bonus balance, awards the 👑 season title, resets net/wins/streaks and increments the season number — no operator action required. The admin’s manual “End season” remains available for maintenance windows, and the next auto-end timestamp is always displayed so players can see the race clock.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Automatic</b></div>
+            <div class="kv"><span>Parameters</span><b>last day of month, 20:00 UTC · manual end still available · countdown shown</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🧪</span><h3>Demo-only liquidity bots</h3><span class="num">79</span></div>
+          <p>Liquidity bots are re-scoped (v4.6 policy): they may ONLY operate inside demo/practice games — they never post into the real-player queue, never join tournaments or ×2 challenges, and never receive or send transfers. When real liquidity is thin, the answer is promotions and the ×2 room, not bots. The toggle and bot wallets remain for demo modes so the matching engine can always be showcased, but the real economy is humans-only.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → Bots</b></div>
+            <div class="kv"><span>Parameters</span><b>demo/practice games only · excluded from real queue, cups, ×2, transfers</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">💎</span><h3>VIP price structure (admin-controlled)</h3><span class="num">80</span></div>
+          <p>The six VIP tiers become a formal, operator-editable price structure: for each tier the admin sets the monthly wagered threshold and the rakeback rate (floor 0%, ceiling 20%), with defaults Bronze 0+/0%, Silver 1k/5%, Gold 5k/10%, Platinum 15k/15%, Diamond 40k/18%, Legend 100k/20%. Changes are audited, apply from the next accrual (never retroactively), and the table is published to players — the price structure IS the product page for high-volume players.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Admin → VIP</b></div>
+            <div class="kv"><span>Parameters</span><b>6 tiers · thresholds + rates admin-set · 0–20% bounds · monthly reset · audited</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+        <article class="card">
+          <div class="top"><span class="ico">🎨</span><h3>Expanded coin skin catalog</h3><span class="num">81</span></div>
+          <p>The coin skin range grows well beyond the original metals: gem cuts (Ruby, Emerald, Sapphire), nature themes (Koi, Tiger, Peacock), cosmic finishes (Galaxy, Nebula) and festive editions (Diwali lamp, Holi burst) join the lineup — each a distinct gradient/animation on the actual flipping coin. Everything stays in the affordable 25–150 band with animated premiums at the top, so the catalogue is broad enough for repeated small purchases instead of one unreachable prestige item.</p>
+          <div class="facts">
+            <div class="kv"><span>Where</span><b>Shop tab</b></div>
+            <div class="kv"><span>Parameters</span><b>metals · gems · nature · cosmic · festive · 25–150 coins</b></div>
+          </div>
+          <span class="ver v46">v4.6</span>
+        </article>
+      </div>
+    </section>
+
+
+
+<div class="retired">
+<h2>&#9879;&#65039; Retired features (history)</h2>
+<p><b>&#128737;&#65039; Stake insurance</b> (v3 &rarr; removed v4.3) &mdash; retired: no premiums; settlement is a single deduction, <code>payout = pot &minus; fee</code>.</p>
+<p><b>&#127920; Vs-house games</b> (v4.2 &rarr; removed v4.6) &mdash; Ladder, Over/Under, Lucky Byte and Parlay retired. The house holds no game positions; all revenue from the five P2P/service lines.</p>
+</div>
+</main>
+
+<footer>
+TossMatch v5.3.2 &mdash; category-wise feature list &middot; pure HTML, no JavaScript data &middot; play coins only &middot;
+companion: toss-bet-full.html (document + live demo) &middot; toss-bet-demo.html (standalone demo) &middot; toss-bet-features.json (machine-readable)
+</footer>
+</body>
+</html>
