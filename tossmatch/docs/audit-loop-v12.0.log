@@ -1,0 +1,1283 @@
+TossMatch continuous audit — 20 consecutive passes
+
+=== PASS 1/20 (2026-08-29T10:14:36Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 1: clean
+
+=== PASS 2/20 (2026-08-29T10:14:38Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 2: clean
+
+=== PASS 3/20 (2026-08-29T10:14:41Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 3: clean
+
+=== PASS 4/20 (2026-08-29T10:14:44Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 4: clean
+
+=== PASS 5/20 (2026-08-29T10:14:47Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 5: clean
+
+=== PASS 6/20 (2026-08-29T10:14:49Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 6: clean
+
+=== PASS 7/20 (2026-08-29T10:14:52Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 7: clean
+
+=== PASS 8/20 (2026-08-29T10:14:55Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 8: clean
+
+=== PASS 9/20 (2026-08-29T10:14:58Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 9: clean
+
+=== PASS 10/20 (2026-08-29T10:15:01Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 10: clean
+
+=== PASS 11/20 (2026-08-29T10:15:04Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 11: clean
+
+=== PASS 12/20 (2026-08-29T10:15:07Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 12: clean
+
+=== PASS 13/20 (2026-08-29T10:15:11Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 13: clean
+
+=== PASS 14/20 (2026-08-29T10:15:15Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 14: clean
+
+=== PASS 15/20 (2026-08-29T10:15:18Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 15: clean
+
+=== PASS 16/20 (2026-08-29T10:15:22Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 16: clean
+
+=== PASS 17/20 (2026-08-29T10:15:26Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 17: clean
+
+=== PASS 18/20 (2026-08-29T10:15:30Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 18: clean
+
+=== PASS 19/20 (2026-08-29T10:15:34Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 19: clean
+
+=== PASS 20/20 (2026-08-29T10:15:37Z) ===
+TossMatch audit
+  ✓ root index redirects into tossmatch/
+  ✓ _config.yml excludes old data
+
+tossmatch/index.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+tossmatch/admin.html
+  ✓ module structure + semantics
+  ✓ no duplicate static ids
+  ✓ all $() refs have an id (HTML or dynamic)
+  ✓ canonical house helpers present
+
+assets
+  ✓ static asset references exist
+  ✓ sw.js CORE assets exist
+
+js hygiene
+  ✓ no unparenthesised ?? / || mixing on one expression
+  ✓ admin Feature Directory codes unique
+  ✓ tossmatch/index.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/index.html cash-flow helpers present
+  ✓ tossmatch/index.html houseCashIn includes player and bot
+  ✓ tossmatch/index.html houseCashOut includes bot and player
+  ✓ tossmatch/index.html reconcileHouse syncs netCash
+  ✓ tossmatch/admin.html houseNet is real-world NGR (gross − promo − comps)
+  ✓ tossmatch/admin.html cash-flow helpers present
+  ✓ tossmatch/admin.html houseCashIn includes player and bot
+  ✓ tossmatch/admin.html houseCashOut includes bot and player
+  ✓ tossmatch/admin.html reconcileHouse syncs netCash
+  ✓ index deposit writes house.deposits
+  ✓ index bot top-up writes house.botDeposits
+  ✓ index bot withdrawal writes house.withdrawals
+  ✓ index player withdrawal writes house.playerWithdrawals
+  ✓ admin revenue export includes Net revenue (NGR)
+  ✓ admin revenue export includes cash-flow rows
+  ✓ admin P&L panel shows NGR + 4 cash-flow lines
+  ✓ admin deposit-reversal decrements house.deposits
+  ✓ admin withdraw-reversal decrements house.playerWithdrawals
+  ✓ transaction origins record house cash flows
+  ✓ tossmatch/index.html theme palette ids present
+  ✓ tossmatch/index.html theme engine functions present
+  ✓ tossmatch/index.html theme applied in render
+  ✓ tossmatch/index.html preset themes defined
+  ✓ tossmatch/index.html theme CSS variable sets defined
+  ✓ tossmatch/index.html no hardcoded accent rgba left
+  ✓ tossmatch/admin.html theme palette ids present
+  ✓ tossmatch/admin.html theme engine functions present
+  ✓ tossmatch/admin.html theme applied in render
+  ✓ tossmatch/admin.html preset themes defined
+  ✓ tossmatch/admin.html theme CSS variable sets defined
+  ✓ tossmatch/admin.html no hardcoded accent rgba left
+
+js hygiene
+  ✓ tossmatch/index.html theme engine runtime smoke
+  ✓ tossmatch/admin.html theme engine runtime smoke
+
+PASS — all checks clean
+PASS 20: clean
+
+RESULT: 20/20 clean — audit satisfied.

@@ -16,6 +16,9 @@ P2P coin-games demonstration ("TossMatch").
 
 ## The unified app (`tossmatch/`)
 
+The app is now structured as **reusable ES modules with split CSS** instead of
+a single inline `<style>` + `<script>` per page.
+
 - `index.html` — complete player application: Coin Toss with escrow + provable
   fairness, 33 P2P catalog games, 20+ Arcade+ games, Series/Cups/Tournaments,
   social hub, VIP & season, shop, wallet, statistics, history, verifier, safety
@@ -24,7 +27,19 @@ P2P coin-games demonstration ("TossMatch").
   Players, Feature Hub, Feature Directory, Rates & Jackpot, Economy, Top-up
   Analytics, **Withdrawals**, Promotions, VIP & Levels, Tournaments, Audit &
   Data, Trust Center) with live bot-engine sync.
-- `manifest.webmanifest`, `sw.js` — installable PWA with offline cache.
+- `css/` — split stylesheets: `player/app.css`, `admin/app.css`, and the
+  shared `shared/theme.css` (theme engine palette UI + modern polish used by
+  both apps).
+- `js/` — ES modules organized by app and concern:
+  - `js/shared/` — shared runtime state (`runtime.js`) and the shared theme
+    engine (`theme.js`), imported by both apps.
+  - `js/player/` — `core`, `data`, `bots`, `crypto`, `state`, `helpers`,
+    `render`, `theme`, `games`, `wallet`, `misc`, `sync`, `boot`, plus the
+    `main.js` entry that imports them in execution order.
+  - `js/admin/` — `core`, `render`, `theme`, `engine`, `banking`, `sync`,
+    `boot`, plus the `main.js` entry.
+- `manifest.webmanifest`, `sw.js` — installable PWA with offline cache
+  (the service worker now precaches every `js/` and `css/` module).
 - `api/openapi.json` — public demo API specification for the API explorer.
 - `icons/`, `img/` — unified icon and image assets.
 - `docs/` — the consolidated documentation set (changelog, feature register,
@@ -50,9 +65,20 @@ P2P coin-games demonstration ("TossMatch").
 
 ## Running
 
-Open `tossmatch/index.html` in any browser — no build step, no server, no
-dependencies. The app is fully offline (service worker + localStorage). The
-Admin panel opens from the header link in a new tab and shares the same state
+Because the app now uses **native ES modules** (`<script type="module">` plus
+`import`/`export`), it must be served over **HTTP(S)** — e.g. GitHub Pages or a
+local static server:
+
+```bash
+cd tossmatch
+python3 -m http.server 8000
+# then open http://127.0.0.1:8000/
+```
+
+Opening `tossmatch/index.html` via the `file://` protocol will **not** load the
+ES module scripts (browsers block module loading from `file://`). The app is
+fully offline-capable once loaded (service worker + localStorage). The Admin
+panel opens from the header link in a new tab and shares the same state
 (`localStorage` key `tossmatch_v8`) with the player app.
 
 ## Deploy on GitHub Pages
