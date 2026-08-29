@@ -1,4 +1,4 @@
-/* TossMatch player module — bots */
+/* FlipArena player module — bots */
 import "../shared/runtime.js";
 import {BOTS_SEED,VIP_DISC,VIP_EMOJI_COUNTS,VIP_TOURNEY_DISC} from "./data.js";
 import {addFeed,toast,vipFor} from "./helpers.js";
@@ -42,8 +42,8 @@ const ACHIEVEMENTS=[
  {id:"chat10",icon:"💬",name:"Lobby Regular",desc:"Send 10 lobby messages",rew:100},
  {id:"rooms3",icon:"🔒",name:"Room Host",desc:"Create 3 private rooms",rew:150},
  {id:"gifts3",icon:"🎁",name:"Gift Giver",desc:"Send 3 gifts",rew:150},
- {id:"arcade10",icon:"🕹️",name:"Arcade Starter",desc:"Play 10 Arcade+ games",rew:150},
- {id:"arcade50",icon:"👾",name:"Arcade Ace",desc:"Play 50 Arcade+ games",rew:500},
+ {id:"arcade10",icon:"🕹️",name:"Arcade Starter",desc:"Play 10 Arcade Zone games",rew:150},
+ {id:"arcade50",icon:"👾",name:"Arcade Ace",desc:"Play 50 Arcade Zone games",rew:500},
  {id:"maxpay1000",icon:"💰",name:"Four-Figure Payout",desc:"Receive a 1,000+ payout",rew:300},
  {id:"wager10000",icon:"📊",name:"Volume Player",desc:"Wager 10,000 lifetime",rew:300},
  {id:"cup10",icon:"🛡️",name:"Cup Legend",desc:"Win 10 Series Cups",rew:600},

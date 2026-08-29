@@ -1,4 +1,4 @@
-/* TossMatch player module — wallet */
+/* FlipArena player module — wallet */
 import "../shared/runtime.js";
 import {checkProgressAchievements} from "./games.js";
 import {$,activePromotions,addFeed,applyPendingDepositLimits,checkDepositLimit,checkRealityReminder,fmt,pushHistory,recordAnalyticsSample,recordDeposit,recordSessionPoint,renderServicesHub,toast} from "./helpers.js";

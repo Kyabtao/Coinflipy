@@ -1,4 +1,4 @@
-// TossMatch admin entry.
+// FlipArena admin entry.
 import "../shared/runtime.js";
 import {bind as bind__top} from "./core.js";
 import {bind as bind_render} from "./render.js";

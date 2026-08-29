@@ -1,4 +1,4 @@
-/* TossMatch admin module — sync */
+/* FlipArena admin module — sync */
 import "../shared/runtime.js";
 import {$,SAVE_KEY,fmt,load,reconcileHouse,render,renderAdminChrome,renderAdminLiveStatus,renderDash,renderEcon,renderPeople,renderTopupAnalytics,renderWithdrawals,topupAnalytics} from "./core.js";
 

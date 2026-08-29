@@ -1,4 +1,4 @@
-/* TossMatch player module — misc */
+/* FlipArena player module — misc */
 import "../shared/runtime.js";
 import {selectSide} from "./games.js";
 import {$,addFeed,grantShopItem,randomShopItem,sfxFlip,toast} from "./helpers.js";

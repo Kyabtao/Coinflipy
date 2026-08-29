@@ -1,4 +1,4 @@
-/* TossMatch admin module — engine */
+/* FlipArena admin module — engine */
 import "../shared/runtime.js";
 import {$,adminAntiCheatScan,audit,cfg,fmt,readVip,reconcileHouse,render,save,toast} from "./core.js";
 import {dl} from "./banking.js";

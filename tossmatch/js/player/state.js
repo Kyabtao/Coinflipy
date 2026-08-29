@@ -1,4 +1,4 @@
-/* TossMatch player module — state */
+/* FlipArena player module — state */
 import "../shared/runtime.js";
 import {SAVE_KEY} from "./core.js";
 import {BOTS_SEED,VIP_SEED} from "./data.js";

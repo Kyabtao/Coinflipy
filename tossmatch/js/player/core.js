@@ -1,4 +1,4 @@
-/* TossMatch player module — _top */
+/* FlipArena player module — _top */
 import "../shared/runtime.js";
 
 const SAVE_KEY="tossmatch_v8", TAB_KEY="tossmatch_tab_"+(sessionStorage.tabId||(sessionStorage.tabId=Math.random().toString(36).slice(2)));

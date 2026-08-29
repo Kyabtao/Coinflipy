@@ -1,6 +1,6 @@
 import "./runtime.js";
 
-/* TossMatch shared theme engine (pure, no DOM wiring here — apps inject the palette UI wiring) */
+/* FlipArena shared theme engine (pure, no DOM wiring here — apps inject the palette UI wiring) */
 /* ───── Theme engine v12 (player + admin shared) ───── */
 const THEME_PRESETS=[
   {id:'midnight',name:'Midnight Gold',desc:'Deep navy · gold',dots:['#0b1020','#121a2e','#f6c453','#93a0bd']},

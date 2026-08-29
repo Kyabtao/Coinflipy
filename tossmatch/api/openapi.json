@@ -1,6 +1,6 @@
 {
   "openapi": "3.0.3",
-  "info": {"title": "TossMatch Demo API", "version": "0.1.0-demo", "description": "Static specification for the in-browser API explorer. Production requires authenticated server endpoints."},
+  "info": {"title": "FlipArena Demo API", "version": "0.1.0-demo", "description": "Static specification for the in-browser API explorer. Production requires authenticated server endpoints."},
   "servers": [{"url": "/api/v1"}],
   "paths": {
     "/status": {"get": {"summary": "Demo service and feature status", "responses": {"200": {"description": "Status payload"}}}},

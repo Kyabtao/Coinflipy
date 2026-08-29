@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>TossMatch v11.0 — Player App</title>
+<title>FlipArena v12.0 — Player App</title>
 <meta name="theme-color" content="#f6c453">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,7 +16,7 @@
 <body>
 <header>
   <div class="hwrap">
-    <div class="logo"><span class="coin-ico"><img src="img/logo.jpg" alt="TossMatch coin" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🪙'}))"></span> TossMatch <span class="vbadge">v11.0</span></div>
+    <div class="logo"><span class="coin-ico"><img src="img/logo.jpg" alt="FlipArena coin" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🪙'}))"></span> FlipArena <span class="vbadge">v12.0</span></div>
     <div class="h-spacer"></div>
     <div class="jp-meter" id="jpMeter" title="Jackpot — armed at ≥50, triggers on byte 00 (1/256)"><div><div class="jpl">🎰 Jackpot</div><div class="jpv" id="jpVal">0</div></div></div>
     <div class="wallet-chip" title="MAIN balance"><div><div class="wcl">🟢 Main</div><div class="wcv" id="mainVal">0</div></div></div>
@@ -30,7 +30,7 @@
       <button data-turbo="1000">1000×</button>
     </div>
     <button class="icon-btn" id="playerCommandBtn" title="Quick navigation (Ctrl+K)" aria-label="Open quick navigation">⌘K</button>
-    <a class="icon-btn admin-link" href="admin.html" target="_blank" rel="noopener" title="Open Admin in a new tab while bots keep running">🛡️ Admin</a>
+    <a class="icon-btn admin-link" href="admin.html" target="_blank" rel="noopener" title="Open the Admin console in a new tab while the bot engine keeps running" aria-label="Open the Admin console">🛡️ Admin Console</a>
     <button class="icon-btn" id="themeBtn" title="Toggle theme">💡</button>
     <button class="icon-btn" id="paletteBtn" title="Theme palette" aria-label="Open theme palette">🎨</button>
   </div>
@@ -39,19 +39,19 @@
   <div class="maint-banner" id="maintBanner" style="display:none">🚧 Maintenance mode — new betting is paused. In-flight games still settle.</div>
   <div class="broadcast" id="broadcast"></div>
   <nav class="tabs" id="tabs">
-    <div class="nav-brand"><span>PLAYER MENU</span><b id="navPlayerLevel">LEVEL 1</b></div>
-    <div class="nav-tools"><input id="playerNavSearch" type="search" placeholder="Find a screen…" aria-label="Search player navigation"/><select id="playerNavJump" aria-label="Jump to player screen"><option value="">Quick jump…</option><optgroup label="Play"><option value="play">Coin Toss</option><option value="series">Series & Tournaments</option><option value="games">P2P Catalog</option><option value="newgames">Arcade+</option></optgroup><optgroup label="Account"><option value="wallet">Wallet</option><option value="history">History</option><option value="stats">Statistics</option><option value="services">Safety & Services</option></optgroup></select><div class="nav-search-empty" id="playerNavEmpty">No screens match.</div></div>
-    <div class="nav-label">Overview</div>
+    <div class="nav-brand"><span>MENU</span><b id="navPlayerLevel">LEVEL 1</b></div>
+    <div class="nav-tools"><input id="playerNavSearch" type="search" placeholder="Find a screen…" aria-label="Search player navigation"/><select id="playerNavJump" aria-label="Jump to player screen"><option value="">Quick jump…</option><optgroup label="Home"><option value="home">Home</option><option value="lobby">Live Lobby</option></optgroup><optgroup label="Play"><option value="play">Coin Toss</option><option value="series">Cups & Tournaments</option><option value="games">P2P Games</option><option value="newgames">Arcade Zone</option></optgroup><optgroup label="Community"><option value="leaderboard">Leaderboard</option><option value="players">Player Roster</option><option value="community">Social Hub</option></optgroup><optgroup label="Progress & Economy"><option value="progressionplus">Progress+</option><option value="economyplus">Economy+</option><option value="shop">Shop</option><option value="season">VIP & Season</option></optgroup><optgroup label="Account"><option value="wallet">Wallet</option><option value="history">History</option><option value="stats">Statistics</option><option value="services">Safety & Services</option></optgroup></select><div class="nav-search-empty" id="playerNavEmpty">No screens match.</div></div>
+    <div class="nav-label">Home</div>
     <button class="tab active" data-tab="home">✨ Home</button>
     <button class="tab" data-tab="lobby">📡 Live Lobby</button>
     <div class="nav-label">Play</div>
     <button class="tab" data-tab="play">🪙 Coin Toss</button>
-    <button class="tab" data-tab="series">⚔️ Series & Tournaments</button>
-    <button class="tab" data-tab="games">🎲 P2P Catalog</button>
-    <button class="tab" data-tab="newgames">🎮 Arcade+</button>
+    <button class="tab" data-tab="series">⚔️ Cups & Tournaments</button>
+    <button class="tab" data-tab="games">🎲 P2P Games</button>
+    <button class="tab" data-tab="newgames">🎮 Arcade Zone</button>
     <div class="nav-label">Community</div>
     <button class="tab" data-tab="leaderboard">🏆 Leaderboard</button>
-    <button class="tab" data-tab="players">👥 Players</button>
+    <button class="tab" data-tab="players">👥 Player Roster</button>
     <button class="tab" data-tab="community">🤝 Social Hub</button>
     <div class="nav-label">Progress & Economy</div>
     <button class="tab" data-tab="progressionplus">🚀 Progress+</button>
@@ -70,15 +70,15 @@
   <!-- HOME -->
   <section class="panel active" id="panel-home">
     <div class="player-hero">
-      <div><span class="eyebrow">TOSSMATCH COMMAND DECK</span><h1 id="homeWelcome">Welcome back, Player</h1><p id="homeIntro">Track your bankroll, VIP progress and live opportunities from one screen.</p></div>
-      <div class="hero-actions"><button class="btn btn-primary" data-go-tab="play">🪙 Quick Toss</button><button class="btn btn-ghost" data-go-tab="games">🎲 Browse Games</button></div>
+      <div><span class="eyebrow">FLIPARENA PLAYER DECK</span><h1 id="homeWelcome">Welcome back, Player</h1><p id="homeIntro">Your bankroll, VIP climb and live tables are one tap away. Jump into a coin flip, browse the arcade, or stack your rewards.</p></div>
+      <div class="hero-actions"><button class="btn btn-primary" data-go-tab="play">🪙 Quick Toss</button><button class="btn btn-ghost" data-go-tab="games">🎲 Explore Games</button></div>
     </div>
     <div class="home-kpis" id="homeKpis"></div>
     <div class="grid2 home-grid" id="homeDashboardSections">
       <div class="card premium-card" data-dashboard-section="opportunities"><h3>⚡ Live opportunities <span class="status-pill live" style="margin-left:auto">LIVE</span></h3><div id="homeOpportunities"></div></div>
       <div class="card premium-card" data-dashboard-section="vip"><h3>💎 VIP journey</h3><div id="homeVip"></div></div>
       <div class="card premium-card" data-dashboard-section="feed"><h3>📡 Activity pulse</h3><div class="feed" id="homeFeed"></div></div>
-      <div class="card premium-card" data-dashboard-section="explore"><h3>🧭 Explore TossMatch</h3><div class="quick-grid"><button data-go-tab="community">🤝<b>Community</b><span>Friends, chat & clans</span></button><button data-go-tab="newgames">🎮<b>Arcade+</b><span>Wheel, cards & dice</span></button><button data-go-tab="progressionplus">🚀<b>Progress+</b><span>Pass, weekly & prestige</span></button><button data-go-tab="economyplus">💼<b>Economy+</b><span>Trade, stake & boost</span></button></div></div>
+      <div class="card premium-card" data-dashboard-section="explore"><h3>🧭 Explore FlipArena</h3><div class="quick-grid"><button data-go-tab="community">🤝<b>Social</b><span>Friends, chat & clans</span></button><button data-go-tab="newgames">🎮<b>Arcade</b><span>Wheel, cards & dice</span></button><button data-go-tab="progressionplus">🚀<b>Rewards</b><span>Pass, weekly & prestige</span></button><button data-go-tab="economyplus">💼<b>Economy</b><span>Trade, stake & boost</span></button></div></div>
     </div>
   </section>
 
@@ -170,8 +170,8 @@
   <!-- GAMES -->
   <section class="panel" id="panel-games">
     <div class="card">
-      <h3>🎮 P2P Game Catalog <span class="muted" style="margin-left:auto;font-weight:400">33 playable games · bot auto-match · one universal fairness proof</span></h3>
-      <p class="muted">Choose a game and pick, then either post for automatic matching or manually take a bot’s open bet. Bots also post and auto-match one another, while every stake remains escrowed and every result uses the merged hash.</p>
+      <h3>🎮 P2P Games <span class="muted" style="margin-left:auto;font-weight:400">33 live games · bot auto-match · one universal fairness proof</span></h3>
+      <p class="muted">Pick a game and your side, then either post for automatic matching or take a bot’s open bet. Bots post and match each other too — every stake stays escrowed and every result is derived from a single merged proof hash.</p>
       <div class="game-nav-toolbar"><div><label for="catalogNavSearch">Find Catalog game</label><input id="catalogNavSearch" type="search" placeholder="Search name, rule or code…"/></div><div><label for="catalogNavGroup">Category</label><select id="catalogNavGroup"><option value="">All categories</option></select></div><div><label for="catalogNavJump">Quick jump</label><select id="catalogNavJump"><option value="">Select a game…</option></select></div><button class="btn btn-ghost" id="catalogFavoriteBtn" title="Favorite the current game">☆ Favorite</button></div><div class="game-nav-summary" id="catalogNavSummary"></div>
       <div class="game-tabs" id="gameTabs"></div>
     </div>
@@ -196,8 +196,8 @@
   <!-- PLAYERS DIRECTORY -->
   <section class="panel" id="panel-players">
     <div class="card">
-      <h3>👥 Players Directory <span class="muted" style="margin-left:auto;font-weight:400"><span id="botCount">0</span> players online · click for profile</span></h3>
-      <p class="muted" style="margin-top:-4px;margin-bottom:16px">Browse every active player and view their level, record, country, cosmetics, and profile.</p>
+      <h3>👥 Player Roster <span class="muted" style="margin-left:auto;font-weight:400"><span id="botCount">0</span> players online · click for profile</span></h3>
+      <p class="muted" style="margin-top:-4px;margin-bottom:16px">Browse every active player and open their level, record, country, cosmetics and full profile.</p>
       <div class="players-grid" id="playersGrid"></div>
     </div>
   </section>
@@ -206,7 +206,7 @@
   <section class="panel" id="panel-community"><div id="communityHub"></div></section>
 
   <!-- B2 NEW GAME TYPES -->
-  <section class="panel" id="panel-newgames"><div class="card"><h3>🎮 Arcade+ Game Directory <span class="muted" style="margin-left:auto;font-weight:400">20 playable modes · player + bot activity</span></h3><div class="game-nav-toolbar"><div><label for="arcadeNavSearch">Find Arcade game</label><input id="arcadeNavSearch" type="search" placeholder="Search game, code or rule…"/></div><div><label for="arcadeNavGroup">Category</label><select id="arcadeNavGroup"><option value="">All categories</option></select></div><div><label for="arcadeNavJump">Quick jump</label><select id="arcadeNavJump"><option value="">Select a game…</option></select></div><button class="btn btn-ghost" id="arcadeFavoriteBtn" title="Favorite the current game">☆ Favorite</button></div><div class="game-nav-summary" id="arcadeNavSummary"></div></div><div id="newGamesHub"></div></section>
+  <section class="panel" id="panel-newgames"><div class="card"><h3>🎮 Arcade Zone <span class="muted" id="arcadeCountLabel" style="margin-left:auto;font-weight:400">23 playable modes · player + bot activity</span></h3><div class="game-nav-toolbar"><div><label for="arcadeNavSearch">Find Arcade game</label><input id="arcadeNavSearch" type="search" placeholder="Search game, code or rule…"/></div><div><label for="arcadeNavGroup">Category</label><select id="arcadeNavGroup"><option value="">All categories</option></select></div><div><label for="arcadeNavJump">Quick jump</label><select id="arcadeNavJump"><option value="">Select a game…</option></select></div><button class="btn btn-ghost" id="arcadeFavoriteBtn" title="Favorite the current game">☆ Favorite</button></div><div class="game-nav-summary" id="arcadeNavSummary"></div></div><div id="newGamesHub"></div></section>
 
   <!-- B3 PROGRESSION & ENGAGEMENT -->
   <section class="panel" id="panel-progressionplus"><div id="progressionHub"></div></section>
@@ -278,7 +278,7 @@
 
   <!-- PLAYER HISTORY -->
   <section class="panel" id="panel-history">
-    <div class="player-hero compact-history"><div><span class="eyebrow">COMPLETE ACTIVITY RECORD</span><h1>Player History</h1><p>Review game results, payouts, challenges, rooms, clan events, Arcade+ activity and Economy+ transactions.</p></div><div class="hero-actions"><button class="btn btn-ghost" id="historyExport">📦 Export history</button></div></div>
+    <div class="player-hero compact-history"><div><span class="eyebrow">FULL ACTIVITY LEDGER</span><h1>History</h1><p>Search, inspect and export every flip, challenge, room, clan event, Arcade Zone run and Economy+ transaction.</p></div><div class="hero-actions"><button class="btn btn-ghost" id="historyExport">📦 Export history JSON</button></div></div>
     <div class="home-kpis" id="historyKpis"></div>
     <div class="card">
       <div class="history-toolbar"><div class="hub-tabs" id="historyTabs"></div><div class="history-filters"><input id="historySearch" placeholder="Search history…"/><select id="historySort"><option value="time-desc">Newest first</option><option value="time-asc">Oldest first</option><option value="amount-desc">Highest amount</option></select></div></div>
@@ -289,34 +289,34 @@
 
   <!-- RELEASE NOTES -->
   <section class="panel" id="panel-updates">
-    <div class="player-hero compact-history"><div><span class="eyebrow">FEATURE CONSISTENCY RELEASE</span><h1>TossMatch v11.0</h1><p>Verified before-and-after details for the current player, bot, game, economy and admin experience.</p></div><div class="hero-actions"><button class="btn btn-primary" data-go-tab="home">Return Home</button></div></div>
+    <div class="player-hero compact-history"><div><span class="eyebrow">FEATURE CONSISTENCY RELEASE</span><h1>FlipArena v12.0</h1><p>Verified before-and-after details for the current player, bot, game, economy and admin experience.</p></div><div class="hero-actions"><button class="btn btn-primary" data-go-tab="home">Return Home</button></div></div>
     <div class="release-grid">
-      <div class="release-card"><span class="feature-code">CLASSICS RESTORED v11.0</span><h3>Crash, Hi-Lo and Mines return as G21–G23</h3><div class="before">Before · the classic provably-fair bank games existed in the codebase but were unreachable after the Arcade+ hub restructure.</div><div class="after">After · Crash (auto cash-out), Hi-Lo (1.7× streaks) and Mines (gem multipliers with a 3% edge) are playable again inside Arcade+ with wallet settlement, proofs, history and jackpot hooks.</div></div>
-      <div class="release-card"><span class="feature-code">UNIFIED MERGE v11.0</span><h3>Five archives, one project</h3><div class="before">Before · the spec documents, demos, modular redesign and v10.8 app lived in five separate workspaces with overlapping and conflicting files.</div><div class="after">After · one cohesive app: the bot-withdrawal economy loop and Admin Player Directory from the modular redesign are integrated, the real coin photographs return as the Photoreal skin, all image assets and icons are unified, and every historical document is archived under docs/legacy.</div></div>
-      <div class="release-card"><span class="feature-code">BOT WITHDRAWALS v11.0</span><h3>Bots cash out at 3,000–5,000 MAIN</h3><div class="before">Before · bot wallets could grow without an outflow path and the Admin had no Withdrawals screen.</div><div class="after">After · each bot has a personal cash-out trigger; when MAIN reaches it the bot files a withdrawal that leaves the bot wallet, is counted as a coin sink and is deducted from house revenue. The Admin Withdrawals screen tracks paid requests, statistics, the ledger and closest-to-cash-out, with CSV export.</div></div>
-      <div class="release-card"><span class="feature-code">PLAYER DIRECTORY v11.0</span><h3>Admin people screen</h3><div class="before">Before · the Admin had no dedicated searchable roster table.</div><div class="after">After · a 14th Admin screen lists the demo player plus the full simulated roster with playable balance, MAIN/BONUS split, records, net, level, top-ups and withdrawals, with search, sorting and pagination.</div></div>
+      <div class="release-card"><span class="feature-code">CLASSICS RESTORED v12.0</span><h3>Crash, Hi-Lo and Mines return as G21–G23</h3><div class="before">Before · the classic provably-fair bank games existed in the codebase but were unreachable after the Arcade Zone hub restructure.</div><div class="after">After · Crash (auto cash-out), Hi-Lo (1.7× streaks) and Mines (gem multipliers with a 3% edge) are playable again inside Arcade Zone with wallet settlement, proofs, history and jackpot hooks.</div></div>
+      <div class="release-card"><span class="feature-code">UNIFIED MERGE v12.0</span><h3>Five archives, one project</h3><div class="before">Before · the spec documents, demos, modular redesign and v10.8 app lived in five separate workspaces with overlapping and conflicting files.</div><div class="after">After · one cohesive app: the bot-withdrawal economy loop and Admin Player Directory from the modular redesign are integrated, the real coin photographs return as the Photoreal skin, all image assets and icons are unified, and every historical document is archived under docs/legacy.</div></div>
+      <div class="release-card"><span class="feature-code">BOT WITHDRAWALS v12.0</span><h3>Bots cash out at 3,000–5,000 MAIN</h3><div class="before">Before · bot wallets could grow without an outflow path and the Admin had no Withdrawals screen.</div><div class="after">After · each bot has a personal cash-out trigger; when MAIN reaches it the bot files a withdrawal that leaves the bot wallet, is counted as a coin sink and is deducted from house revenue. The Admin Withdrawals screen tracks paid requests, statistics, the ledger and closest-to-cash-out, with CSV export.</div></div>
+      <div class="release-card"><span class="feature-code">PLAYER DIRECTORY v12.0</span><h3>Admin people screen</h3><div class="before">Before · the Admin had no dedicated searchable roster table.</div><div class="after">After · a 14th Admin screen lists the demo player plus the full simulated roster with playable balance, MAIN/BONUS split, records, net, level, top-ups and withdrawals, with search, sorting and pagination.</div></div>
       <div class="release-card"><span class="feature-code">BOT STARTING WALLET v10.8</span><h3>0 MAIN + 1,000 BONUS at start</h3><div class="before">Before · seeded and created bots inherited nonzero MAIN balances and had no separate BONUS wallet.</div><div class="after">After · every bot starts at 0 MAIN with exactly 1,000 BONUS, then completes the required varied first MAIN top-up; any first-top-up promotion is added to BONUS.</div></div>
       <div class="release-card"><span class="feature-code">FIRST TOP-UP GATE v10.7</span><h3>Every bot tops up before play</h3><div class="before">Before · seeded or newly created bots could use their starting balance and only top up after falling below the configured threshold.</div><div class="after">After · every existing, imported, Admin-added and auto-created bot must complete one varied first top-up before any game or activity; the first-top-up promotion applies when enabled.</div></div>
       <div class="release-card"><span class="feature-code">LIVE ADMIN SYNC v10.6</span><h3>Bots continue while Admin is open</h3><div class="before">Before · opening Admin in the same tab unloaded the Player bot engine, and hidden-tab timer throttling could slow updates.</div><div class="after">After · Admin opens in a new tab, maintains a hidden Player engine fallback, pulses the full bot engine through BroadcastChannel and refreshes Admin cards from shared-state events without save feedback loops.</div></div>
       <div class="release-card"><span class="feature-code">TOP-UP ANALYTICS v10.5</span><h3>Player and Admin top-up statistics</h3><div class="before">Before · top-ups were visible mainly as wallet actions, deposit-limit records and bot activity rows.</div><div class="after">After · Player Wallet/Statistics and Admin header/Overview/Top-up Analytics show counts, base volume, bonuses, total credits, averages, time windows and detailed records.</div></div>
       <div class="release-card"><span class="feature-code">MATCHING</span><h3>P2P liquidity</h3><div class="before">Before · player posts relied mainly on delayed bot joins.</div><div class="after">After · manual take, player auto-match, bot-posted bets and fast bot-vs-bot settlement coexist.</div></div>
       <div class="release-card"><span class="feature-code">VIP</span><h3>Eight-tier benefits</h3><div class="before">Before · thresholds and rakeback were the primary working benefits.</div><div class="after">After · permanent cosmetics/emojis, live discounts, queue priority, titles and monthly reset rules are active.</div></div>
-      <div class="release-card"><span class="feature-code">B1–B4</span><h3>Twenty-three feature ideas</h3><div class="before">Before · listed in the source document as ideas not yet specified.</div><div class="after">After · Community, Arcade+, Progress+ and Economy+ have dedicated playable screens and state.</div></div>
-      <div class="release-card"><span class="feature-code">HISTORY</span><h3>Complete player records</h3><div class="before">Before · several feature results existed only in transient cards.</div><div class="after">After · games, catalog, friends, rooms, clans, Arcade+, Progress+, Economy+ and Social have searchable history.</div></div>
+      <div class="release-card"><span class="feature-code">B1–B4</span><h3>Twenty-three feature ideas</h3><div class="before">Before · listed in the source document as ideas not yet specified.</div><div class="after">After · Community, Arcade Zone, Progress+ and Economy+ have dedicated playable screens and state.</div></div>
+      <div class="release-card"><span class="feature-code">HISTORY</span><h3>Complete player records</h3><div class="before">Before · several feature results existed only in transient cards.</div><div class="after">After · games, catalog, friends, rooms, clans, Arcade Zone, Progress+, Economy+ and Social have searchable history.</div></div>
       <div class="release-card"><span class="feature-code">STATISTICS</span><h3>Financial and game analytics</h3><div class="before">Before · career games, wins, streak and net were the main statistics.</div><div class="after">After · lifetime wagered, total/max payout, fees, averages, ROI, participation, payout trend and complete player top-up analytics are included.</div></div>
       <div class="release-card"><span class="feature-code">MOBILE UI</span><h3>Responsive controls</h3><div class="before">Before · navigation wrapped and native form controls overlapped on iPhone widths.</div><div class="after">After · single-row touch navigation, themed full-width fields and one-column mobile forms are enforced.</div></div>
       <div class="release-card"><span class="feature-code">ADMIN</span><h3>Operations command center</h3><div class="before">Before · top tabs and separate data cards handled administration.</div><div class="after">After · responsive sidebar, alerts, quick actions, Feature Hub, filters, pagination and detail drawer are available.</div></div>
       <div class="release-card"><span class="feature-code">AUDIT</span><h3>Economy corrections</h3><div class="before">Before · sink ratio, catalog gross paths, raffle accounting and simulated trades had inconsistencies.</div><div class="after">After · duplicate sink counting is removed and raffle, direct payout and Trading Post accounting are corrected.</div></div>
       <div class="release-card"><span class="feature-code">AUTO BET</span><h3>Configurable stop</h3><div class="before">Before · Auto Bet always stopped at a hard-coded −200 session result.</div><div class="after">After · −200 remains the default, with −100/−200/−500 presets and a configurable −50 to −10,000 threshold.</div></div>
       <div class="release-card"><span class="feature-code">FEATURE DIRECTORY</span><h3>Complete product map</h3><div class="before">Before · feature information was distributed across player tabs, admin pages and documents.</div><div class="after">After · admin provides category/search/status filtering, implementation state and direct player/admin links.</div></div>
-      <div class="release-card"><span class="feature-code">PHASE 1 COMPLETE</span><h3>22 roadmap games are now playable</h3><div class="before">Before · CAT18–CAT29 and G7–G16 were Suggested directory records only.</div><div class="after">After · all 12 P2P Catalog games use waiting/manual/auto bot matching and all 10 Arcade+ games have playable rules, outcomes, history and accounting.</div></div>
+      <div class="release-card"><span class="feature-code">PHASE 1 COMPLETE</span><h3>22 roadmap games are now playable</h3><div class="before">Before · CAT18–CAT29 and G7–G16 were Suggested directory records only.</div><div class="after">After · all 12 P2P Games games use waiting/manual/auto bot matching and all 10 Arcade Zone games have playable rules, outcomes, history and accounting.</div></div>
       <div class="release-card"><span class="feature-code">PHASE 2 COMPLETE</span><h3>Platform, Security & RG Trust Center</h3><div class="before">Before · 14 directory records remained Suggested or Partial.</div><div class="after">After · PWA, languages, API explorer, notifications, TOTP, anti-cheat, analytics, statements, promotions and durable RG controls have working demo flows.</div></div>
       <div class="release-card"><span class="feature-code">NAVIGATION v10</span><h3>Find any screen faster</h3><div class="before">Before · large Player/Admin menus required more scrolling, especially on mobile.</div><div class="after">After · sidebar search, grouped quick jump, Ctrl/⌘+K command palette, “/” shortcut and mobile quick docks provide direct access.</div></div>
-      <div class="release-card"><span class="feature-code">GAME NAVIGATION v10.1</span><h3>Search and group 45 games</h3><div class="before">Before · 29 Catalog and 16 Arcade+ tabs formed long horizontal lists.</div><div class="after">After · both lists have search, category filters, grouped quick jump, favorites and result counts; global Player/Admin command palettes open exact games.</div></div>
+      <div class="release-card"><span class="feature-code">GAME NAVIGATION v10.1</span><h3>Search and group 45 games</h3><div class="before">Before · 29 Catalog and 16 Arcade Zone tabs formed long horizontal lists.</div><div class="after">After · both lists have search, category filters, grouped quick jump, favorites and result counts; global Player/Admin command palettes open exact games.</div></div>
       <div class="release-card"><span class="feature-code">AUDIT & ROADMAP v10.2</span><h3>Cons documented and next features prioritized</h3><div class="before">Before · production limitations were spread across audit warnings and appendices.</div><div class="after">After · one synchronized cons register and 12 clearly Suggested UX, LiveOps, Trust and Operations features define the next roadmap.</div></div>
       <div class="release-card"><span class="feature-code">UX RELEASE v10.3</span><h3>Dashboard, presets, accessibility and discovery</h3><div class="before">Before · Home was fixed and repeat game setup had to be entered manually.</div><div class="after">After · UX1–UX4 are implemented; the eight LiveOps/Trust/Operations ideas remain Suggested for production.</div></div>
-      <div class="release-card"><span class="feature-code">COIN UTILITY v10.4</span><h3>More games and non-wager coin uses</h3><div class="before">Before · the platform had 29 Catalog, 16 Arcade+ and the existing shop/economy spends.</div><div class="after">After · CAT30–CAT33, G17–G20 and E6–E9 add eight games plus crafting, tickets, clan treasury and room upgrades.</div></div>
-      <div class="release-card"><span class="feature-code">BOT NETWORK</span><h3>Autonomous activity everywhere</h3><div class="before">Before · bots focused mainly on Coin Toss, Catalog, Cups and tournaments.</div><div class="after">After · bots also form friendships, send requests, chat, create social events, play all Arcade+ modes, shop and transfer more often.</div></div>
+      <div class="release-card"><span class="feature-code">COIN UTILITY v10.4</span><h3>More games and non-wager coin uses</h3><div class="before">Before · the platform had 29 Catalog, 16 Arcade Zone and the existing shop/economy spends.</div><div class="after">After · CAT30–CAT33, G17–G20 and E6–E9 add eight games plus crafting, tickets, clan treasury and room upgrades.</div></div>
+      <div class="release-card"><span class="feature-code">BOT NETWORK</span><h3>Autonomous activity everywhere</h3><div class="before">Before · bots focused mainly on Coin Toss, Catalog, Cups and tournaments.</div><div class="after">After · bots also form friendships, send requests, chat, create social events, play all Arcade Zone modes, shop and transfer more often.</div></div>
       <div class="release-card"><span class="feature-code">BOT GROWTH</span><h3>Automatically increasing player count</h3><div class="before">Before · the demo roster remained at 99 bots.</div><div class="after">After · configurable automatic bot creation grows the visible Player Directory and live network count up to an Admin-defined cap.</div></div>
       <div class="release-card"><span class="feature-code">PROGRESSION</span><h3>49 achievements and 50 levels</h3><div class="before">Before · 29 achievements and rewards through level 25.</div><div class="after">After · 49 achievements, rewards through level 50, and rare/epic/legendary milestone cosmetics at levels 30/40/50.</div></div>
       <div class="release-card"><span class="feature-code">SHOP</span><h3>Expanded cosmetic inventory</h3><div class="before">Before · nine shop categories had the original item set.</div><div class="after">After · 38 additional skins, flags, personas, frames, colours, effects, themes, sounds and emojis are available.</div></div>
@@ -374,7 +374,7 @@
         <div class="muted">2% fee · min 10 · cap 500/day · MAIN only</div>
         <div class="stake-row" style="justify-content:flex-start;margin-top:6px">
           <input type="number" class="stake-input sm" id="xfAmt" value="100" min="10" max="500"/>
-          <button class="btn btn-ghost btn-sm" id="xfBtn">Send to bot (demo)</button>
+          <button class="btn btn-ghost btn-sm" id="xfBtn">Send coins to a bot</button>
         </div>
       </div>
     </div>
@@ -459,13 +459,13 @@ jackpot    = firstByte == 0  (1 in 256, only when pool armed)</pre>
 
   <!-- PLATFORM / SECURITY / RESPONSIBLE GAMING SERVICES -->
   <section class="panel" id="panel-services">
-    <div class="player-hero compact-history"><div><span class="eyebrow">PHASE 2 TRUST CENTER</span><h1>Safety & Services</h1><p>Installability, language, API explorer, notifications, account security, statements, offers and durable responsible-gaming controls.</p></div><div class="hero-actions"><button class="btn btn-primary" data-go-tab="home">Return Home</button></div></div>
+    <div class="player-hero compact-history"><div><span class="eyebrow">TRUST & TOOLS</span><h1>Safety & Services</h1><p>Install the app, switch language, use the API explorer, set notifications, secure your account, read statements, claim offers and manage responsible-gaming controls.</p></div><div class="hero-actions"><button class="btn btn-primary" data-go-tab="home">Back to Home</button></div></div>
     <div id="servicesHub"></div>
   </section>
 
-  <div class="footer-note">TossMatch v11.0 (unified) — player app · real Web Crypto SHA-256 · play coins only · state saved to localStorage<br>Companion: <a href="admin.html" target="_blank" rel="noopener">Admin panel (new tab)</a> · unified merge of all five project archives</div>
+  <div class="footer-note">FlipArena v12.0 — player app · real Web Crypto SHA-256 · play coins only · state saved to localStorage<br>Companion: <a href="admin.html" target="_blank" rel="noopener">Open the Admin console (new tab)</a></div>
 </main>
-<nav class="quick-dock" id="playerQuickDock" aria-label="Player quick navigation"><button data-go-tab="home"><span>✨</span>Home</button><button data-go-tab="play"><span>🪙</span>Play</button><button data-go-tab="games"><span>🎲</span>Catalog</button><button data-go-tab="wallet"><span>👛</span>Wallet</button><button id="playerMobileMore"><span>☰</span>More</button></nav>
+<nav class="quick-dock" id="playerQuickDock" aria-label="Player quick navigation"><button data-go-tab="home"><span>✨</span>Home</button><button data-go-tab="play"><span>🪙</span>Coin Toss</button><button data-go-tab="games"><span>🎲</span>P2P Games</button><button data-go-tab="wallet"><span>👛</span>Wallet</button><button id="playerMobileMore"><span>☰</span>More</button></nav>
 <div class="command-backdrop" id="playerCommandBg" role="dialog" aria-modal="true" aria-label="Player quick navigation" aria-hidden="true"><div class="command-palette"><div class="command-head"><input id="playerCommandSearch" type="search" placeholder="Search screens, games, wallet, safety…" aria-label="Search all player screens"/><button class="icon-btn" id="playerCommandClose" aria-label="Close quick navigation">✕</button></div><div class="command-list" id="playerCommandList"></div></div></div>
 <div class="sr-only" id="a11yLive" aria-live="polite"></div>
 <div class="modal-bg" id="paletteBg">

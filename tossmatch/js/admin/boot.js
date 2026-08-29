@@ -1,4 +1,4 @@
-/* TossMatch admin module — boot */
+/* FlipArena admin module — boot */
 import "../shared/runtime.js";
 import {cfg,checkVipMonthReset,load,render,sendAdminBotPulse,syncAdminNavigation} from "./core.js";
 
