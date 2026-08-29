@@ -1,4 +1,4 @@
-// TossMatch player entry.
+// FlipArena player entry.
 import "../shared/runtime.js";
 import {bind as bind__top} from "./core.js";
 import {bind as bind_data} from "./data.js";

@@ -1,7 +1,7 @@
 {
-  "name": "TossMatch Play-Coin Demo",
-  "short_name": "TossMatch",
-  "description": "Offline-capable TossMatch v11.0 unified play-coin game and feature demonstration.",
+  "name": "FlipArena Play-Coin Demo",
+  "short_name": "FlipArena",
+  "description": "FlipArena v12.0 — offline-capable play-coin coin-flip games, tournaments and rewards demo.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

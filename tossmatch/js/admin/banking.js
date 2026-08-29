@@ -1,4 +1,4 @@
-/* TossMatch admin module — banking */
+/* FlipArena admin module — banking */
 import "../shared/runtime.js";
 import {$,SAVE_KEY,audit,cfg,fmt,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,processBotWithdrawals,reconcileHouse,render,save,toast,topupAnalytics} from "./core.js";
 

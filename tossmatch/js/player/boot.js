@@ -1,4 +1,4 @@
-/* TossMatch player module — boot */
+/* FlipArena player module — boot */
 import "../shared/runtime.js";
 import {applyVipUnlocks} from "./bots.js";
 import {checkProgressAchievements,seedBotBets,seedBotCatalogBets,selectSide} from "./games.js";
@@ -23,7 +23,7 @@ export function bind(){
   checkDailyLogin();
   seedBotBets();
   seedBotCatalogBets(10);
-  if(!S.feed.length){addFeed("👋 Welcome to TossMatch v11.0 — post a bet!");addFeed("🎰 Jackpot armed at "+fmt(S.jackpot));}
+  if(!S.feed.length){addFeed("👋 Welcome to FlipArena v12.0 — post a bet!");addFeed("🎰 Jackpot armed at "+fmt(S.jackpot));}
   selectSide("HEADS");
   render();
   syncPlayerNavigation('home');

@@ -1,4 +1,4 @@
-/* TossMatch player module — sync */
+/* FlipArena player module — sync */
 import "../shared/runtime.js";
 import {SAVE_KEY,SIM_LEADER_KEY,SIM_TAB_ID,TAB_KEY,botLiveChannel} from "./core.js";
 import {COS,HUB,applyVipUnlocks,currentVipEntitlements} from "./bots.js";
@@ -241,45 +241,45 @@ async function botArcadeActivity(){
   }
 }
 function createAutoBot(reason='Automatic network growth'){
-  const max=Math.max(99,Math.min(1000,+(cfg().botGrowthMax??250)));if(S.bots.length>=max)return null;const seq=S.bots.length+1,adjs=['Swift','Lucky','Nova','Royal','Pixel','Turbo','Cosmic','Golden','Mystic','Prime'],nouns=['Flipper','Rival','Player','Ace','Challenger','Duelist','Ranger','Captain','Knight','Star'];let name=`${adjs[seq%adjs.length]} ${nouns[(seq*3)%nouns.length]} ${seq}`;while(S.bots.some(b=>b.name===name))name+=String.fromCharCode(65+Math.floor(Math.random()*26));const places=[['India','🇮🇳'],['Brazil','🇧🇷'],['USA','🇺🇸'],['UK','🇬🇧'],['Japan','🇯🇵'],['Germany','🇩🇪'],['UAE','🇦🇪'],['Canada','🇨🇦'],['Australia','🇦🇺'],['Singapore','🇸🇬']],place=places[Math.floor(Math.random()*places.length)],avatars=['🤖','😎','🧑','👩','🥷','🧙','🦸','👽','🦊','🐼'],skins=['classic','silver','neon','arctic','ember','ruby','emerald','sapphire','obsidian','jade'];const bot={name,avi:avatars[Math.floor(Math.random()*avatars.length)],flag:place[1],balance:0,bonusBalance:1000,walletVersion:2,startingBonus:1000,startingBonusAccounted:false,startingBonusAt:0,level:2+Math.floor(Math.random()*24),country:place[0],title:'Network Newcomer',about:'Automatically joined the growing TossMatch demo network.',skin:skins[Math.floor(Math.random()*skins.length)],joined:0,wins:0,losses:0,net:0,streak:0,bestStreak:0,biggestWin:0,jackpots:0,games:0,arcadeGames:0,shop:[],title2:'',firstTopupDone:false,topupCount:0,topupTotal:0,autoCreated:true,createdAt:Date.now()};S.bots.push(bot);ensureBotFirstTopup(bot,'Required first top-up on bot creation');S.botActivity.createdBots=(S.botActivity.createdBots||0)+1;S.botActivity.lastCreatedAt=Date.now();botActivityLog('social',{area:'Player network',icon:'🌐',detail:`${bot.name} ${bot.flag} joined automatically · ${S.bots.length+1} total players`});if(!window._suppressFeed)addFeed(`🌐 <b>${bot.name}</b> joined the network automatically · ${S.bots.length+1} players online`);return bot;
+  const max=Math.max(99,Math.min(1000,+(cfg().botGrowthMax??250)));if(S.bots.length>=max)return null;const seq=S.bots.length+1,adjs=['Swift','Lucky','Nova','Royal','Pixel','Turbo','Cosmic','Golden','Mystic','Prime'],nouns=['Flipper','Rival','Player','Ace','Challenger','Duelist','Ranger','Captain','Knight','Star'];let name=`${adjs[seq%adjs.length]} ${nouns[(seq*3)%nouns.length]} ${seq}`;while(S.bots.some(b=>b.name===name))name+=String.fromCharCode(65+Math.floor(Math.random()*26));const places=[['India','🇮🇳'],['Brazil','🇧🇷'],['USA','🇺🇸'],['UK','🇬🇧'],['Japan','🇯🇵'],['Germany','🇩🇪'],['UAE','🇦🇪'],['Canada','🇨🇦'],['Australia','🇦🇺'],['Singapore','🇸🇬']],place=places[Math.floor(Math.random()*places.length)],avatars=['🤖','😎','🧑','👩','🥷','🧙','🦸','👽','🦊','🐼'],skins=['classic','silver','neon','arctic','ember','ruby','emerald','sapphire','obsidian','jade'];const bot={name,avi:avatars[Math.floor(Math.random()*avatars.length)],flag:place[1],balance:0,bonusBalance:1000,walletVersion:2,startingBonus:1000,startingBonusAccounted:false,startingBonusAt:0,level:2+Math.floor(Math.random()*24),country:place[0],title:'Network Newcomer',about:'Automatically joined the growing FlipArena demo network.',skin:skins[Math.floor(Math.random()*skins.length)],joined:0,wins:0,losses:0,net:0,streak:0,bestStreak:0,biggestWin:0,jackpots:0,games:0,arcadeGames:0,shop:[],title2:'',firstTopupDone:false,topupCount:0,topupTotal:0,autoCreated:true,createdAt:Date.now()};S.bots.push(bot);ensureBotFirstTopup(bot,'Required first top-up on bot creation');S.botActivity.createdBots=(S.botActivity.createdBots||0)+1;S.botActivity.lastCreatedAt=Date.now();botActivityLog('social',{area:'Player network',icon:'🌐',detail:`${bot.name} ${bot.flag} joined automatically · ${S.bots.length+1} total players`});if(!window._suppressFeed)addFeed(`🌐 <b>${bot.name}</b> joined the network automatically · ${S.bots.length+1} players online`);return bot;
 }
 function growBotRoster(){
   if(!cfg().features.bots||cfg().features.botGrowth===false)return;const interval=Math.max(5,Math.min(3600,+(cfg().botGrowthIntervalSec??15)))*1000;if(Date.now()-(S.botActivity.lastCreatedAt||0)<interval)return;const batch=Math.max(1,Math.min(10,+(cfg().botGrowthBatch??1)));for(let n=0;n<batch;n++)if(!createAutoBot())break;
 }
 const GAMES=[
- {id:"overunder",name:"⚖️ Over / Under",edge:"P2P",type:"options",options:["HIGH","LOW"],desc:"A fair byte decides HIGH (128–255) or LOW (0–127)."},
- {id:"speed",name:"💨 Speed Round",edge:"5 flips",type:"options",options:["HEADS","TAILS"],desc:"Five rapid flips; the majority side wins."},
- {id:"tug",name:"🪢 Tug of War",edge:"race",type:"options",options:["LEFT","RIGHT"],desc:"Each flip pulls the rope. First side to reach three steps wins."},
- {id:"evenodd",name:"➕ Even / Odd Sum",edge:"P2P",type:"options",options:["EVEN","ODD"],desc:"Two fair bytes are added; the sum parity decides."},
- {id:"closest",name:"🎯 Closest Number",edge:"0–255",type:"number",min:0,max:255,desc:"Pick a byte. The closest pick to the result wins."},
- {id:"luckybattle",name:"🎲 Lucky Number Battle",edge:"0–255",type:"number",min:0,max:255,desc:"Exact match wins instantly; otherwise the closest pick wins."},
- {id:"sumpredict",name:"📈 Sum Prediction",edge:"0–510",type:"number",min:0,max:510,desc:"Predict the sum of two bytes; closest prediction wins."},
- {id:"higherbyte",name:"🔢 Higher Byte",edge:"no pick",type:"none",desc:"Each entrant receives a byte. The higher byte wins; ties split."},
- {id:"patternrace",name:"🔗 Pattern Race",edge:"3 flips",type:"pattern3",desc:"Choose a 3-flip pattern. First pattern to appear wins."},
- {id:"parlayduel",name:"🧩 Parlay Duel",edge:"3 flips",type:"pattern3",desc:"Three flips resolve; the prediction with the most matches wins."},
- {id:"prediction",name:"🎯 Prediction Streak",edge:"5 flips",type:"pattern5",desc:"Predict five flips. Most correct predictions wins."},
- {id:"blind",name:"👁️ Blind Pick",edge:"secret",type:"options",options:["HEADS","TAILS"],allowSame:true,desc:"Both hidden picks reveal after one flip; same picks may split or carry."},
- {id:"rangewar",name:"🔢 Range War",edge:"zones",type:"zones",desc:"Claim a quarter of 0–255. A miss between claimed zones carries the pot."},
- {id:"bullseye",name:"🎯 Bullseye",edge:"wedges",type:"zones",desc:"Claim a target wedge; another bot claims a different wedge."},
- {id:"chain",name:"🔗 Chain Reaction",edge:"10 rounds",type:"options",options:["HEADS","TAILS"],desc:"Entrants call alternating flips. The first wrong caller loses."},
- {id:"ladder",name:"💨 Elimination Ladder",edge:"race",type:"options",options:["HEADS","TAILS"],desc:"Climb three rungs with your side before the opponent."},
- {id:"mirrored",name:"🪞 Mirrored Coins",edge:"2 coins",type:"options",options:["HEADS","TAILS"],desc:"Two coins flip. Matching results carry; different results decide the duel."},
- {id:"rps",code:"CAT18",name:"✊ Rock Paper Scissors Duel",edge:"hidden picks",type:"options",options:["ROCK","PAPER","SCISSORS"],allowSame:true,desc:"Hidden simultaneous choices use standard RPS; matching choices split the post-fee pot."},
- {id:"closest21",code:"CAT19",name:"🃏 Closest to 21",edge:"2 cards",type:"none",desc:"Each entrant receives two proof-derived cards. Closest to 21 without exceeding wins; equal totals or both bust split."},
- {id:"triplecoin",code:"CAT20",name:"🪙 Triple Coin Majority",edge:"3 flips",type:"options",options:["HEADS","TAILS"],desc:"Opposite sides compete across three proof flips; the majority side wins."},
- {id:"sequencebuilder",code:"CAT21",name:"🧬 Sequence Builder",edge:"pattern race",type:"options",options:["HH","HT","TH","TT"],desc:"Choose a different two-symbol starter. The first starter to appear in the proof sequence wins."},
- {id:"dicesumduel",code:"CAT22",name:"🎲 Dice Sum Duel",edge:"2 dice each",type:"none",desc:"Each entrant receives two proof-derived dice. Higher sum wins; equal sums split."},
- {id:"colourspectrum",code:"CAT23",name:"🌈 Colour Spectrum Duel",edge:"byte bands",type:"zones",desc:"Claim a non-overlapping colour band. A proof byte inside either claimed band wins; an unclaimed band carries."},
- {id:"primecomposite",code:"CAT24",name:"🔢 Prime vs Composite",edge:"2–251",type:"options",options:["PRIME","COMPOSITE"],desc:"A proof-derived integer from 2 to 251 is classified; the matching opposite side wins."},
- {id:"medianbattle",code:"CAT25",name:"📐 Median Number Battle",edge:"0–255",type:"number",min:0,max:255,desc:"Two distinct picks and one proof number form three values. The pick at or nearest the median wins."},
- {id:"streaksurvivor",code:"CAT26",name:"🔥 Streak Survivor",edge:"first streak 4",type:"options",options:["HEADS","TAILS"],desc:"Opposite sides race through proof flips. The first side to produce four consecutive results wins."},
- {id:"territory",code:"CAT27",name:"🗺️ Territory Capture",edge:"9 captures",type:"zones",desc:"Claim a non-overlapping map sector. Nine proof bytes capture sectors; the higher claimed count wins."},
- {id:"modulo4",code:"CAT28",name:"➗ Modulo Four Duel",edge:"remainder",type:"options",options:["0","1","2","3"],desc:"Choose different remainders. Proof byte modulo four decides; an unclaimed remainder carries."},
- {id:"pokerhigh",code:"CAT29",name:"♠️ Poker High Duel",edge:"5 cards",type:"none",desc:"Five proof-derived cards per entrant use standard poker categories and deterministic kickers; exact ties split."},
- {id:"threedicepoker",code:"CAT30",name:"🎲 Three Dice Poker",edge:"3 dice each",type:"none",desc:"Each entrant receives three proof dice. Triple beats pair, then higher total; exact category/total ties split."},
- {id:"lastdigit",code:"CAT31",name:"🔟 Last Digit Duel",edge:"0–9",type:"options",options:["0","1","2","3","4","5","6","7","8","9"],desc:"Choose different digits. The last digit of a proof number wins if claimed; an unclaimed digit carries."},
- {id:"binaryduel",code:"CAT32",name:"🧬 Binary Code Duel",edge:"3 bits",type:"pattern3",desc:"Choose different three-bit H/T codes. Lowest Hamming distance to the proof code wins; equal distance splits."},
- {id:"coinbalance",code:"CAT33",name:"⚖️ Coin Balance Battle",edge:"10 flips",type:"number",min:2,max:8,desc:"Predict the number of HEADS in ten proof flips. Closest distinct prediction wins; equal distance splits."}
+ {id:"overunder",name:"⚖️ Over / Under",edge:"byte half",type:"options",options:["HIGH","LOW"],desc:"Pick HIGH (128–255) or LOW (0–127). One fair byte is revealed; the side containing that byte wins the pot. If both sides pick the same value it splits."},
+ {id:"speed",name:"💨 Speed Round",edge:"5 flips",type:"options",options:["HEADS","TAILS"],desc:"Pick HEADS or TAILS. Five fair flips are shown; the side with the majority (3+) wins. Catching the majority is pure 50/50."},
+ {id:"tug",name:"🪢 Tug of War",edge:"race to 3",type:"options",options:["LEFT","RIGHT"],desc:"Pick LEFT or RIGHT. Each fair flip pulls the rope one step. HEADS pulls LEFT, TAILS pulls RIGHT; the first side to reach three steps wins."},
+ {id:"evenodd",name:"➕ Even / Odd Sum",edge:"sum parity",type:"options",options:["EVEN","ODD"],desc:"Pick EVEN or ODD. Two fair bytes are added; an even sum wins for EVEN and an odd sum wins for ODD. Matching parity takes the pot."},
+ {id:"closest",name:"🎯 Closest Number",edge:"0–255",type:"number",min:0,max:255,desc:"Predict any byte 0–255. A fair byte is revealed; the pick with the smallest absolute distance wins. Equal distance splits; the result byte is shown."},
+ {id:"luckybattle",name:"🎲 Lucky Number Battle",edge:"0–255",type:"number",min:0,max:255,desc:"Predict a byte 0–255. Hitting the revealed byte exactly wins instantly; otherwise the closest pick wins and equal distance carries the pot."},
+ {id:"sumpredict",name:"📈 Sum Prediction",edge:"0–510",type:"number",min:0,max:510,desc:"Predict the sum of two fair bytes (0–510). The two bytes are revealed and summed; the closest prediction to that total wins, and equal distance splits."},
+ {id:"higherbyte",name:"🔢 Higher Byte",edge:"no pick",type:"none",desc:"No pick is needed — each entrant receives an independent fair byte. The higher byte wins; equal bytes split the pot."},
+ {id:"patternrace",name:"🔗 Pattern Race",edge:"first pattern",type:"pattern3",desc:"Pick a 3-flip pattern (HHH–TTT). Fair flips build a sequence; the first pattern to appear wins. Neither completing in the window carries the pot."},
+ {id:"parlayduel",name:"🧩 Parlay Duel",edge:"most correct",type:"pattern3",desc:"Pick a 3-flip prediction. Three fair flips resolve; the prediction with the most correctly placed symbols wins. An exact match count carries."},
+ {id:"prediction",name:"🎯 Prediction Streak",edge:"5 flips",type:"pattern5",desc:"Predict five flips (e.g. HHHHH or HTHTH). Five fair flips resolve; the most correct predictions win, and an equal count splits."},
+ {id:"blind",name:"👁️ Blind Pick",edge:"hidden picks",type:"options",options:["HEADS","TAILS"],allowSame:true,desc:"True hidden-pick round. Both sides pick a side, then one fair flip decides. Identical picks split if they match the flip and carry if they don't; otherwise the side that matches the flip wins."},
+ {id:"rangewar",name:"🔢 Range War",edge:"zones",type:"zones",desc:"Claim one of four quarters of 0–255. A fair byte landing inside your quarter wins, inside the bot's quarter loses, and landing between claimed quarters carries the pot."},
+ {id:"bullseye",name:"🎯 Bullseye",edge:"wedges",type:"zones",desc:"Claim a target wedge; the bot claims a different wedge. A fair byte inside your wedge wins, inside the bot's wedge loses, and an unclaimed byte carries."},
+ {id:"chain",name:"🔗 Chain Reaction",edge:"10 rounds",type:"options",options:["HEADS","TAILS"],desc:"Pick a side; entrants then call alternating flips for up to ten rounds. The first wrong caller loses. Both surviving all ten calls splits the pot."},
+ {id:"ladder",name:"💨 Elimination Ladder",edge:"race to 3",type:"options",options:["HEADS","TAILS"],desc:"Pick a side. Each fair flip climbs your ladder one rung toward a three-rung finish; the first to reach the top with their side wins."},
+ {id:"mirrored",name:"🪞 Mirrored Coins",edge:"2 coins",type:"options",options:["HEADS","TAILS"],desc:"Two fair coins flip. Matching results carry the pot; different results decide — your coin matching your pick wins."},
+ {id:"rps",code:"CAT18",name:"✊ Rock Paper Scissors Duel",edge:"hidden picks",type:"options",options:["ROCK","PAPER","SCISSORS"],allowSame:true,desc:"Hidden simultaneous choices. ROCK beats SCISSORS, PAPER beats ROCK, SCISSORS beats PAPER; matching choices split the post-fee pot. Both picks are hidden until the match settles so neither side can react to the other."},
+ {id:"closest21",code:"CAT19",name:"🃏 Closest to 21",edge:"2 cards",type:"none",desc:"Each entrant is dealt two proof-derived cards (1–11). The hand closest to 21 without exceeding wins; equal totals or double-bust split the pot."},
+ {id:"triplecoin",code:"CAT20",name:"🪙 Triple Coin Majority",edge:"3 flips",type:"options",options:["HEADS","TAILS"],desc:"Pick a side. Three fair flips resolve; the majority side (2+) wins the pot."},
+ {id:"sequencebuilder",code:"CAT21",name:"🧬 Sequence Builder",edge:"pattern race",type:"options",options:["HH","HT","TH","TT"],desc:"Choose a two-symbol starter distinct from the bot's. The first starter to appear in the proof sequence wins; if neither appears the pot carries."},
+ {id:"dicesumduel",code:"CAT22",name:"🎲 Dice Sum Duel",edge:"2 dice each",type:"none",desc:"Each entrant receives two proof-derived dice. The higher total sum wins; equal sums split the pot."},
+ {id:"colourspectrum",code:"CAT23",name:"🌈 Colour Spectrum Duel",edge:"byte bands",type:"zones",desc:"Claim a non-overlapping colour band. A fair byte inside either claimed band wins for that side; an unclaimed band carries the pot."},
+ {id:"primecomposite",code:"CAT24",name:"🔢 Prime vs Composite",edge:"2–251",type:"options",options:["PRIME","COMPOSITE"],desc:"Pick PRIME or COMPOSITE. A proof-derived integer 2–251 is classified; the correct side wins the pot."},
+ {id:"medianbattle",code:"CAT25",name:"📐 Median Number Battle",edge:"0–255",type:"number",min:0,max:255,desc:"You and the bot each pick a distinct number; a proof number joins them. The pick at or nearest the median wins; equal distance splits. Identical guesses split."},
+ {id:"streaksurvivor",code:"CAT26",name:"🔥 Streak Survivor",edge:"first streak 4",type:"options",options:["HEADS","TAILS"],desc:"Opposite sides race through fair flips. The first side to produce four consecutive results wins; neither reaching it in the window carries the pot."},
+ {id:"territory",code:"CAT27",name:"🗺️ Territory Capture",edge:"9 captures",type:"zones",desc:"Claim a non-overlapping map sector. Nine fair bytes capture sectors; the higher claimed count wins, equal counts split, and zero captures carry."},
+ {id:"modulo4",code:"CAT28",name:"➗ Modulo Four Duel",edge:"remainder",type:"options",options:["0","1","2","3"],desc:"Choose a remainder 0–3 distinct from the bot's. A fair byte mod 4 decides; the matched remainder wins and an unclaimed remainder carries. Identical choices split."},
+ {id:"pokerhigh",code:"CAT29",name:"♠️ Poker High Duel",edge:"5 cards",type:"none",desc:"Each entrant is dealt five proof-derived cards. Standard poker categories and deterministic kickers decide; exact ties split the pot."},
+ {id:"threedicepoker",code:"CAT30",name:"🎲 Three Dice Poker",edge:"3 dice each",type:"none",desc:"Each entrant receives three proof dice. Triple beats pair, then higher total, then higher die; exact category/total ties split."},
+ {id:"lastdigit",code:"CAT31",name:"🔟 Last Digit Duel",edge:"0–9",type:"options",options:["0","1","2","3","4","5","6","7","8","9"],desc:"Choose a digit 0–9 distinct from the bot's. The last digit of a proof number wins if claimed; an unclaimed digit carries. Identical digits split."},
+ {id:"binaryduel",code:"CAT32",name:"🧬 Binary Code Duel",edge:"3 bits",type:"pattern3",desc:"Choose a three-bit H/T code distinct from the bot's. The code with the lowest Hamming distance to the proof code wins; equal distance splits."},
+ {id:"coinbalance",code:"CAT33",name:"⚖️ Coin Balance Battle",edge:"10 flips",type:"number",min:2,max:8,desc:"Predict the number of HEADS in ten fair flips. The closest distinct prediction wins; equal distance splits the pot."}
 ];
 const CATALOG_GROUPS={
  'Side Picks':['overunder','speed','tug','evenodd','blind','chain','ladder','mirrored','rps','triplecoin','primecomposite','streaksurvivor'],
@@ -330,7 +330,7 @@ function catalogWaitingHTML(g){
   const bets=S.waiting.filter(b=>b.kind==="catalog"&&b.catalogGame===g.id);
   if(!bets.length)return '<div class="empty" style="padding:12px">No open bets for this game.</div>';
   return bets.map(b=>`<div class="wait-item"><span class="wi-avi">${b.owner==="you"?playerAviHTML(22):(b.avi||"🤖")}</span>
-    <div class="wi-main"><div class="wi-name">${b.name} ${b.owner==="you"?'<span style="color:var(--gold)">(you)</span>':'<span class="ttl">BOT BET</span>'} ${b.priority?'<span class="ttl">VIP PRIORITY</span>':''}</div><div class="wi-meta">pick ${b.pick} · ${fmt(b.stake)} coins · ${b.wait||0}s · ${b.owner==="you"?'auto-match pending':'open for manual take or auto-match'}</div></div>
+    <div class="wi-main"><div class="wi-name">${b.name} ${b.owner==="you"?'<span style="color:var(--gold)">(you)</span>':'<span class="ttl">BOT BET</span>'} ${b.priority?'<span class="ttl">VIP PRIORITY</span>':''}</div><div class="wi-meta">${b.owner==="you"?`pick ${b.pick}`:'pick 🎭 hidden'} · ${fmt(b.stake)} coins · ${b.wait||0}s · ${b.owner==="you"?'auto-match pending':'open for manual take or auto-match'}</div></div>
     ${b.owner==="you"?`<button class="btn btn-sm btn-danger" data-catalog-cancel="${b.id}">Cancel</button>`:`<button class="btn btn-sm btn-primary" data-catalog-take="${b.id}">Take bet</button>`}</div>`).join("");
 }
 function catalogGameHTML(g){
@@ -340,7 +340,7 @@ function catalogGameHTML(g){
   if(g.type==="number")picker=`<label>Your prediction (${g.min}–${g.max})</label><input type="number" class="stake-input sm" id="catalogPick" value="${pick}" min="${g.min}" max="${g.max}" style="width:150px"/>`;
   else if(g.type==="none")picker='<div class="catalog-note">No pick required — each entrant receives an independent fair byte.</div>';
   else picker=`<div class="pick-grid">${choices.map(x=>`<button class="pick-btn ${String(pick)===String(x)?'active':''}" data-cpick="${x}" style="width:auto;min-width:58px;padding:0 10px">${x}</button>`).join("")}</div>`;
-  const result=last?`<div class="result-banner ${last.kind==='WIN'?'win':last.kind==='LOSE'?'lose':''}" style="display:block;margin-top:14px"><b>${last.kind}</b> · ${last.detail}${last.kind==='WAITING'?'':`<br><small>vs ${last.botName} ${last.botFlag||''} · your pick ${last.pick} · bot pick ${last.botPick} · delta ${last.delta>=0?'+':''}${fmt(last.delta)}</small>`}</div>
+  const result=last?`<div class="result-banner ${last.kind==='WIN'?'win':last.kind==='LOSE'?'lose':''}" style="display:block;margin-top:14px"><b>${last.kind}</b> · ${last.detail}${last.kind==='WAITING'?'':last.kind==='MATCHING'?`<br><small>vs ${last.botName} ${last.botFlag||''} · picks locked — revealing on settlement…</small>`:`<br><small>vs ${last.botName} ${last.botFlag||''} · your pick ${last.pick} · bot pick ${last.botPick} · delta ${last.delta>=0?'+':''}${fmt(last.delta)}</small>`}</div>
     ${last.proof?`<div class="proof show"><span class="ok">✓ merged-hash verified</span> · game #${last.proof.gameId}<br><span class="pl">finalHash:</span> <span class="pv">${last.proof.finalHash.slice(0,36)}…</span><br><span class="pl">first bytes:</span> ${last.proof.finalHash.slice(0,16)}</div>`:""}`:"";
   return `<h3>${g.name} <span class="muted" style="margin-left:auto;font-weight:400">catalog P2P · ${cfg().feePct}% pot fee</span></h3>
     <p class="muted">${g.desc}</p>
@@ -420,6 +420,10 @@ function pokerScore(hand){
 function comparePoker(a,b){if(a.cat!==b.cat)return a.cat>b.cat?1:-1;for(let i=0;i<Math.max(a.tie.length,b.tie.length);i++){const x=a.tie[i]||0,y=b.tie[i]||0;if(x!==y)return x>y?1:-1;}return 0;}
 function resolveCatalogGame(g,pickA,pickB,bytes){
   const side=n=>n%2===0?"HEADS":"TAILS",win=s=>String(pickA)===String(s)?"player":"bot";
+  // Fairness guard: game formulas are written for DISTINCT sides. If a hidden-take ever
+  // yields an identical pick (which the old waiting-room leak allowed a player to force), no
+  // side should be able to win on that edge — settle it as a fair split instead.
+  if(g.type!=="none"&&!g.allowSame&&String(pickA)===String(pickB))return {winner:"split",detail:`both picked ${pickA} — tie split`};
   if(g.id==="overunder"){const r=bytes[0],s=r>=128?"HIGH":"LOW";return {winner:win(s),detail:`byte ${r} → ${s}`};}
   if(g.id==="speed"){const f=bytes.slice(0,5).map(side),h=f.filter(x=>x==="HEADS").length,s=h>2?"HEADS":"TAILS";return {winner:win(s),detail:`${f.map(x=>x[0]).join(" ")} · ${h}-${5-h} ${s}`};}
   if(g.id==="tug"){let pos=0,n=0;for(;n<bytes.length&&Math.abs(pos)<3;n++)pos+=side(bytes[n])==="HEADS"?-1:1;const s=pos<=-3?"LEFT":pos>=3?"RIGHT":(pos<0?"LEFT":"RIGHT");return {winner:win(s),detail:`rope ${s} after ${n} pulls`};}
@@ -515,7 +519,7 @@ function renderGames(){
   renderGamePanel();
 }
 function renderGamePanel(){
-  // Classic Arcade+ panels (G21-G23) are hosted by the New Games hub: when that
+  // Classic Arcade Zone panels (G21-G23) are hosted by the New Games hub: when that
   // hub is the visible view, refresh it instead of the hidden catalog panel.
   const hubPanel=document.getElementById("panel-newgames");
   if(hubPanel&&hubPanel.classList.contains("active")&&["crash","hilo","mines"].includes(HUB.newgames)){renderNewGamesHub();return;}
@@ -655,6 +659,7 @@ async function spinWheel(){
 function crashHTML(){
   const cs=gameState.crash;
   return `<h3>🚀 Crash <span class="muted" style="margin-left:auto;font-weight:400">cash out before it busts · 1% edge</span></h3>
+    <p class="muted">A rocket multiplier rises from 1× from a provably-fair curve. Cash out any time to bank {mult}×; if the rocket busts before you cash out you lose the stake. Set an auto cash-out to lock your target.</p>
     <div class="crash-graph"><div class="crash-grid"></div>
       <div class="crash-plane" id="crashPlane" style="transform:translate(0,0)">🚀</div>
       <div class="crash-mult" id="crashMult">${cs.running?cs.mult.toFixed(2)+"×":(cs.crashedAt?"💥 "+cs.crashedAt.toFixed(2)+"×":"READY")}</div></div>
@@ -728,6 +733,7 @@ function cashoutCrash(){
 function hiloHTML(){
   const hs=gameState.hilo;
   if(!hs.active)return `<h3>🂠 Hi-Lo <span class="muted" style="margin-left:auto;font-weight:400">guess higher/lower · each correct = 1.7× streak</span></h3>
+    <p class="muted">Guess whether the next proof-derived card is higher or lower than the current card. Each correct guess multiplies your stake by 1.7×; bank your streak any time before a wrong guess.</p>
     <div class="hilo-card">?</div>
     <div class="game-row" style="justify-content:center">
       <input type="number" class="stake-input sm" id="hiloStake" value="50" min="10" style="width:120px"/>
@@ -797,6 +803,7 @@ function minesHTML(){
   const ms=gameState.mines;
   if(!ms.active){
     return `<h3>💣 Mines <span class="muted" style="margin-left:auto;font-weight:400">reveal gems, avoid bombs · multiplier rises</span></h3>
+      <p class="muted">A 5×5 board hides a number of proof-placed mines. Reveal gems to raise your multiplier; hit a mine and you lose the stake. Choose the mine count before you start.</p>
       <label>Mines: <b id="minesCount">${ms.mines}</b></label>
       <input type="range" min="1" max="15" value="${ms.mines}" class="dice-slider" id="minesSlider"/>
       <div class="grid-mines">${Array.from({length:25}).map(()=>`<div class="mine-tile"></div>`).join("")}</div>

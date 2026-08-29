@@ -1,4 +1,4 @@
-// TossMatch shared runtime state.
+// FlipArena shared runtime state.
 // Cross-module mutable bindings that used to be top-level `let` are held on
 // globalThis so every ES module sees the same live binding (assignments in one
 // module are visible to the others, exactly like the original single-script app).

@@ -1,4 +1,4 @@
-/* TossMatch admin module — theme */
+/* FlipArena admin module — theme */
 import "../shared/runtime.js";
 import {$,DIRECTORY,SAVE_KEY,VIEWS,audit,fmt,render,renderAudit,renderCatalogHistory,renderFeatureDirectory,renderFlags,renderGameHistory,renderLevels,renderPeople,renderTopupAnalytics,renderTrny,renderWithdrawals,toast} from "./core.js";
 import {THEME_PRESETS,applyTheme,clearThemeVars,closePalette,hexToRgb,openPalette,renderThemePresets,saveThemePrefs,shadeRgb,themeName,themePalette} from "../shared/theme.js";

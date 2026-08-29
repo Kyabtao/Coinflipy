@@ -1,4 +1,4 @@
-/* TossMatch admin module — render */
+/* FlipArena admin module — render */
 import "../shared/runtime.js";
 import {applyTheme} from "../shared/theme.js";
 import {$,drawRng,render,syncAdminNavigation} from "./core.js";

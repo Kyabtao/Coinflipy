@@ -1,4 +1,4 @@
-/* TossMatch player module — data */
+/* FlipArena player module — data */
 import "../shared/runtime.js";
 
 const C={feePct:5,cupRakePct:5,trnyRakePct:10,jpFundPct:10,jpFloor:1,jpArm:50,jpPayPct:50,

@@ -1,4 +1,4 @@
-/* TossMatch player module — games */
+/* FlipArena player module — games */
 import "../shared/runtime.js";
 import {STAKE_MIN} from "./core.js";
 import {ACHIEVEMENTS,COS,FREE_EMOJIS,QUESTS_SEED,applyVipUnlocks,currentVipEntitlements,sessionStart} from "./bots.js";
@@ -70,7 +70,7 @@ function seedBotCatalogBets(limit=8){
     const stake=[50,100,100,200][Math.floor(Math.random()*4)],pool=S.bots.filter(b=>ensureBotFirstTopup(b,'Required first top-up before activity')&&b.balance>=stake&&!S.waiting.some(w=>w.owner===b.name&&w.kind==="catalog"&&w.catalogGame===g.id));if(!pool.length)return;
     const bot=pool[Math.floor(Math.random()*pool.length)],pick=catalogRandomPick(g);bot.balance-=stake;
     S.waiting.push({id:"cb"+S.gid++,owner:bot.name,name:bot.name,avi:bot.avi,flag:bot.flag,kind:"catalog",catalogGame:g.id,gameName:g.name,pick:String(pick),side:String(pick),stake,wait:0,botEscrowed:true,createdAt:Date.now()});
-    if(!window._suppressFeed&&Math.random()<0.3)addFeed(`📨 <b>${bot.name}</b> opened ${g.name} · pick ${pick} @ ${fmt(stake)}`);
+    if(!window._suppressFeed&&Math.random()<0.3)addFeed(`📨 <b>${bot.name}</b> opened ${g.name} · pick 🎭 hidden @ ${fmt(stake)}`);
   });
 }
 async function autoMatchBotTossBet(open){

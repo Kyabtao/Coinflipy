@@ -1,4 +1,4 @@
-/* TossMatch player module — theme */
+/* FlipArena player module — theme */
 import "../shared/runtime.js";
 import {SAVE_KEY} from "./core.js";
 import {HISTORY} from "./bots.js";

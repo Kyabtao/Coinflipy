@@ -1,4 +1,4 @@
-/* TossMatch player module — render */
+/* FlipArena player module — render */
 import "../shared/runtime.js";
 import {applyTheme} from "../shared/theme.js";
 import {bc} from "./boot.js";
@@ -68,7 +68,7 @@ function renderWait(){
   const bets=[...S.waiting].sort((a,b)=>(S.social.friends.includes(b.owner)?1:0)-(S.social.friends.includes(a.owner)?1:0)||(b.priority?1:0)-(a.priority?1:0)||(b.wait||0)-(a.wait||0));
   if(!bets.length){el.innerHTML='<div class="empty">No open bets. Post one to be matched!</div>';return;}
   el.innerHTML=bets.map(b=>{
-    const you=b.owner==="you",pick=String(b.side??b.pick??"AUTO"),sideClass=["HEADS","TAILS"].includes(pick)?pick.toLowerCase():"";
+    const you=b.owner==="you",hidePick=b.kind==="catalog"&&!you,pick=hidePick?"🎭 hidden":String(b.side??b.pick??"AUTO"),sideClass=!hidePick&&["HEADS","TAILS"].includes(pick)?pick.toLowerCase():"";
     const avi=you?playerAviHTML(22):(b.avi||"🙂"),gameLabel=b.gameName||((b.kind||"toss")==="toss"?"Coin Toss":b.kind);
     return `<div class="wait-item">
       <span class="wi-avi">${avi}</span>
@@ -212,13 +212,13 @@ function historyRows(tab){
   if(tab==='friends')return (S.histories.friendChallenges||[]).map(x=>normalizeHistoryRow(x,'Friend Challenge'));
   if(tab==='rooms')return [...(S.histories.roomGames||[]),...(S.histories.rooms||[])].map(x=>normalizeHistoryRow(x,'Private Room'));
   if(tab==='clans')return (S.histories.clanGames||[]).map(x=>normalizeHistoryRow(x,'Clan'));
-  if(tab==='arcade')return (S.histories.arcade||[]).map(x=>normalizeHistoryRow(x,'Arcade+'));
+  if(tab==='arcade')return (S.histories.arcade||[]).map(x=>normalizeHistoryRow(x,'Arcade Zone'));
   if(tab==='progression')return (S.histories.progression||[]).map(x=>normalizeHistoryRow(x,'Progress+'));
   if(tab==='economy')return (S.histories.economy||[]).map(x=>normalizeHistoryRow(x,'Economy+'));
   return [...(S.histories.social||[]),...(S.social.gifts||[]).map(x=>({t:x.t,title:'Gift',detail:`To ${x.to} · ${x.item}`,amount:x.amount||0,result:'SENT'}))].map(x=>normalizeHistoryRow(x,'Social'));
 }
 function renderHistory(){
-  const tabs=[['games','All Games'],['catalog','P2P Catalog'],['friends','Friend Challenges'],['rooms','Private Rooms'],['clans','Clan Games'],['arcade','Arcade+'],['progression','Progress+'],['economy','Economy+'],['social','Social']],st=S.stats;
+  const tabs=[['games','All Games'],['catalog','P2P Games'],['friends','Friend Challenges'],['rooms','Private Rooms'],['clans','Clan Games'],['arcade','Arcade Zone'],['progression','Progress+'],['economy','Economy+'],['social','Social']],st=S.stats;
   $("historyTabs").innerHTML=tabs.map(x=>`<button class="hub-tab ${HISTORY.tab===x[0]?'active':''}" data-history-tab="${x[0]}">${x[1]}</button>`).join('');
   $("historySearch").value=HISTORY.search;$("historySort").value=HISTORY.sort;
   let rows=historyRows(HISTORY.tab),q=HISTORY.search.toLowerCase();if(q)rows=rows.filter(x=>`${x.title} ${x.detail} ${x.result}`.toLowerCase().includes(q));rows.sort((a,b)=>HISTORY.sort==='time-asc'?a.t-b.t:HISTORY.sort==='amount-desc'?Math.abs(b.amount)-Math.abs(a.amount):b.t-a.t);
@@ -248,7 +248,7 @@ function renderStats(){
   }else{$("biasBar").innerHTML="";$("zscore").textContent="—";}
   const avgStake=st.games?Math.round((st.lifetimeWagered||0)/st.games):0,avgPayout=st.games?Math.round((st.totalPayout||0)/st.games):0,roi=st.lifetimeWagered?st.net/st.lifetimeWagered*100:0;
   $("overallStats").innerHTML=`<div class="kv-row"><span class="k">Lifetime wagered</span><span class="v stats-highlight">${fmt(st.lifetimeWagered||0)}</span></div><div class="kv-row"><span class="k">Total payouts received</span><span class="v">${fmt(st.totalPayout||0)}</span></div><div class="kv-row"><span class="k">Maximum single payout</span><span class="v" style="color:var(--green)">${fmt(st.maxPayout||0)}</span></div><div class="kv-row"><span class="k">Fees paid</span><span class="v">${fmt(st.feesPaid||0)}</span></div><div class="kv-row"><span class="k">Average stake</span><span class="v">${fmt(avgStake)}</span></div><div class="kv-row"><span class="k">Average payout / game</span><span class="v">${fmt(avgPayout)}</span></div><div class="kv-row"><span class="k">Return on wagered</span><span class="v" style="color:${roi>=0?'var(--green)':'var(--red)'}">${roi.toFixed(2)}%</span></div>`;
-  $("gameBreakdown").innerHTML=`<div class="kv-row"><span class="k">P2P Catalog</span><span class="v">${st.catalogGames||0}</span></div><div class="kv-row"><span class="k">Series Cups played / won</span><span class="v">${st.seriesPlayed||0} / ${st.cupsWon||0}</span></div><div class="kv-row"><span class="k">Tournament entries / wins</span><span class="v">${st.tournamentEntries||0} / ${st.trnysWon||0}</span></div><div class="kv-row"><span class="k">Friend challenges</span><span class="v">${st.friendGames||0}</span></div><div class="kv-row"><span class="k">Private-room games</span><span class="v">${st.roomGames||0}</span></div><div class="kv-row"><span class="k">Clan games</span><span class="v">${st.clanGames||0}</span></div><div class="kv-row"><span class="k">Arcade+ plays</span><span class="v">${st.arcadePlays||0}</span></div><div class="kv-row"><span class="k">Draws / carries</span><span class="v">${st.draws||0} / ${st.carries||0}</span></div>`;
+  $("gameBreakdown").innerHTML=`<div class="kv-row"><span class="k">P2P Games</span><span class="v">${st.catalogGames||0}</span></div><div class="kv-row"><span class="k">Series Cups played / won</span><span class="v">${st.seriesPlayed||0} / ${st.cupsWon||0}</span></div><div class="kv-row"><span class="k">Tournament entries / wins</span><span class="v">${st.tournamentEntries||0} / ${st.trnysWon||0}</span></div><div class="kv-row"><span class="k">Friend challenges</span><span class="v">${st.friendGames||0}</span></div><div class="kv-row"><span class="k">Private-room games</span><span class="v">${st.roomGames||0}</span></div><div class="kv-row"><span class="k">Clan games</span><span class="v">${st.clanGames||0}</span></div><div class="kv-row"><span class="k">Arcade Zone plays</span><span class="v">${st.arcadePlays||0}</span></div><div class="kv-row"><span class="k">Draws / carries</span><span class="v">${st.draws||0} / ${st.carries||0}</span></div>`;
   $("topupStatsTiles").innerHTML=[[fmt(tu.count),'Top-up count'],[fmt(tu.base),'Base volume'],[fmt(tu.bonus),'Promotional bonus'],[fmt(tu.credited),'Total credited'],[fmt(tu.average),'Average base'],[fmt(tu.largest),'Largest base'],[fmt(tu.last7),'Last 7 days'],[fmt(tu.last30),'Last 30 days']].map(x=>`<div class="service-status"><b>${x[0]}</b>${x[1]}</div>`).join('');
   $("topupStatsBreakdown").innerHTML=`<div class="kv-row"><span class="k">First-top-up bonuses</span><span class="v">${fmt(tu.firstBonus)}</span></div><div class="kv-row"><span class="k">Campaign bonuses</span><span class="v">${fmt(tu.campaignBonus)}</span></div><div class="kv-row"><span class="k">Bonus rate vs base</span><span class="v">${tu.base?(tu.bonus/tu.base*100).toFixed(1):'0.0'}%</span></div><div class="kv-row"><span class="k">Most recent top-up</span><span class="v">${tu.lastAt?new Date(tu.lastAt).toLocaleString():'—'}</span></div><div class="catalog-note" style="margin-top:10px">Base and bonus credits are demo taps. Neither is recognized as house revenue.</div>`;
   $("recentPlayerTopups").innerHTML=tu.rows.slice(0,8).map(x=>`<div class="kv-row"><span class="k">${new Date(x.t).toLocaleString()}${x.campaignId?' · '+x.campaignId:''}</span><span class="v">${fmt(x.base)}${x.bonus?` + ${fmt(x.bonus)} bonus`:''}</span></div>`).join('')||'<div class="empty">No player top-ups yet.</div>';
