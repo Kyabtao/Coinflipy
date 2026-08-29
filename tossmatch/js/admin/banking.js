@@ -1,17 +1,24 @@
 /* FlipArena admin module — banking */
 import "../shared/runtime.js";
+import {add,coin,creditWallet,debitWallet,ledgerAudit,sub} from "../shared/money.js";
 import {$,SAVE_KEY,audit,cfg,fmt,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,processBotWithdrawals,reconcileHouse,render,save,toast,topupAnalytics} from "./core.js";
 
 function dl(filename,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
 function adminAdjustWallet(){
-  const key=$("walletAdjKey").value,amt=Math.round(+$("walletAdjAmt").value||0);
+  const key=$("walletAdjKey").value,amt=coin($("walletAdjAmt").value);
   if(!S.wallet||!["main","bonus","bank","referral","rakeback"].includes(key)){toast("Invalid wallet key.");return;}
   if(!amt){toast("Amount must be non-zero.");return;}
-  if((S.wallet[key]||0)+amt<0){toast("Adjustment would make the wallet negative.");return;}
-  S.wallet[key]=Math.round((S.wallet[key]||0)+amt);
-  if(amt>0)cfg().taps=(cfg().taps||0)+amt;else if(cfg().sinks!==undefined)cfg().sinks=(cfg().sinks||0)+Math.abs(amt);
+  // Every Admin credit/debit runs through the shared money module so the
+  // zero-negative-balance invariant and the integer-only rule always hold.
+  if(amt>0){creditWallet({[key]:amt},"Admin "+key.toUpperCase()+" credit");}
+  else{
+    const res=debitWallet({[key]:Math.abs(amt)},"Admin "+key.toUpperCase()+" debit");
+    if(!res.ok){toast(res.error||"Adjustment rejected.");return;}
+  }
+  if(amt>0)cfg().taps=add(cfg().taps||0,amt);else if(cfg().sinks!==undefined)cfg().sinks=add(cfg().sinks||0,Math.abs(amt));
   S.ledger=S.ledger||[];S.ledger.unshift({t:Date.now(),type:'admin-adjust',delta:amt,note:`Admin ${key.toUpperCase()} adjustment`,balance:S.wallet.main});if(S.ledger.length>200)S.ledger.length=200;
   audit("wallet-adjust",`${key.toUpperCase()} ${amt>=0?'+':''}${fmt(amt)}`);
+  const rep=ledgerAudit();if(!rep.ok)toast("Ledger warning: "+rep.issues[0],"err");
   reconcileHouse();save();render();
 }
 function adminVerifyKyc(){S.kyc=Object.assign(S.kyc||{verified:false},{verified:true,verifiedAt:Date.now(),name:S.kyc?.name||'Admin verified',docType:S.kyc?.docType||'Admin'});audit("kyc-verify-admin","Verified demo player KYC (demo)");save();render();}

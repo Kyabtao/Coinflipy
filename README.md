@@ -6,13 +6,21 @@ P2P coin-games demonstration ("TossMatch").
 
 ## What was merged
 
+The five source workspaces were merged into one app in v11.0–v12.0. Their
+unique content now lives in the unified app, `tossmatch/docs/` and (for the one
+remaining historical markdown document) `tossmatch/docs/legacy/`.
+
 | # | Archive (workspace zip) | Contents | Fate in the unified project |
 |---|---|---|---|
-| 1 | `workspace-01a02c10…` | Original `toss-bet` spec set: business rules, games catalog, feature list/JSON, roadmap, 4 cons audits, system documentation, demos (`toss-bet-demo/full/v5`) | Spec source of truth; archived in `tossmatch/docs/legacy/` |
-| 2 | `workspace-01a02ef9…` | `tossmatch-demo.html` + `tossmatch-admin.html` (early app) + spec uploads | Historical demo archived; newer duplicates from archive 5 used where identical-purpose |
-| 3 | `workspace-01a02f89…` | `combined-v1` merged single-file app + spec uploads | Historical intermediate version archived |
+| 1 | `workspace-01a02c10…` | Original `toss-bet` spec set: business rules, games catalog, feature list/JSON, roadmap, 4 cons audits, system documentation, demos (`toss-bet-demo/full/v5`) | Spec absorbed into the unified docs; the single-file demos were superseded and purged in v13.0 |
+| 2 | `workspace-01a02ef9…` | `tossmatch-demo.html` + `tossmatch-admin.html` (early app) + spec uploads | Superseded by the unified player/admin apps; purged in v13.0 |
+| 3 | `workspace-01a02f89…` | `combined-v1` merged single-file app + spec uploads | Historical intermediate version; purged in v13.0 |
 | 4 | `workspace-01a03733…` | **Modular redesign**: `index.html` + `admin.html` + `css/` + `js/{data,core,engine,player,admin}.js`, real coin/logo photographs, full icon set, project documentation PDF | Its unique features were **ported into the unified app** (bot withdrawals, player directory, coin photography); its assets are now the shared `img/` and `icons/` sets |
 | 5 | `workspace-01a03749…` | **TossMatch v10.8** single-file player app + 12-screen admin + full documentation set (Feature Register, Specification, Cons & Roadmap, Audit Report, DOCX, changelog) + `api/openapi.json` | Functional **base of the unified project** — the most feature-complete line |
+
+> The source archives themselves (`old data/*.zip`) were removed from the
+> working tree during the v13.0 cleanup; they remain reachable in Git history.
+> See `doc/CLEANUP_AND_ARCHITECTURE.md` for the complete deletion register.
 
 ## The unified app (`tossmatch/`)
 
@@ -96,7 +104,7 @@ redirects into `tossmatch/`). Direct URLs:
 - Player: `https://kyabtao.github.io/Coinflipy/tossmatch/`
 - Admin: `https://kyabtao.github.io/Coinflipy/tossmatch/admin.html`
 
-`_config.yml` excludes the `old data/` zip archives from the Pages build.
+`_config.yml` keeps the tooling and documentation folders out of the Pages build.
 Paths in the app, manifest, and service worker are relative, so they work
 under the project-site base URL.
 

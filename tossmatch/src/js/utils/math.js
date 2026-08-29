@@ -172,3 +172,80 @@ export function validateAmount(amount, min, max) {
   }
   return { valid: true };
 }
+
+/* ── Subunit (integer-cent) money math ─────────────────────────────────────
+   Coins are stored as whole numbers, but percentages (fees, rake, rakeback,
+   jackpot funding) produce fractional coins. To keep every ledger movement
+   exact and reproducible, money is computed in integer subunits
+   (1 coin = SUBUNIT subunits) and rounded half-up exactly once, at the
+   boundary back to whole coins.                                            */
+
+/** Number of subunits in one coin (like cents in a rupee). */
+export const SUBUNIT = 100;
+
+/** Convert coins to integer subunits (half-up, NaN-safe). */
+export function toSubunits(coins) {
+  const n = Number(coins) || 0;
+  if (!isFinite(n)) return 0;
+  return Math.round(n * SUBUNIT);
+}
+
+/** Convert integer subunits back to whole coins (half-up, NaN-safe). */
+export function fromSubunits(subunits) {
+  const n = Number(subunits) || 0;
+  if (!isFinite(n)) return 0;
+  return Math.round(n) / SUBUNIT;
+}
+
+/** Integer subunit addition. */
+export function addSubunits(a, b) {
+  return Math.round((Number(a) || 0) + (Number(b) || 0));
+}
+
+/** Integer subunit subtraction. */
+export function subSubunits(a, b) {
+  return Math.round((Number(a) || 0) - (Number(b) || 0));
+}
+
+/** Integer subunit multiplication by a scalar. */
+export function mulSubunits(a, factor) {
+  return Math.round((Number(a) || 0) * (Number(factor) || 0));
+}
+
+/** `pct`% of an amount expressed in subunits → subunits (half-up). */
+export function pctOfSubunits(subunits, pct) {
+  const n = Number(subunits) || 0, p = Number(pct) || 0;
+  return Math.round((n * p) / 100);
+}
+
+/** Percentage of a value, rounded to `decimals` (default 2) decimal places. */
+export function pctOf(value, pct, decimals = 2) {
+  return pctOfSubunits(toSubunits(value), pct) / SUBUNIT;
+}
+
+/** Round a coin amount to whole coins, half-up, deterministically. */
+export function roundCoin(coins) {
+  return fromSubunits(toSubunits(coins));
+}
+
+/** Split an amount across weights without losing or inventing a subunit. */
+export function allocateSubunits(subunits, weights = []) {
+  const total = weights.reduce((s, w) => s + (Number(w) || 0), 0);
+  if (total <= 0) return weights.map(() => 0);
+  const out = weights.map(w => Math.floor((subunits * (Number(w) || 0)) / total));
+  let rest = subunits - out.reduce((s, v) => s + v, 0);
+  for (let i = 0; rest > 0 && i < out.length; i++, rest--) out[i] += 1;
+  return out;
+}
+
+/** Clamp to a non-negative integer coin amount (never NaN, never negative). */
+export function nonNegativeCoin(coins) {
+  const n = Math.round(Number(coins) || 0);
+  return n > 0 ? n : 0;
+}
+
+/** True when the value is a finite, safe integer number of coins. */
+export function isSaneAmount(coins) {
+  const n = Number(coins);
+  return isFinite(n) && Math.abs(n) < 1e15;
+}

@@ -9,24 +9,89 @@ import {$,applyAccessibility,applyLanguage,fmt,maxStake,playerTopupAnalytics,ren
 import {cfg,reconcileHouse,save} from "./state.js";
 import {GAMES,renderGames} from "./sync.js";
 
-function render(){
+/* Element lookup that never throws: targeted rendering must survive a panel
+   that has not been mounted yet (e.g. a hub rendered lazily on first open). */
+function el(id){const n=document.getElementById(id);if(!n&&!el._warned[id]){el._warned[id]=1;console.warn("renderChrome: missing element #"+id);}return n;}
+el._warned={};
+
+/* ── Targeted rendering ─────────────────────────────────────────────────────
+   renderChrome() → header, wallet, coin and jackpot tickers only.
+   renderTab(tab) → only the widgets that belong to the active tab.
+   renderTick()   → chrome + active tab live widgets (used by background sync).
+   render()       → full boot / theme / all-tab initialisation.              */
+let activeTab="home";
+function setActiveTab(tab){activeTab=tab;}
+
+function renderChrome(){
   const c=cfg();reconcileHouse();
-  $("mainVal").textContent=fmt(S.wallet.main);
-  $("jpVal").textContent=fmt(S.jackpot);
-  $("jpMeter").classList.toggle("armed",S.jackpot>=c.jpArm);
-  $("maintBanner").style.display=c.features.maintenance?"block":"none";
-  if(c.broadcast){const b=$("broadcast");b.innerHTML="📣 "+c.broadcast;b.classList.add("show");}else $("broadcast").classList.remove("show");
+  const mainVal=el("mainVal");if(mainVal)mainVal.textContent=fmt(S.wallet.main);
+  const jpVal=el("jpVal");if(jpVal)jpVal.textContent=fmt(S.jackpot);
+  const jpMeter=el("jpMeter");if(jpMeter)jpMeter.classList.toggle("armed",S.jackpot>=c.jpArm);
+  const maintBanner=el("maintBanner");if(maintBanner)maintBanner.style.display=c.features.maintenance?"block":"none";
+  if(c.broadcast){const b=el("broadcast");if(b){b.innerHTML="\uD83D\uDCE3 "+c.broadcast;b.classList.add("show");}}
+  else{const b=el("broadcast");if(b)b.classList.remove("show");}
   applyTheme();
-  $("togSound").classList.toggle("on",S.settings.sound);$("togSound").textContent=S.settings.sound?"🔊 Sound":"🔇 Muted";
-  $("togInstant").classList.toggle("on",S.settings.instant);
-  const autoStop=Math.min(-50,Math.max(-10000,+(S.settings.autoRebetStop??-200)));S.settings.autoRebetStop=autoStop;$("togAuto").classList.toggle("on",S.settings.autoRebet);$("togAuto").textContent=S.settings.autoRebet?`🔁 Auto Bet ON · stop ${autoStop}`:`🔁 Auto Bet · stop ${autoStop}`;$("autoBetConfig").classList.toggle("active",S.settings.autoRebet);if(document.activeElement!==$("autoStopInput"))$("autoStopInput").value=autoStop;document.querySelectorAll("[data-auto-stop]").forEach(b=>b.classList.toggle("active",+b.dataset.autoStop===autoStop));
-  $("togPrivate").classList.toggle("on",isPrivate);$("togPrivate").textContent=isPrivate?"🔒 Private":"🔓 Public";
-  const coin=$("coin");coin.className="coin skin-"+S.equipped.skin+(S.settings.instant?" fast":"");
-  $("coinStage").style.background=COS.themes.find(t=>t.id===S.equipped.theme).bg||"";
-  $("skinLbl").textContent=(COS.skins.find(s=>s.id===S.equipped.skin)||{}).name||"";
+  const togSound=el("togSound");if(togSound){togSound.classList.toggle("on",S.settings.sound);togSound.textContent=S.settings.sound?"\uD83D\uDD0A Sound":"\uD83D\uDD07 Muted";}
+  const togInstant=el("togInstant");if(togInstant)togInstant.classList.toggle("on",S.settings.instant);
+  const autoStop=Math.min(-50,Math.max(-10000,+(S.settings.autoRebetStop??-200)));S.settings.autoRebetStop=autoStop;
+  const togAuto=el("togAuto");if(togAuto){togAuto.classList.toggle("on",S.settings.autoRebet);togAuto.textContent=S.settings.autoRebet?`\uD83D\uDD01 Auto Bet ON \u00B7 stop ${autoStop}`:`\uD83D\uDD01 Auto Bet \u00B7 stop ${autoStop}`;}
+  const autoBetConfig=el("autoBetConfig");if(autoBetConfig)autoBetConfig.classList.toggle("active",S.settings.autoRebet);
+  const autoStopInput=el("autoStopInput");if(autoStopInput&&document.activeElement!==autoStopInput)autoStopInput.value=autoStop;
+  document.querySelectorAll("[data-auto-stop]").forEach(b=>b.classList.toggle("active",+b.dataset.autoStop===autoStop));
+  const togPrivate=el("togPrivate");if(togPrivate){togPrivate.classList.toggle("on",isPrivate);togPrivate.textContent=isPrivate?"\uD83D\uDD12 Private":"\uD83D\uDD13 Public";}
+  const coinEl=el("coin");if(coinEl)coinEl.className="coin skin-"+S.equipped.skin+(S.settings.instant?" fast":"");
+  const coinStage=el("coinStage");if(coinStage)coinStage.style.background=COS.themes.find(t=>t.id===S.equipped.theme).bg||"";
+  const skinLbl=el("skinLbl");if(skinLbl)skinLbl.textContent=(COS.skins.find(s=>s.id===S.equipped.skin)||{}).name||"";
   const vip=vipFor(S.monthWagered),vipEnt=currentVipEntitlements();
-  $("feeNote").innerHTML=`${c.feePct}% fee · jackpot from fee · max stake <b>${maxStake()}</b> · you: <span class="vip-dot" style="background:${vip.color}"></span>${vip.name} (${vip.rakeback}% rakeback${vipEnt.queuePriority?' · priority queue':''})`;
-  const mins=Math.floor((Date.now()-sessionStart)/60000);$("sessionInfo").textContent=`⏱ ${mins}m · session ${sessionNet>=0?'+':''}${fmt(sessionNet)}`;
+  const feeNote=el("feeNote");
+  if(feeNote)feeNote.innerHTML=`${c.feePct}% fee \u00B7 jackpot from fee \u00B7 max stake <b>${maxStake()}</b> \u00B7 you: <span class="vip-dot" style="background:${vip.color}"></span>${vip.name} (${vip.rakeback}% rakeback${vipEnt.queuePriority?' \u00B7 priority queue':''})`;
+  const mins=Math.floor((Date.now()-sessionStart)/60000);
+  const sessionInfo=el("sessionInfo");
+  if(sessionInfo)sessionInfo.textContent=`\u23F1 ${mins}m \u00B7 session ${sessionNet>=0?'+':''}${fmt(sessionNet)}`;
+}
+
+/* Tab → widget renderer map. Only the active tab's widgets are touched. */
+const TAB_RENDERERS={
+  home:()=>renderHome(),
+  lobby:()=>{renderWait();renderFeed();},
+  play:()=>renderRecent(),
+  series:()=>renderSeries(),
+  games:()=>{if(!gamesMounted){renderGames();gamesMounted=true;}},
+  newgames:()=>renderNewGamesHub(),
+  leaderboard:()=>renderLeaderboard(),
+  players:()=>renderPlayers(),
+  community:()=>renderCommunityHub(),
+  progressionplus:()=>renderProgressionHub(),
+  economyplus:()=>renderEconomyHub(),
+  shop:()=>renderShop(),
+  season:()=>renderSeason(),
+  history:()=>renderHistory(),
+  updates:()=>{},
+  wallet:()=>renderWallet(),
+  stats:()=>renderStats(),
+  verify:()=>{},
+  services:()=>renderServicesHub(),
+};
+
+/** Render a single tab's widgets in isolation (no full-page reflow). */
+function renderTab(tab){
+  const key=tab||activeTab,fn=TAB_RENDERERS[key];
+  if(!fn)return false;
+  try{fn();}catch(e){console.warn("renderTab("+key+") error:",e);}
+  return true;
+}
+
+/** Background/periodic refresh: chrome + the active tab only. */
+function renderTick(){
+  renderChrome();
+  renderTab(activeTab);
+  if(activeTab==="games"&&S.waiting.some(b=>b.kind==="catalog"&&b.catalogGame===activeGame)){try{renderGamePanel();}catch(e){}}
+}
+
+/** Full initialisation: chrome, every tab, hubs, theme, accessibility. */
+function render(){
+  renderChrome();
+  for(const key in TAB_RENDERERS){try{TAB_RENDERERS[key]();}catch(e){console.warn("render("+key+") error:",e);}}
   renderHome();renderRecent();renderWait();renderFeed();renderLeaderboard();renderShop();renderSeason();renderWallet();renderStats();
   renderSeries();renderPlayers();renderHistory();
   // Mini-game panels contain live controls and animations. Mount them once;
@@ -381,8 +446,11 @@ export function bind(){
     const b=e.target.closest(".tab");if(!b)return;
     document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
     document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-    b.classList.add("active");$("panel-"+b.dataset.tab).classList.add("active");syncPlayerNavigation(b.dataset.tab);
-    if(b.dataset.tab==='community')renderCommunityHub();else if(b.dataset.tab==='newgames')renderNewGamesHub();else if(b.dataset.tab==='progressionplus')renderProgressionHub();else if(b.dataset.tab==='economyplus')renderEconomyHub();else if(b.dataset.tab==='services')renderServicesHub();
+    b.classList.add("active");$("panel-"+b.dataset.tab).classList.add("active");
+    // Targeted refresh: update the active tab's widgets only, then finish with a
+    // cheap chrome pass so wallet/jackpot tickers stay live.
+    activeTab=b.dataset.tab;syncPlayerNavigation(b.dataset.tab);
+    renderTab(b.dataset.tab);renderChrome();
   });
   $("themeBtn").onclick=()=>{S.settings.themeName=S.settings.themeName==="light"?"midnight":"light";S.settings.customPalette=null;applyTheme();render();};
   document.querySelectorAll(".lbsort").forEach(b=>b.onclick=()=>{document.querySelectorAll(".lbsort").forEach(x=>x.classList.remove("active"));b.classList.add("active");lbSort=b.dataset.sort;renderLeaderboard();});
@@ -401,6 +469,6 @@ export function bind(){
 
 
 /* expose top-level symbols to globalThis so legacy inline handlers and the shared theme engine can resolve them */
-Object.assign(globalThis,{botAvi,historyRows,normalizeHistoryRow,openBotProfile,playerAviHTML,playerFlag,playerName,render,renderFeed,renderHistory,renderLeaderboard,renderPlayers,renderRecent,renderSeason,renderSeries,renderShop,renderStats,renderWait,renderWallet,shopCatData,syncTurboBtn});
+Object.assign(globalThis,{TAB_RENDERERS,botAvi,historyRows,normalizeHistoryRow,openBotProfile,playerAviHTML,playerFlag,playerName,render,renderChrome,renderFeed,renderHistory,renderLeaderboard,renderPlayers,renderRecent,renderSeason,renderSeries,renderShop,renderStats,renderTab,renderTick,renderWait,renderWallet,setActiveTab,shopCatData,syncTurboBtn});
 
-export {botAvi,historyRows,normalizeHistoryRow,openBotProfile,playerAviHTML,playerFlag,playerName,render,renderFeed,renderHistory,renderLeaderboard,renderPlayers,renderRecent,renderSeason,renderSeries,renderShop,renderStats,renderWait,renderWallet,shopCatData,syncTurboBtn};
+export {TAB_RENDERERS,botAvi,historyRows,normalizeHistoryRow,openBotProfile,playerAviHTML,playerFlag,playerName,render,renderChrome,renderFeed,renderHistory,renderLeaderboard,renderPlayers,renderRecent,renderSeason,renderSeries,renderShop,renderStats,renderTab,renderTick,renderWait,renderWallet,setActiveTab,shopCatData,syncTurboBtn};
