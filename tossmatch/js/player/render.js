@@ -214,7 +214,8 @@ function renderShop(){
     else if(shopCat==="themes")visual=`<div class="swatch" style="background:${it.bg||'#0b1020'};background-size:cover"></div>`;
     else if(shopCat==="sounds")visual=`<div style="font-size:30px">🎵</div>`;
     else if(shopCat==="emojis")visual=`<div style="font-size:32px">${it.ch}</div>`;
-    const eqKey = {skins:"skin",flags:"flag",avatars:"avatar",frames:"frame",colours:"colour",fx:"fx",themes:"theme",sounds:"sound"}[shopCat];
+    else if(shopCat==="cardbacks")visual=`<div class="cardback-preview" style="background:${it.bg}"><span>🂡</span></div>`;
+    const eqKey = {skins:"skin",flags:"flag",avatars:"avatar",frames:"frame",colours:"colour",fx:"fx",themes:"theme",sounds:"sound",cardbacks:"cardBack"}[shopCat];
     const equipped = eqKey && S.equipped[eqKey]===it.id;
     return `<div class="skin-card ${isOwn?'owned':''} ${equipped?'equipped':''}">
       ${visual}
@@ -253,6 +254,47 @@ function renderSeason(){
   $("streakReward").textContent=fmt(Math.min(175,50+25*S.login.streak))+" 🪙";
   $("seasonNum").textContent="#"+cfg().seasonNumber;
   $("seasonEnds").textContent=new Date(cfg().seasonEnds).toUTCString().replace(":00 GMT"," UTC");
+  // VIP+ rewards: daily bonus, monthly quest, rewards road
+  const vipPlus=cfg().vipPlus||{dailyBase:25,dailyPerTier:10,questWager:2000,questRewardPerTier:50};
+  const sv=S.vipPlus||{daily:{day:"",claimed:0,tier:0},quest:{month:"",claimed:0,reward:0},road:{claimed:[]}};
+  const today=new Date().toDateString(),month=new Date().toISOString().slice(0,7);
+  const dailyTier=vipFor(S.monthWagered).tier,dailyReward=vipPlus.dailyBase+(dailyTier-1)*vipPlus.dailyPerTier;
+  if(sv.daily.day!==today){sv.daily.day=today;sv.daily.claimed=0;sv.daily.tier=dailyTier;}
+  $("vipDaily").innerHTML=`<button class="btn btn-sm ${sv.daily.claimed?'btn-ghost':'btn-primary'}" data-vip-daily ${sv.daily.claimed?'disabled':''}>${sv.daily.claimed?'✓ Claimed':`Claim +${dailyReward} 🪙 (VIP ${dailyTier})`}</button>`;
+  const questReward=vipPlus.questRewardPerTier*Math.max(1,dailyTier);
+  if(sv.quest.month!==month){sv.quest.month=month;sv.quest.claimed=0;sv.quest.reward=0;}
+  const questDone=sv.quest.claimed>=1;
+  $("vipQuest").innerHTML=`<span class="muted" style="font-size:11px">Wager ${fmt(vipPlus.questWager)} this month · reward scales with your tier</span><button class="btn btn-sm ${questDone?'btn-ghost':'btn-primary'}" data-vip-quest ${questDone?'disabled':''}>${questDone?`✓ Claimed +${fmt(sv.quest.reward)}`: `Claim +${fmt(questReward)} 🪙`}</button>`;
+  // VIP rewards road: one milestone per tier
+  const roadTiers=cfg().vip,vpRoad=sv.road.claimed||[];
+  $("vipRoad").innerHTML=roadTiers.slice(1).map(t=>{
+    const rw=[0,50,100,150,200,300,400,600][t.tier-1]||100,rwBonus=[0,100,200,300,400,600,800,1000][t.tier-1]||200;
+    const done=vpRoad.includes(t.tier);
+    return `<div class="vip-tier ${t.tier===dailyTier?'cur':''}"><span class="vip-dot" style="background:${t.color}"></span><b>${t.name}</b><span class="muted" style="margin-left:auto">${rw} 🪙 + ${rwBonus} BONUS</span><button class="btn btn-sm ${done?'btn-ghost':dailyTier>=t.tier?'btn-primary':'btn-ghost'}" data-vip-road="${t.tier}" ${done||dailyTier<t.tier?'disabled':''}>${done?'✓':dailyTier>=t.tier?'Claim':'🔒'}</button></div>`;
+  }).join("");
+  // Season+ points, faction, missions, prize track
+  const sp=S.seasonPlus||{faction:"",points:0,missions:{key:"",claimed:[]},prizes:{key:"",claimed:[]},history:[]};
+  $("seasonPoints").textContent=`${fmt(sp.points||0)} pts · +${cfg().seasonPlus?.pointsPerGame||2} per game, +${cfg().seasonPlus?.pointsPerWin||3} per win, +${cfg().seasonPlus?.pointsPerCup||20} per cup, +${cfg().seasonPlus?.pointsPerTrny||50} per tournament`;
+  const factions=[["PHOENIX","🔥 Phoenix"],["TITAN","⚡ Titan"],["AURORA","❄️ Aurora"],["HARMONY","🌿 Harmony"]];
+  $("seasonFaction").innerHTML=sp.faction?`<b>${(factions.find(f=>f[0]===sp.faction)||[sp.faction,sp.faction])[1]}</b>`:`<select id="seasonFactionSelect">${factions.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select><button class="btn btn-sm btn-primary" data-season-faction>Join</button>`;
+  const smk=cfg().seasonNumber+"-"+month,sm=sp.missions;
+  if(sm.key!==smk){sm.key=smk;sm.claimed=[];}
+  const seasonMissions=[
+    ["s10games",'Play 10 games',()=>S.stats.games>=10,50],
+    ["s5wins",'Win 5 games',()=>S.stats.wins>=5,60],
+    ["s1cup",'Win 1 Series Cup',()=>S.stats.cupsWon>=1,120],
+    ["s1trny",'Win 1 tournament',()=>S.stats.trnysWon>=1,180]
+  ];
+  $("seasonMissions").innerHTML=`<div class="section-title" style="margin-top:10px">Season missions</div>`+seasonMissions.map((m,i)=>{
+    const ok=m[2](),claimed=(sm.claimed||[]).includes(i);
+    return `<div class="quest"><div class="qt"><span>${m[1]}</span><span class="qr">+${m[3]} pts</span></div><div class="qbar"><i style="width:${ok?100:0}%"></i></div><button class="btn btn-sm ${claimed?'btn-ghost':ok?'btn-primary':'btn-ghost'}" data-season-mission="${i}" ${ok&&!claimed?'':'disabled'}>${claimed?'✓ Claimed':ok?'Claim':'In progress'}</button></div>`;
+  }).join("");
+  const pk=cfg().seasonNumber+"-"+month,pp=sp.prizes;
+  if(pp.key!==pk){pp.key=pk;pp.claimed=[];}
+  $("seasonPrizes").innerHTML=(cfg().seasonPlus?.prizeTrack||[{pts:100,reward:100},{pts:250,reward:250},{pts:500,reward:550},{pts:1000,reward:1200}]).map((p,i)=>{
+    const ok=(sp.points||0)>=p.pts,claimed=(pp.claimed||[]).includes(i);
+    return `<div class="vip-tier ${ok?'cur':''}"><span>🏆</span><b>${fmt(p.pts)} pts</b><span class="muted" style="margin-left:auto">${fmt(p.reward)} 🪙</span><button class="btn btn-sm ${claimed?'btn-ghost':ok?'btn-primary':'btn-ghost'}" data-season-prize="${i}" ${ok&&!claimed?'':'disabled'}>${claimed?'✓':ok?'Claim':'🔒'}</button></div>`;
+  }).join("");
   // achievements
   $("achList").innerHTML=ACHIEVEMENTS.map(a=>{
     const u=S.achievements[a.id];

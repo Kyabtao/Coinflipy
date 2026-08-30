@@ -54,9 +54,10 @@
       </div>
     </div>
     <div class="admin-nav-group" data-group="Engagement">
-      <button class="admin-nav-group-head" data-group-toggle="Engagement" aria-expanded="true"><span class="admin-nav-chip" aria-hidden="true">🎯</span>Engagement<em class="nav-count">5</em><i class="chev" aria-hidden="true">▾</i></button>
+      <button class="admin-nav-group-head" data-group-toggle="Engagement" aria-expanded="true"><span class="admin-nav-chip" aria-hidden="true">🎯</span>Engagement<em class="nav-count">6</em><i class="chev" aria-hidden="true">▾</i></button>
       <div class="admin-nav-group-body">
         <button class="tab" data-tab="vip">💎 VIP &amp; Levels</button>
+        <button class="tab" data-tab="plus">✨ VIP+ &amp; Season+</button>
         <button class="tab" data-tab="trny">🏟 Tournaments</button>
         <button class="tab" data-tab="referrals">🔗 Referrals</button>
         <button class="tab" data-tab="announcements">📣 Announcements</button>
@@ -72,11 +73,6 @@
         <button class="tab" data-tab="compliance">📑 Compliance &amp; Privacy</button>
         <button class="tab" data-tab="settings">⚙️ Settings</button>
       </div>
-    </div>
-    <div class="nav-theme">
-      <div class="nav-theme-head">🎨 Theme</div>
-      <div class="nav-theme-presets" id="navThemePresets"></div>
-      <button class="nav-theme-custom" id="navThemeCustom">🎨 Custom palette…</button>
     </div>
   </nav>
 
@@ -225,6 +221,68 @@
       <div id="levelEditor" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px"></div>
       <div class="row" style="margin-top:12px"><button class="btn btn-primary btn-sm" id="saveLevels">💾 Save visible rewards</button>
         <button class="btn btn-green btn-sm" id="addLevel">➕ Add level</button><button class="btn btn-ghost btn-sm" id="levelPrev">← Previous</button><span class="muted" id="levelPage">Page 1</span><button class="btn btn-ghost btn-sm" id="levelNext">Next →</button></div>
+    </div>
+  </section>
+
+  <!-- VIP+ / SEASON+ / PROGRESS+ / ECONOMY+ -->
+  <section class="panel" id="panel-plus">
+    <div class="admin-hero compact"><div><span class="admin-eyebrow">NEW FEATURES CONTROL</span><h1>VIP+ &amp; Season+</h1><p>Manage the new VIP daily bonus, monthly quest, tier rewards road, Season+ points, factions, missions, prize track, and the Progress+ / Economy+ activity — with demo controls.</p></div></div>
+    <div class="grid2">
+      <div class="card"><h3>💎 VIP+ Configuration</h3>
+        <div class="grid3">
+          <div><label>Daily base</label><input id="vipPlusDailyBase" type="number" min="0" step="5"/></div>
+          <div><label>Add per tier</label><input id="vipPlusDailyPerTier" type="number" min="0" step="5"/></div>
+          <div><label>Quest wager</label><input id="vipPlusQuestWager" type="number" min="0" step="100"/></div>
+          <div><label>Quest reward / tier</label><input id="vipPlusQuestRewardPerTier" type="number" min="0" step="10"/></div>
+        </div>
+        <div class="section-title" style="margin-top:12px">Tier rewards road (main / bonus)</div>
+        <div id="vipPlusRoad"></div>
+        <div class="row" style="margin-top:12px"><button class="btn btn-primary btn-sm" id="vipPlusSave">💾 Save VIP+</button><span class="muted" style="font-size:11px">Rewards derive from the chosen tier in the player's Season panel.</span></div>
+        <div class="section-title" style="margin-top:12px">Player state</div>
+        <div id="vipPlusState"></div>
+        <div class="row" style="margin-top:10px"><button class="btn btn-ghost btn-sm" data-feature-admin="grant-vip-daily">Reset daily claim</button><button class="btn btn-ghost btn-sm" data-feature-admin="grant-vip-quest">Reset quest claim</button></div>
+      </div>
+      <div class="card"><h3>🏆 Season+ Configuration</h3>
+        <div class="grid2">
+          <div><label>Points per game</label><input id="seasonPlusPerGame" type="number" min="0" step="1"/></div>
+          <div><label>Points per win</label><input id="seasonPlusPerWin" type="number" min="0" step="1"/></div>
+          <div><label>Points per cup</label><input id="seasonPlusPerCup" type="number" min="0" step="5"/></div>
+          <div><label>Points per tournament</label><input id="seasonPlusPerTrny" type="number" min="0" step="5"/></div>
+        </div>
+        <div class="section-title" style="margin-top:12px">Prize track (points → BONUS)</div>
+        <div id="seasonPlusTrack"></div>
+        <div class="row" style="margin-top:12px"><button class="btn btn-primary btn-sm" id="seasonPlusSave">💾 Save Season+</button><button class="btn btn-ghost btn-sm" data-feature-admin="grant-season-points">+100 pts demo</button></div>
+        <div class="section-title" style="margin-top:12px">Player state</div>
+        <div id="seasonPlusState"></div>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card"><h3>🏅 Progress+ Activity</h3>
+        <div class="grid3" style="margin-bottom:10px">
+          <div class="stat-tile"><div class="v" id="p7Count">0</div><div class="k">Daily missions claimed</div></div>
+          <div class="stat-tile"><div class="v" id="p8Count">0</div><div class="k">Badges unlocked</div></div>
+          <div class="stat-tile"><div class="v" id="p6Count">0</div><div class="k">Milestones claimed</div></div>
+        </div>
+        <div class="grid2">
+          <div><div class="section-title">Daily missions (P7)</div><div id="p7Missions"></div></div>
+          <div><div class="section-title">Badge case (P8)</div><div id="p8Badges"></div></div>
+        </div>
+        <div class="section-title" style="margin-top:12px">Milestones (P6)</div>
+        <div id="p6Milestones"></div>
+      </div>
+      <div class="card"><h3>💼 Economy+ Activity</h3>
+        <div class="grid3" style="margin-bottom:10px">
+          <div class="stat-tile"><div class="v" id="e11Count">0</div><div class="k">Bond principal</div></div>
+          <div class="stat-tile"><div class="v" id="e12Count">0</div><div class="k">Mine digs</div></div>
+          <div class="stat-tile"><div class="v" id="e13Count">0</div><div class="k">Exchange conversions</div></div>
+        </div>
+        <div class="grid3">
+          <div><div class="section-title">Bonds (E11)</div><div id="e11Bonds"></div></div>
+          <div><div class="section-title">Coin Mine (E12)</div><div id="e12Mine"></div></div>
+          <div><div class="section-title">Coin Exchange (E13)</div><div id="e13Exchange"></div></div>
+        </div>
+        <div class="row" style="margin-top:12px"><button class="btn btn-ghost btn-sm" data-feature-admin="speed-mine">Refill mine energy</button><button class="btn btn-danger btn-sm" data-feature-admin="reset-progress-plus">Reset Progress+ demo</button></div>
+      </div>
     </div>
   </section>
 
@@ -593,7 +651,6 @@
       <h3>🎛 Player preferences override</h3>
       <p class="muted">Set the demo player's UX preferences directly. The player app reads these live from shared state.</p>
       <div class="grid3">
-        <div><label>Theme</label><select id="adminTheme"><option value="dark">Dark</option><option value="light">Light</option></select></div>
         <div><label>Language</label><select id="adminLanguage"><option value="en">English</option><option value="hi">Hindi</option><option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option></select></div>
         <div><label>Sound</label><select id="adminSound"><option value="true">On</option><option value="false">Off</option></select></div>
         <div><label>Instant results</label><select id="adminInstant"><option value="true">On</option><option value="false">Off</option></select></div>
@@ -731,28 +788,6 @@
 <div class="admin-command-bg" id="adminCommandBg" role="dialog" aria-modal="true" aria-label="Admin quick navigation" aria-hidden="true"><div class="admin-command"><div class="admin-command-head"><input id="adminCommandSearch" type="search" placeholder="Search operations, rates, promotions, audit…" aria-label="Search all Admin screens"/><button class="icon-btn" id="adminCommandClose" aria-label="Close Admin quick navigation">✕</button></div><div class="admin-command-list" id="adminCommandList"></div></div></div>
 <div class="admin-drawer" id="adminDrawer"><div class="drawer-head"><div><span class="admin-eyebrow">RECORD INSPECTOR</span><h3 id="drawerTitle">Details</h3></div><button class="icon-btn" id="drawerClose">✕</button></div><div id="drawerContent"></div></div>
 <div class="drawer-backdrop" id="drawerBackdrop"></div>
-<div class="modal-bg" id="paletteBg">
-  <div class="modal palette-modal" id="paletteContent">
-    <h3>🎨 Theme &amp; Appearance</h3>
-    <p class="muted">Pick a preset or build your own palette. Your choice is saved instantly across the player app and admin panel.</p>
-    <div class="theme-preset-grid" id="themePresetGrid"></div>
-    <div class="palette-custom">
-      <h4>Custom palette</h4>
-      <div class="palette-fields">
-        <label>Background</label><input type="color" id="pcBg" value="#0b1020"/>
-        <label>Surface</label><input type="color" id="pcCard" value="#121a2e"/>
-        <label>Accent</label><input type="color" id="pcAccent" value="#f6c453"/>
-        <label>Text</label><input type="color" id="pcTxt" value="#e8edf7"/>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <button class="btn btn-primary btn-sm" id="pcApply">Apply custom</button>
-        <button class="btn btn-ghost btn-sm" id="pcReset">Reset to default</button>
-      </div>
-    </div>
-    <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn btn-ghost" id="paletteClose">Done</button></div>
-  </div>
-</div>
-
   <!-- APPROVALS -->
   <section class="panel" id="panel-approvals">
     <div class="admin-hero compact"><div><span class="admin-eyebrow">COMPLIANCE</span><h1>Approvals & Review Queue</h1><p>KYC verification, automated review flags and account restrictions in one workflow — every decision is audit-logged.</p></div></div>

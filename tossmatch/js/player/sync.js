@@ -9,6 +9,8 @@ import {$,EXT_ARCADE,addFeed,applyPendingDepositLimits,awardXp,botAuctionBids,ch
 import {checkVipMonthReset} from "./misc.js";
 import {playerAviHTML,playerName,render,renderTick} from "./render.js";
 import {cfg,initializeBotStartingWallet,load,save} from "./state.js";
+import {P2P_EXTRA,resolveExtraGame} from "./catalog100.js";
+import {EXT_ARCADE2 as EXT_ARCADE100} from "./arcade100.js";
 
 function heartbeat(){localStorage.setItem(TAB_KEY,Date.now());}
 function claimBotEngineLeadership(){const now=Date.now();let lock={};try{lock=JSON.parse(localStorage.getItem(SIM_LEADER_KEY)||'{}');}catch(e){}if(lock.id===SIM_TAB_ID||!lock.id||now-(lock.t||0)>6000){localStorage.setItem(SIM_LEADER_KEY,JSON.stringify({id:SIM_TAB_ID,t:now,role:'player'}));try{return JSON.parse(localStorage.getItem(SIM_LEADER_KEY)||'{}').id===SIM_TAB_ID;}catch(e){return true;}}return false;}
@@ -234,7 +236,7 @@ function botSocialActivity(){
 async function botArcadeActivity(){
   if(!cfg().features.bots||!S.bots.length)return;const runs=Math.max(0,Math.min(6,+(cfg().botArcadePerTick??2)));
   for(let run=0;run<runs;run++){
-    const arcadeModes=['Lucky Wheel','Scratch Cards','Dice Roll','Weekly Raffle','Multiplier Ladder P2P','War Card Game','Crash','Hi-Lo','Mines',...Object.values(EXT_ARCADE).map(x=>x.title)],mode=arcadeModes[Math.floor(Math.random()*arcadeModes.length)],stake=mode==='Scratch Cards'?[25,100,250][Math.floor(Math.random()*3)]:mode==='Daily Trivia'?25:50;
+    const arcadeModes=['Lucky Wheel','Scratch Cards','Dice Roll','Weekly Raffle','Multiplier Ladder P2P','War Card Game','Crash','Hi-Lo','Mines',...Object.values(EXT_ARCADE).map(x=>x.title),...Object.values(EXT_ARCADE100).map(x=>x.title)],mode=arcadeModes[Math.floor(Math.random()*arcadeModes.length)],stake=mode==='Scratch Cards'?[25,100,250][Math.floor(Math.random()*3)]:mode==='Daily Trivia'?25:50;
     if(mode==='Weekly Raffle'){const bot=S.bots[Math.floor(Math.random()*S.bots.length)],tickets=1+Math.floor(Math.random()*5),cost=tickets*10;if(!bot||bot.balance<cost){if(bot)topUpBot(bot,'Arcade liquidity');continue;}bot.balance-=cost;S.featureGames.raffle.botTickets+=tickets;bot.arcadeGames=(bot.arcadeGames||0)+1;botActivityLog('arcade',{bot:bot.name,game:mode,detail:`Bought ${tickets} ticket${tickets>1?'s':''}`,delta:-cost});S.botActivity.arcadePlays++;continue;}
     if(mode==='Multiplier Ladder P2P'||mode==='War Card Game'){
       const pool=S.bots.filter(b=>ensureBotFirstTopup(b,'Required first top-up before activity')&&b.balance>=stake);if(pool.length<2)continue;const x=pool[Math.floor(Math.random()*pool.length)],others=pool.filter(b=>b!==x),y=others[Math.floor(Math.random()*others.length)];x.balance-=stake;y.balance-=stake;const pot=stake*2,fee=Math.round(pot*cfg().feePct/100),payout=pot-fee,w=Math.random()<.5?x:y,l=w===x?y:x;w.balance+=payout;w.wins=(w.wins||0)+1;l.losses=(l.losses||0)+1;w.net=(w.net||0)+payout-stake;l.net=(l.net||0)-stake;w.games=(w.games||0)+1;l.games=(l.games||0)+1;w.arcadeGames=(w.arcadeGames||0)+1;l.arcadeGames=(l.arcadeGames||0)+1;cfg().house.catalogFees=(cfg().house.catalogFees||0)+fee;cfg().house.netRevenue+=fee;cfg().sinks+=fee;S.global.totalGames++;botActivityLog('arcade',{bot:w.name,game:mode,detail:`Beat ${l.name} · fee ${fee}`,delta:payout-stake});S.botActivity.arcadePlays++;topUpBot(l,'Arcade liquidity');continue;
@@ -253,7 +255,7 @@ function createAutoBot(reason='Automatic network growth'){
 function growBotRoster(){
   if(!cfg().features.bots||cfg().features.botGrowth===false)return;const interval=Math.max(5,Math.min(3600,+(cfg().botGrowthIntervalSec??15)))*1000;if(Date.now()-(S.botActivity.lastCreatedAt||0)<interval)return;const batch=Math.max(1,Math.min(10,+(cfg().botGrowthBatch??1)));for(let n=0;n<batch;n++)if(!createAutoBot())break;
 }
-const GAMES=[
+const BASE_GAMES=[
  {id:"overunder",name:"⚖️ Over / Under",edge:"byte half",type:"options",options:["HIGH","LOW"],desc:"Pick HIGH (128–255) or LOW (0–127). One fair byte is revealed; the side containing that byte wins the pot. If both sides pick the same value it splits."},
  {id:"speed",name:"💨 Speed Round",edge:"5 flips",type:"options",options:["HEADS","TAILS"],desc:"Pick HEADS or TAILS. Five fair flips are shown; the side with the majority (3+) wins. Catching the majority is pure 50/50."},
  {id:"tug",name:"🪢 Tug of War",edge:"race to 3",type:"options",options:["LEFT","RIGHT"],desc:"Pick LEFT or RIGHT. Each fair flip pulls the rope one step. HEADS pulls LEFT, TAILS pulls RIGHT; the first side to reach three steps wins."},
@@ -291,11 +293,20 @@ const GAMES=[
  {id:"sumfour",code:"CAT35",name:"📊 Sum of Four",edge:"0–1020",type:"number",min:0,max:1020,desc:"Predict the sum of four fair bytes (0–1020). The two bytes are revealed in pairs, summed, and the closest prediction wins; equal distance splits."},
  {id:"highcard",code:"CAT36",name:"🃏 High Card Duel",edge:"2–Ace",type:"none",desc:"Each entrant is dealt one proof-derived card from 2 through Ace. The higher card wins the pot; an equal card splits it."}
 ];
+/* Full 100-game catalog = the original 36 + the CAT37–CAT100 expansion. */
+const GAMES=[...BASE_GAMES,...P2P_EXTRA];
 const CATALOG_GROUPS={
  'Side Picks':['overunder','speed','tug','evenodd','blind','chain','ladder','mirrored','rps','triplecoin','primecomposite','streaksurvivor'],
  'Numbers & Dice':['closest','luckybattle','sumpredict','higherbyte','closest21','dicesumduel','medianbattle','modulo4','threedicepoker','lastdigit','coinbalance','bytewar','sumfour'],
  'Patterns & Territory':['patternrace','parlayduel','prediction','rangewar','bullseye','sequencebuilder','colourspectrum','territory','binaryduel'],
- 'Cards':['pokerhigh','highcard']
+ 'Cards':['pokerhigh','highcard'],
+ 'Express Picks':P2P_EXTRA.filter(g=>g.group==='Express Picks').map(g=>g.id),
+ 'Zones & Territory':P2P_EXTRA.filter(g=>g.group==='Zones & Territory').map(g=>g.id),
+ 'Numbers & Dice II':P2P_EXTRA.filter(g=>g.group==='Numbers & Dice').map(g=>g.id),
+ 'Races & Streaks':P2P_EXTRA.filter(g=>g.group==='Races & Streaks').map(g=>g.id),
+ 'Cards & Dice Duels':P2P_EXTRA.filter(g=>g.group==='Cards & Dice Duels').map(g=>g.id),
+ 'Binary & Bits':P2P_EXTRA.filter(g=>g.group==='Binary & Bits').map(g=>g.id),
+ 'Number Theory':P2P_EXTRA.filter(g=>g.group==='Number Theory').map(g=>g.id)
 };
 const CATALOG_NAV={search:'',group:'',favorites:false};
 function catalogGroup(id){return Object.keys(CATALOG_GROUPS).find(k=>CATALOG_GROUPS[k].includes(id))||'Other';}
@@ -334,7 +345,7 @@ function settleGameWin(gameId,stake,payout,label,oppName,resultText,proof,deltaO
 function catalogChoices(g){
   if(g.type==="pattern3")return PATTERNS3;
   if(g.type==="pattern5")return PATTERNS5;
-  if(g.type==="zones")return ZONES;
+  if(g.type==="zones")return g.options||ZONES;
   return g.options||[];
 }
 function catalogDefaultPick(g){
@@ -474,6 +485,8 @@ function resolveCatalogGame(g,pickA,pickB,bytes){
   if(g.id==="bytewar"){const ta=bytes[0]+bytes[1]+bytes[2],tb=bytes[3]+bytes[4]+bytes[5];return {winner:ta===tb?'split':ta>tb?'player':'bot',detail:`bytes ${bytes.slice(0,3).join('+')}=${ta} vs ${bytes.slice(3,6).join('+')}=${tb}`};}
   if(g.id==="sumfour"){const s=bytes[0]+bytes[1]+bytes[2]+bytes[3],da=Math.abs(+pickA-s),db=Math.abs(+pickB-s);return {winner:da===db?'split':da<db?'player':'bot',detail:`sum ${bytes.slice(0,4).join('+')}=${s} · distances ${da}/${db}`};}
   if(g.id==="highcard"){const val=x=>x%13+2,n=x=>x<=10?x:['J','Q','K','A'][x-11],a=val(bytes[0]),b=val(bytes[1]);return {winner:a===b?'split':a>b?'player':'bot',detail:`your card ${n(a)} · bot card ${n(b)}`};}
+  /* CAT37–CAT100 expansion resolves in the dedicated catalog module. */
+  if(P2P_EXTRA.some(x=>x.id===g.id))return resolveExtraGame(g,pickA,pickB,bytes);
   return {winner:"split",detail:"fair split"};
 }
 function logCatalogMatch(entry){S.catalogLog=S.catalogLog||[];S.catalogLog.unshift(entry);if(S.catalogLog.length>100)S.catalogLog.length=100;}

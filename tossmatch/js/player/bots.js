@@ -28,7 +28,7 @@ const ACHIEVEMENTS=[
  {id:"cup5",icon:"⚔️",name:"Cup Specialist",desc:"Win 5 Series Cups",rew:300},
  {id:"trny3",icon:"🏟️",name:"Bracket Boss",desc:"Win 3 tournaments",rew:500},
  {id:"catalog5",icon:"🎮",name:"Game Explorer",desc:"Play 5 different catalog games",rew:150},
- {id:"catalog17",icon:"🧭",name:"Catalog Master",desc:"Play all 33 catalog games",rew:750},
+ {id:"catalog17",icon:"🧭",name:"Catalog Master",desc:"Play all 100 catalog games",rew:750},
  {id:"collector5",icon:"🛍️",name:"Collector",desc:"Own 5 paid cosmetics",rew:150},
  {id:"collector15",icon:"🗃️",name:"Super Collector",desc:"Own 15 paid cosmetics",rew:400},
  {id:"silvervip",icon:"🥈",name:"Silver Status",desc:"Reach Silver VIP",rew:100},
@@ -71,7 +71,10 @@ const COS={
   {id:"frostfire",name:"Frostfire",price:750,rarity:"legendary"},{id:"quantum",name:"Quantum Shift",price:1200,rarity:"mythic"},
   {id:"jade",name:"Jade Fortune",price:350,rarity:"epic"},{id:"lunar",name:"Lunar Halo",price:650,rarity:"legendary"},
   {id:"legend",name:"Legend Prism",price:0,rarity:"mythic",vip:8,vipOnly:true},{id:"eternal",name:"Eternal Flame",price:0,rarity:"mythic",vip:8,vipOnly:true},
-  {id:"photoreal",name:"Photoreal Coin",price:800,rarity:"legendary"}],
+  {id:"photoreal",name:"Photoreal Coin",price:800,rarity:"legendary"},
+  {id:"molten",name:"Molten Gold",price:500,rarity:"epic"},{id:"tide",name:"Tide Crest",price:420,rarity:"epic"},
+  {id:"marble",name:"Marble Fortune",price:900,rarity:"legendary"},{id:"inferno",name:"Inferno Forge",price:1500,rarity:"mythic"},
+  {id:"crimson",name:"Crimson Dollar",price:700,rarity:"legendary"},{id:"honeycomb",name:"Honeycomb",price:380,rarity:"epic"}],
  flags:[
   {id:"in",name:"India",ch:"🇮🇳",price:25,rarity:"common"},{id:"br",name:"Brazil",ch:"🇧🇷",price:25,rarity:"common"},
   {id:"gb",name:"UK",ch:"🇬🇧",price:25,rarity:"common"},{id:"us",name:"USA",ch:"🇺🇸",price:50,rarity:"uncommon"},
@@ -80,7 +83,11 @@ const COS={
   {id:"au",name:"Australia",ch:"🇦🇺",price:100,rarity:"rare"},{id:"it",name:"Italy",ch:"🇮🇹",price:100,rarity:"rare"},
   {id:"kr",name:"South Korea",ch:"🇰🇷",price:200,rarity:"epic"},{id:"earth",name:"Earth",ch:"🌐",price:500,rarity:"legendary"},
   {id:"sg",name:"Singapore",ch:"🇸🇬",price:100,rarity:"rare"},{id:"za",name:"South Africa",ch:"🇿🇦",price:100,rarity:"rare"},
-  {id:"nz",name:"New Zealand",ch:"🇳🇿",price:150,rarity:"rare"},{id:"pt",name:"Portugal",ch:"🇵🇹",price:150,rarity:"rare"}],
+  {id:"nz",name:"New Zealand",ch:"🇳🇿",price:150,rarity:"rare"},{id:"pt",name:"Portugal",ch:"🇵🇹",price:150,rarity:"rare"},
+  {id:"th",name:"Thailand",ch:"🇹🇭",price:100,rarity:"rare"},{id:"vn",name:"Vietnam",ch:"🇻🇳",price:100,rarity:"rare"},
+  {id:"id",name:"Indonesia",ch:"🇮🇩",price:150,rarity:"rare"},{id:"ph",name:"Philippines",ch:"🇵🇭",price:150,rarity:"rare"},
+  {id:"ar",name:"Argentina",ch:"🇦🇷",price:150,rarity:"rare"},{id:"mx",name:"Mexico",ch:"🇲🇽",price:100,rarity:"rare"},
+  {id:"ng",name:"Nigeria",ch:"🇳🇬",price:200,rarity:"epic"},{id:"eg",name:"Egypt",ch:"🇪🇬",price:200,rarity:"epic"}],
  avatars:[
   {id:"hero",name:"Hero",ch:"🦸",price:25,rarity:"common"},{id:"ninja",name:"Ninja",ch:"🥷",price:25,rarity:"common"},
   {id:"cop",name:"Officer",ch:"👮",price:50,rarity:"uncommon"},{id:"wizard",name:"Wizard",ch:"🧙",price:50,rarity:"uncommon"},
@@ -89,7 +96,10 @@ const COS={
   {id:"royal",name:"Royal",ch:"👑",price:500,rarity:"legendary"},{id:"agent",name:"Agent",ch:"🕵️",price:400,rarity:"legendary"},
   {id:"fairy",name:"Fairy",ch:"🧚",price:1000,rarity:"mythic"},{id:"dragon",name:"Dragon",ch:"🐉",price:800,rarity:"legendary"},
   {id:"alien",name:"Alien",ch:"👽",price:300,rarity:"epic"},{id:"fox",name:"Fox",ch:"🦊",price:200,rarity:"rare"},
-  {id:"panda",name:"Panda",ch:"🐼",price:250,rarity:"rare"},{id:"unicorn",name:"Unicorn",ch:"🦄",price:700,rarity:"legendary"}],
+  {id:"panda",name:"Panda",ch:"🐼",price:250,rarity:"rare"},{id:"unicorn",name:"Unicorn",ch:"🦄",price:700,rarity:"legendary"},
+  {id:"cat",name:"Cat",ch:"🐱",price:150,rarity:"rare"},{id:"dog",name:"Dog",ch:"🐶",price:150,rarity:"rare"},
+  {id:"owl",name:"Owl",ch:"🦉",price:250,rarity:"epic"},{id:"lion",name:"Lion",ch:"🦁",price:350,rarity:"epic"},
+  {id:"tiger",name:"Tiger",ch:"🐯",price:350,rarity:"epic"},{id:"koala",name:"Koala",ch:"🐨",price:300,rarity:"epic"}],
  frames:[
   {id:"none",name:"None",price:0,rarity:"free",cls:""},{id:"thin",name:"Thin Ring",price:25,rarity:"common",cls:"box-shadow:0 0 0 2px #64748b"},
   {id:"double",name:"Double Ring",price:50,rarity:"uncommon",cls:"box-shadow:0 0 0 2px #64748b,0 0 0 4px #334155"},
@@ -98,14 +108,19 @@ const COS={
   {id:"blackdiamond",name:"Black Diamond Animated",price:0,rarity:"legendary",cls:"frame-blackdiamond",vip:6,vipOnly:true},{id:"rainbow",name:"Rainbow Spin",price:600,rarity:"legendary",cls:"frame-rainbow"},
   {id:"emerald-ring",name:"Emerald Orbit",price:200,rarity:"rare",cls:"box-shadow:0 0 0 3px #10b981,0 0 14px #10b981"},
   {id:"cosmic-ring",name:"Cosmic Halo",price:400,rarity:"epic",cls:"box-shadow:0 0 0 3px #8b5cf6,0 0 18px #22d3ee"},
-  {id:"crown-ring",name:"Crown Aura",price:700,rarity:"legendary",cls:"box-shadow:0 0 0 3px #fbbf24,0 0 22px #f59e0b"}],
+  {id:"crown-ring",name:"Crown Aura",price:700,rarity:"legendary",cls:"box-shadow:0 0 0 3px #fbbf24,0 0 22px #f59e0b"},
+  {id:"lava-ring",name:"Lava Ring",price:500,rarity:"epic",cls:"box-shadow:0 0 0 3px #f43f5e,0 0 20px #fb923c"},
+  {id:"ocean-ring",name:"Ocean Ring",price:500,rarity:"epic",cls:"box-shadow:0 0 0 3px #38bdf8,0 0 20px #0ea5e9"},
+  {id:"plant-ring",name:"Vine Ring",price:450,rarity:"epic",cls:"box-shadow:0 0 0 3px #4ade80,0 0 18px #16a34a"}],
  colours:[
   {id:"default",name:"Default",price:0,rarity:"free",hex:"#e8edf7"},{id:"blue",name:"Blue",price:50,rarity:"uncommon",hex:"#60a5fa"},
   {id:"green",name:"Green",price:50,rarity:"uncommon",hex:"#34d399"},{id:"orange",name:"Orange",price:100,rarity:"rare",hex:"#fb923c"},
   {id:"purple",name:"Purple",price:100,rarity:"rare",hex:"#c084fc"},{id:"gold",name:"Gold",price:200,rarity:"epic",hex:"#fbbf24"},
   {id:"pink",name:"Pink",price:100,rarity:"rare",hex:"#f472b6"},{id:"cyan",name:"Cyan",price:100,rarity:"rare",hex:"#22d3ee"},
   {id:"red",name:"Crimson",price:150,rarity:"rare",hex:"#fb7185"},{id:"white",name:"Pearl",price:250,rarity:"epic",hex:"#f8fafc"},
-  {id:"rainbow",name:"Rainbow",price:500,rarity:"legendary",hex:"rainbow"},{id:"glitch",name:"Glitch",price:1000,rarity:"mythic",hex:"glitch"}],
+  {id:"rainbow",name:"Rainbow",price:500,rarity:"legendary",hex:"rainbow"},{id:"glitch",name:"Glitch",price:1000,rarity:"mythic",hex:"glitch"},
+  {id:"lime",name:"Lime",price:150,rarity:"rare",hex:"#a3e635"},{id:"sky",name:"Sky",price:150,rarity:"rare",hex:"#7dd3fc"},
+  {id:"magenta",name:"Magenta",price:300,rarity:"epic",hex:"#f0abfc"},{id:"sunburst",name:"Sunburst",price:350,rarity:"epic",hex:"#fdba74"}],
  fx:[
   {id:"confetti",name:"Standard Confetti",price:0,rarity:"free",emojis:["🎉","💰","✨"]},
   {id:"coins",name:"Gold Coins Fall",price:50,rarity:"common",emojis:["🪙","💰","💵"]},
@@ -118,7 +133,10 @@ const COS={
   {id:"thunder",name:"Thunder Storm",price:450,rarity:"epic",emojis:["⚡","🌩️","💥"]},
   {id:"aurora-burst",name:"Aurora Burst",price:550,rarity:"legendary",emojis:["🌌","✨","💫"]},
   {id:"trophy",name:"Trophy Shower",price:700,rarity:"legendary",emojis:["🏆","🥇","✨"]},
-  {id:"dragon",name:"Dragon Roar",price:1200,rarity:"mythic",emojis:["🐉","🔥","💥"]}],
+  {id:"dragon",name:"Dragon Roar",price:1200,rarity:"mythic",emojis:["🐉","🔥","💥"]},
+  {id:"love",name:"Heart Storm",price:400,rarity:"epic",emojis:["❤️","💖","💘"]},
+  {id:"snow",name:"Snow Flurry",price:350,rarity:"epic",emojis:["❄️","🌨️","☃️"]},
+  {id:"pizza",name:"Pizza Party",price:300,rarity:"epic",emojis:["🍕","🧀","🍅"]}],
  themes:[
   {id:"midnight",name:"Midnight",price:0,rarity:"free",bg:""},
   {id:"ocean",name:"Ocean",price:50,rarity:"common",bg:"linear-gradient(135deg,rgba(14,116,144,.25),rgba(8,47,73,.4))"},
@@ -131,7 +149,11 @@ const COS={
   {id:"icepalace",name:"Ice Palace",price:350,rarity:"epic",bg:"linear-gradient(135deg,rgba(125,211,252,.22),rgba(30,64,175,.36))"},
   {id:"royalhall",name:"Royal Hall",price:700,rarity:"legendary",bg:"radial-gradient(circle at 50% 0%,rgba(var(--violet2-rgb),.28),rgba(46,16,101,.45))"},
   {id:"lava",name:"Lava Chamber",price:850,rarity:"legendary",bg:"linear-gradient(135deg,rgba(220,38,38,.25),rgba(67,20,7,.55))"},
-  {id:"cyber",name:"Neon Cyberpunk",price:1000,rarity:"mythic",bg:"linear-gradient(135deg,rgba(236,72,153,.18),rgba(var(--cyan2-rgb),.18))"}],
+  {id:"cyber",name:"Neon Cyberpunk",price:1000,rarity:"mythic",bg:"linear-gradient(135deg,rgba(236,72,153,.18),rgba(var(--cyan2-rgb),.18))"},
+  {id:"nightlife",name:"Nightlife",price:300,rarity:"epic",bg:"linear-gradient(135deg,rgba(var(--purple-rgb),.22),rgba(15,23,42,.5))"},
+  {id:"embergarden",name:"Ember Garden",price:550,rarity:"legendary",bg:"linear-gradient(135deg,rgba(251,146,60,.22),rgba(69,26,3,.45))"},
+  {id:"arcade",name:"Retro Arcade",price:650,rarity:"legendary",bg:"repeating-linear-gradient(45deg,rgba(34,211,238,.14),rgba(34,211,238,.14) 12px,rgba(236,72,153,.14) 12px,rgba(236,72,153,.14) 24px)"},
+  {id:"valentine",name:"Rose Garden",price:600,rarity:"legendary",bg:"radial-gradient(circle at 50% 0%,rgba(244,114,182,.25),rgba(76,5,25,.4))"}],
  sounds:[
   {id:"standard",name:"Standard",price:0,rarity:"free",wave:["triangle","sine"]},
   {id:"8bit",name:"8-Bit Retro",price:50,rarity:"common",wave:["square","square"]},
@@ -141,7 +163,9 @@ const COS={
   {id:"synth",name:"Synthwave",price:250,rarity:"epic",wave:["sawtooth","triangle"]},
   {id:"crystal",name:"Crystal Chime",price:350,rarity:"epic",wave:["sine","sine"]},
   {id:"bass",name:"Deep Bass",price:450,rarity:"legendary",wave:["square","sine"]},
-  {id:"choir",name:"Epic Choir",price:500,rarity:"legendary",wave:["sine","triangle"]}],
+  {id:"choir",name:"Epic Choir",price:500,rarity:"legendary",wave:["sine","triangle"]},
+  {id:"wind",name:"Wind Chimes",price:220,rarity:"rare",wave:["sine","triangle"]},
+  {id:"dub",name:"Dubstep",price:600,rarity:"legendary",wave:["sawtooth","square"]}],
  emojis:[
   {id:"fire",ch:"🔥",name:"Fire",price:25,rarity:"common"},{id:"party",ch:"🎉",name:"Party",price:25,rarity:"common"},
   {id:"down",ch:"👎",name:"Thumbs down",price:25,rarity:"common"},{id:"drool",ch:"🤤",name:"Drooling",price:50,rarity:"uncommon"},
@@ -153,14 +177,31 @@ const COS={
   {id:"hundo",ch:"💯",name:"100",price:500,rarity:"legendary"},
   {id:"rocket",ch:"🚀",name:"Rocket",price:150,rarity:"rare"},{id:"trophy",ch:"🏆",name:"Trophy",price:250,rarity:"epic"},
   {id:"robot",ch:"🤖",name:"Robot",price:150,rarity:"rare"},{id:"alien",ch:"👽",name:"Alien",price:250,rarity:"epic"},
-  {id:"fox",ch:"🦊",name:"Fox",price:100,rarity:"rare"},{id:"panda",ch:"🐼",name:"Panda",price:100,rarity:"rare"}]
+  {id:"fox",ch:"🦊",name:"Fox",price:100,rarity:"rare"},{id:"panda",ch:"🐼",name:"Panda",price:100,rarity:"rare"},
+  {id:"starstruck",ch:"🤩",name:"Star-struck",price:250,rarity:"epic"},{id:"devil",ch:"😈",name:"Devil",price:300,rarity:"epic"},
+  {id:"angel",ch:"😇",name:"Angel",price:300,rarity:"epic"},{id:"cowboy",ch:"🤠",name:"Cowboy",price:200,rarity:"rare"},
+  {id:"unicorn",ch:"🦄",name:"Unicorn",price:400,rarity:"legendary"},{id:"pizza",ch:"🍕",name:"Pizza",price:150,rarity:"rare"},
+  {id:"eye",ch:"👁️",name:"Seeing Eye",price:350,rarity:"epic"},{id:"vibes",ch:"✨",name:"Sparkles",price:250,rarity:"epic"}],
+ cardbacks:[
+  {id:"classic",name:"Classic Red",price:0,rarity:"free",bg:"#7f1d1d"},
+  {id:"stripes",name:"Gold Stripes",price:25,rarity:"common",bg:"linear-gradient(45deg,#3b2f10,#f6c453)"},
+  {id:"azure",name:"Azure Wave",price:50,rarity:"uncommon",bg:"linear-gradient(135deg,#0c4a6e,#38bdf8)"},
+  {id:"neon",name:"Neon Pulse",price:75,rarity:"uncommon",bg:"linear-gradient(135deg,#7c3aed,#22d3ee)"},
+  {id:"royal",name:"Royal Court",price:150,rarity:"rare",bg:"linear-gradient(135deg,#3b0764,#a855f7)"},
+  {id:"knight",name:"Knight Plate",price:200,rarity:"rare",bg:"linear-gradient(135deg,#334155,#94a3b8)"},
+  {id:"galaxy",name:"Galaxy Back",price:300,rarity:"epic",bg:"radial-gradient(circle at 30% 30%,#6366f1,#0f172a)"},
+  {id:"dragon",name:"Dragon Scale",price:600,rarity:"legendary",bg:"linear-gradient(135deg,#166534,#f43f5e)"},
+  {id:"phoenix",name:"Phoenix Feather",price:750,rarity:"legendary",bg:"linear-gradient(135deg,#ea580c,#facc15)"},
+  {id:"void",name:"Void Back",price:1000,rarity:"mythic",bg:"linear-gradient(135deg,#0f172a,#111827,#4c1d95)"},
+  {id:"diamondback",name:"Diamond Weave",price:850,rarity:"legendary",bg:"linear-gradient(135deg,#bae6fd,#f8fafc)"},
+  {id:"mirror",name:"Mirror Shine",price:1250,rarity:"mythic",bg:"conic-gradient(#f8fafc,#cbd5e1,#e2e8f0,#f8fafc)"}]
 };
 const SHOP_CATS=[
  {id:"skins",name:"🪙 Coin Skins",type:"coin"},{id:"flags",name:"🏳️ Flags",type:"flag"},
  {id:"avatars",name:"🦸 Personas",type:"avi"},{id:"frames",name:"🖼️ Frames",type:"frame"},
  {id:"colours",name:"💬 Chat Colours",type:"swatch"},{id:"fx",name:"🎊 Victory FX",type:"emoji"},
  {id:"themes",name:"🎨 Table Themes",type:"theme"},{id:"sounds",name:"🎵 Sound Packs",type:"sound"},
- {id:"emojis",name:"😀 Premium Emojis",type:"emoji"}];
+ {id:"emojis",name:"😀 Premium Emojis",type:"emoji"},{id:"cardbacks",name:"🃏 Card Backs",type:"cardback"}];
 const FREE_EMOJIS=["👍","😂","😱"];
 function grantOwned(cat,id){S.owned[cat]=S.owned[cat]||[];if(!S.owned[cat].includes(id))S.owned[cat].push(id);}
 function currentVipEntitlements(){const v=vipFor(S.monthWagered);return {tier:v.tier,shopDiscount:VIP_DISC[v.tier]||0,tournamentDiscount:VIP_TOURNEY_DISC[v.tier]||0,queuePriority:v.tier>=3,birthdayEligible:v.tier>=6,prioritySupport:v.tier>=7,earlyAccess:v.tier>=8,title:v.tier>=8?"Legend":v.tier>=7?"Royal Crown":"",goldName:v.tier>=8};}

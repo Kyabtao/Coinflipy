@@ -112,7 +112,6 @@ export function bind(){
   $("renameBtn").onclick=()=>toast("Rename applies to real player accounts in production (demo player is 'You').");
   $("savePlayerPrefs").onclick=()=>{
     S.settings=S.settings||{};
-    S.settings.theme=$("adminTheme").value;S.settings.themeName=$("adminTheme").value==="light"?"light":"midnight";S.settings.customPalette=null;
     S.settings.language=$("adminLanguage").value;
     S.settings.sound=$("adminSound").value==="true";
     S.settings.instant=$("adminInstant").value==="true";

@@ -5,7 +5,7 @@ import {STAKE_MIN} from "./core.js";
 import {ACHIEVEMENTS,COS,FREE_EMOJIS,QUESTS_SEED,applyVipUnlocks,currentVipEntitlements,sessionStart} from "./bots.js";
 import {randHex,shaHex} from "./crypto.js";
 import {BOTS_SEED,VIP_DISC,VIP_SEED} from "./data.js";
-import {$,addFeed,awardXp,beep,confettiFx,effectiveRakeback,filterSkillBots,fmt,maxStake,pushHistory,recordEngagement,recordPlayerMetrics,sfxFlip,sfxJp,sfxLose,sfxWin,subscriptionQuestMult,toast,vipFor} from "./helpers.js";
+import {$,addFeed,awardXp,beep,confettiFx,effectiveRakeback,filterSkillBots,fmt,maxStake,pushHistory,recordEngagement,recordPlayerMetrics,refreshBadges,sfxFlip,sfxJp,sfxLose,sfxWin,subscriptionQuestMult,toast,vipFor} from "./helpers.js";
 import {playerAviHTML,playerFlag,playerName,render} from "./render.js";
 import {audit,cfg,save} from "./state.js";
 import {GAMES,catalogRandomPick,ensureBotFirstTopup,renderGamePanel,settleBotFlip,takeCatalogBet,topUpBot} from "./sync.js";
@@ -213,6 +213,7 @@ function checkProgressAchievements(){
   if(ownedPaid>=25)unlockAch("collector25");if(S.level>=30)unlockAch("level30");if(S.level>=40)unlockAch("level40");if(S.level>=50)unlockAch("level50");if((S.transferCount||0)>=10)unlockAch("transfer10");
   if(S.bestStreak>=15)unlockAch("streak15");if((st.catalogGames||0)>=50)unlockAch("catalog50");if((st.clanGames||0)>=5)unlockAch("clan5");
   if((st.catalogGames||0)>0&&(st.seriesPlayed||0)>0&&(st.tournamentEntries||0)>0&&(st.friendGames||0)>0&&(st.arcadePlays||0)>0)unlockAch("allrounder");
+  try{const n=refreshBadges();if(n.length)toast(`🏅 Badge unlocked: ${n.join(', ')}!`,'ok');}catch(e){}
 }
 async function animateFlip(result){
   const coinEl=$("coin");$("matchStatus").innerHTML='<span class="spinner"></span> Flipping…';
@@ -585,7 +586,7 @@ export function bind(){
       S.wallet.main-=price;
       if(shopCat==="emojis"){S.owned.emojis.push(item.id);toast(`Bought ${item.ch} ${item.name}!`,"ok");}
       else{S.owned[shopCat].push(item.id);
-        const eqKey={skins:"skin",flags:"flag",avatars:"avatar",frames:"frame",colours:"colour",fx:"fx",themes:"theme",sounds:"sound"}[shopCat];
+        const eqKey={skins:"skin",flags:"flag",avatars:"avatar",frames:"frame",colours:"colour",fx:"fx",themes:"theme",sounds:"sound",cardbacks:"cardBack"}[shopCat];
         if(eqKey)S.equipped[eqKey]=item.id;
         toast(`Bought & equipped ${item.name}!`,"ok");
         if(shopCat==="sounds"){audioCtx=null;sfxWin();}
@@ -595,7 +596,7 @@ export function bind(){
       render();
     }
     if(eq){
-      const eqKey={skins:"skin",flags:"flag",avatars:"avatar",frames:"frame",colours:"colour",fx:"fx",themes:"theme",sounds:"sound"}[shopCat];
+      const eqKey={skins:"skin",flags:"flag",avatars:"avatar",frames:"frame",colours:"colour",fx:"fx",themes:"theme",sounds:"sound",cardbacks:"cardBack"}[shopCat];
       if(eqKey){S.equipped[eqKey]=eq.dataset.equip;toast("Equipped.","ok");render();}
     }
   });
@@ -608,6 +609,65 @@ export function bind(){
     }
   });
   $("claimRb").onclick=()=>{if(!S.accruedRakeback){toast("Nothing to claim.","err");return;}const amt=Math.round(S.accruedRakeback);S.wallet.rakeback+=amt;cfg().taps+=amt;cfg().house.rakebackPaid=(cfg().house.rakebackPaid||0)+amt;audit("rakeback-claim",fmt(amt)+" → RAKEBACK balance (house cost line)");toast(`💸 Claimed ${fmt(amt)} rakeback.`,"ok");S.accruedRakeback=0;render();};
+  // VIP+ daily bonus / monthly quest / tier road + Season+ faction, missions, prizes
+  document.addEventListener("click",e=>{
+    const db=e.target.closest("[data-vip-daily]");if(db){
+      const vp=cfg().vipPlus||{dailyBase:25,dailyPerTier:10},sv=S.vipPlus=S.vipPlus||{daily:{day:"",claimed:0,tier:0}},
+        today=new Date().toDateString(),tier=vipFor(S.monthWagered).tier;
+      if(sv.daily.day!==today){sv.daily.day=today;sv.daily.claimed=0;sv.daily.tier=tier;}
+      if(sv.daily.claimed){toast("Daily VIP bonus already claimed today.","err");return;}
+      const amt=vp.dailyBase+(tier-1)*vp.dailyPerTier;
+      sv.daily.claimed=1;S.wallet.bonus+=amt;cfg().taps+=amt;cfg().house.promoCost+=amt;
+      pushHistory("progression",{title:"VIP daily bonus",detail:"VIP tier daily claim",result:"CLAIMED",amount:amt,reward:amt});
+      toast(`💎 VIP daily +${fmt(amt)} BONUS.`,"ok");render();
+    }
+    const vq=e.target.closest("[data-vip-quest]");if(vq){
+      const vp=cfg().vipPlus||{questWager:2000,questRewardPerTier:50},sv=S.vipPlus=S.vipPlus||{quest:{month:"",claimed:0,reward:0}},
+        month=new Date().toISOString().slice(0,7),tier=vipFor(S.monthWagered).tier;
+      if(sv.quest.month!==month){sv.quest.month=month;sv.quest.claimed=0;sv.quest.reward=0;}
+      if(sv.quest.claimed){toast("VIP monthly quest already claimed.","err");return;}
+      if(S.monthWagered<vp.questWager){toast(`Wager ${fmt(vp.questWager)} this month to complete the quest.`,"err");return;}
+      const amt=vp.questRewardPerTier*Math.max(1,tier);sv.quest.claimed=1;sv.quest.reward=amt;
+      S.wallet.bonus+=amt;cfg().taps+=amt;cfg().house.promoCost+=amt;
+      pushHistory("progression",{title:"VIP monthly quest",detail:"Wagering quest completed",result:"CLAIMED",amount:amt,reward:amt});
+      toast(`💎 VIP quest +${fmt(amt)} BONUS.`,"ok");render();
+    }
+    const vr=e.target.closest("[data-vip-road]");if(vr){
+      const tier=+vr.dataset.vipRoad,sv=S.vipPlus=S.vipPlus||{road:{claimed:[]}};sv.road.claimed=sv.road.claimed||[];
+      const curTier=vipFor(S.monthWagered).tier;
+      if(sv.road.claimed.includes(tier)||curTier<tier){toast("Tier reward is not available yet.","err");return;}
+      const rw=[0,50,100,150,200,300,400,600][tier-1]||100,rb=[0,100,200,300,400,600,800,1000][tier-1]||200;
+      sv.road.claimed.push(tier);S.wallet.main+=rw;S.wallet.bonus+=rb;cfg().taps+=rw+rb;cfg().house.promoCost+=rw+rb;
+      pushHistory("progression",{title:`VIP tier ${tier} reward`,detail:"Road milestone",result:"CLAIMED",amount:rw+rb,reward:rw+rb});
+      toast(`💎 VIP road: +${fmt(rw)} MAIN + ${fmt(rb)} BONUS.`,"jp");render();
+    }
+    const sf=e.target.closest("[data-season-faction]");if(sf){
+      const sel=$("seasonFactionSelect");if(!sel)return;
+      S.seasonPlus=S.seasonPlus||{};S.seasonPlus.faction=sel.value;
+      pushHistory("progression",{title:"Season faction joined",detail:sel.value,result:"JOINED",amount:0});
+      toast(`🏁 Joined the ${sel.value} faction!`,"ok");render();
+    }
+    const sm=e.target.closest("[data-season-mission]");if(sm){
+      const i=+sm.dataset.seasonMission,defs=[()=>S.stats.games>=10,()=>S.stats.wins>=5,()=>S.stats.cupsWon>=1,()=>S.stats.trnysWon>=1],
+        pts=[50,60,120,180],sp=S.seasonPlus=S.seasonPlus||{missions:{key:"",claimed:[]}},
+        key=cfg().seasonNumber+"-"+new Date().toISOString().slice(0,7);
+      if(sp.missions.key!==key){sp.missions.key=key;sp.missions.claimed=[];}
+      if(sp.missions.claimed.includes(i)||!defs[i]())return;
+      sp.missions.claimed.push(i);sp.points=(sp.points||0)+pts[i];
+      pushHistory("progression",{title:"Season mission",detail:`+${pts[i]} season points`,result:"CLAIMED",amount:0});
+      toast(`🏁 Season mission +${pts[i]} pts.`,"ok");render();
+    }
+    const spr=e.target.closest("[data-season-prize]");if(spr){
+      const i=+spr.dataset.seasonPrize,sp=S.seasonPlus=S.seasonPlus||{prizes:{key:"",claimed:[]}},
+        track=cfg().seasonPlus?.prizeTrack||[{pts:100,reward:100},{pts:250,reward:250},{pts:500,reward:550},{pts:1000,reward:1200}],
+        key=cfg().seasonNumber+"-"+new Date().toISOString().slice(0,7);
+      if(sp.prizes.key!==key){sp.prizes.key=key;sp.prizes.claimed=[];}
+      if(sp.prizes.claimed.includes(i)||(sp.points||0)<track[i].pts)return;
+      sp.prizes.claimed.push(i);S.wallet.bonus+=track[i].reward;cfg().taps+=track[i].reward;
+      pushHistory("progression",{title:"Season prize",detail:`${track[i].pts} pts tier`,result:"CLAIMED",amount:track[i].reward,reward:track[i].reward});
+      toast(`🏆 Season prize +${fmt(track[i].reward)} BONUS.`,"jp");render();
+    }
+  });
   $("vfyBtn").onclick=async()=>{
     const sv=$("vSeed").value.trim(),mh=$("vMaker").value.trim(),th=$("vTaker").value.trim(),gid=$("vGid").value.trim();
     if(!sv||!mh||!th||!gid){toast("Fill all fields.","err");return;}
