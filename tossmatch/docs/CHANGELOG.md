@@ -96,8 +96,21 @@
   announcements that appear on player Homes), all wired into nav, RBAC, command
   palette and the feature directory (ADM-4…ADM-7).
 - **Continuous audit loop** — `run-audit-loop.sh` now runs the full stack
-  (static audit + boot smoke + 74-check feature regression) for 20 consecutive
-  passes; log in `tossmatch/docs/audit-loop-v13.0.log`.
+  (static audit + boot smoke + feature regression) for 20 consecutive passes;
+  log in `tossmatch/docs/audit-loop-v13.0.log`.
+- **Support & Messaging screen (new, 21 → 22)** — unified ticket inbox for
+  player and bot reporters with Player/Bot badges, filter, status filter,
+  reply and close (audit-logged), open-ticket nav badge, and a compose panel
+  that delivers platform messages (direct/broadcast) to the player Services
+  hub's new **Support** tab (contact form + "My tickets" + platform messages).
+- **Admin user management (Settings)** — console accounts with role select,
+  enable/disable and add-user; the primary Super Admin is protected from
+  demotion/disable; all changes audit-logged.
+- **Backup & restore (Settings)** — point-in-time state snapshots (five
+  newest retained in the browser) with create/restore/delete; restore mutates
+  the live state in place so no module reference is invalidated.
+- **Feature directory** — ADM-8 (Support & Messaging) and ADM-9 (Admin Users
+  & Backups); regression suite extended to 94 checks.
 
 ## v12.0 — Modular Code Structure
 

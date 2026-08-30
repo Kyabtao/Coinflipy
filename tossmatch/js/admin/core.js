@@ -129,6 +129,8 @@ const FEATURE_DIRECTORY=[
  {cat:'Admin Console',code:'ADM-5',name:'Games & Content',desc:'Catalog-wide plays and fee contribution per game with live enable/disable controls, filter and sort.',status:'Implemented',admin:'games'},
  {cat:'Admin Console',code:'ADM-6',name:'Referrals',desc:'Demo player referral code, referred player roster and the house 5% referral payout, with a register action.',status:'Implemented',admin:'referrals'},
  {cat:'Admin Console',code:'ADM-7',name:'Announcements',desc:'Create, publish, unpublish and delete in-app announcements; published ones show on player Homes.',status:'Implemented',admin:'announcements'},
+ {cat:'Admin Console',code:'ADM-8',name:'Support & Messaging',desc:'Unified ticket inbox covering player and bot reporters with filter, reply and close (all audit-logged), plus platform messages delivered to the player Services hub.',status:'Implemented',admin:'support'},
+ {cat:'Admin Console',code:'ADM-9',name:'Admin Users & Backups',desc:'Console account management (add users, change roles, disable) and point-in-time state snapshots with create/restore/delete, retained in the browser.',status:'Implemented',admin:'settings'},
  {cat:'Suggested — Trust & Compliance',code:'TRUST1',name:'Identity, Age & Jurisdiction Checks',desc:'Age gate, KYC status, geofencing and jurisdiction-specific feature eligibility.',status:'Suggested'},
  {cat:'Suggested — Trust & Compliance',code:'TRUST2',name:'Privacy & Data Rights Center',desc:'Consent history, data export, correction and deletion requests with retention status.',status:'Suggested'},
  {cat:'Suggested — Trust & Compliance',code:'TRUST3',name:'Dispute & Support Case Center',desc:'Open cases from a game or transaction, attach proof, track SLA and record resolution.',status:'Suggested'},
@@ -137,7 +139,7 @@ const FEATURE_DIRECTORY=[
 ];
 const PAGE_SIZE=20;
 const DIRECTORY={search:"",category:"",status:""};
-const VIEWS={revenue:{range:"day"},withdrawals:{page:1,filter:"",sort:"time-desc",who:"all"},people:{page:1,filter:"",sort:"balance"},audit:{page:1,filter:"",sort:"time-desc"},games:{page:1,filter:"",sort:"time-desc"},catalog:{page:1,filter:"",result:"",sort:"time-desc"},transfers:{page:1,filter:"",sort:"time-desc"},topups:{page:1,filter:"",sort:"time-desc",who:"all"},playerTopups:{page:1,filter:"",sort:"time-desc"},gamesAdmin:{page:1,filter:"",sort:"plays-desc"},announcements:{page:1,filter:"",sort:"time-desc"},levels:{page:1,filter:"",sort:"level-asc"},queue:{page:1,filter:"",sort:"wait-desc"},flags:{page:1,filter:"",sort:"time-desc"},tournaments:{page:1,status:"",sort:"time-desc"}};
+const VIEWS={revenue:{range:"day"},withdrawals:{page:1,filter:"",sort:"time-desc",who:"all"},people:{page:1,filter:"",sort:"balance"},audit:{page:1,filter:"",sort:"time-desc"},games:{page:1,filter:"",sort:"time-desc"},catalog:{page:1,filter:"",result:"",sort:"time-desc"},transfers:{page:1,filter:"",sort:"time-desc"},topups:{page:1,filter:"",sort:"time-desc",who:"all"},playerTopups:{page:1,filter:"",sort:"time-desc"},gamesAdmin:{page:1,filter:"",sort:"plays-desc"},announcements:{page:1,filter:"",sort:"time-desc"},support:{page:1,filter:"",sort:"time-desc",status:""},levels:{page:1,filter:"",sort:"level-asc"},queue:{page:1,filter:"",sort:"wait-desc"},flags:{page:1,filter:"",sort:"time-desc"},tournaments:{page:1,status:"",sort:"time-desc"}};
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.round(n).toLocaleString("en-IN");
 function pageRows(rows,view){const pages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE));view.page=Math.max(1,Math.min(view.page,pages));return {rows:rows.slice((view.page-1)*PAGE_SIZE,view.page*PAGE_SIZE),pages,total:rows.length};}
@@ -146,8 +148,7 @@ function topupAnalytics(){const player=(S.rg?.deposits||[]).map(x=>{const base=+
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;$("toasts").appendChild(t);setTimeout(()=>{t.style.opacity=0;t.style.transition=".3s";setTimeout(()=>t.remove(),300)},2800);}
 function audit(action,detail=""){S.config.audit.unshift({t:Date.now(),who:"admin",action,detail});if(S.config.audit.length>50)S.config.audit.pop();}
 function save(){if(applyingRemoteState)return;localStorage.setItem(SAVE_KEY,JSON.stringify(S));}
-function load(){
-  const d={v:11.0,frozen:{you:false,reason:"",at:0,by:""},config:{stakeMin:10,stakeMax:1000,payoutCap:0,animMs:2300,edgePct:2,feePct:5,cupRakePct:5,trnyRakePct:10,jpFundPct:10,jpFloor:1,jpArm:50,jpPayPct:50,nonMainCapPct:20,transferFee:2,transferMin:10,transferCap:500,
+function defaultState(){return {v:11.0,frozen:{you:false,reason:"",at:0,by:""},config:{stakeMin:10,stakeMax:1000,payoutCap:0,animMs:2300,edgePct:2,feePct:5,cupRakePct:5,trnyRakePct:10,jpFundPct:10,jpFloor:1,jpArm:50,jpPayPct:50,nonMainCapPct:20,transferFee:2,transferMin:10,transferCap:500,
     botTopupThreshold:500,botGrowthMax:250,botGrowthIntervalSec:15,botGrowthBatch:1,botArcadePerTick:2,wdMin:3000,wdMax:5000,wdTickChance:0.35,
     vip:[{tier:1,name:"Starter",wagered:0,rakeback:0,color:"#8d6e63"},{tier:2,name:"Silver",wagered:1000,rakeback:4,color:"#c0c0c0"},{tier:3,name:"Gold",wagered:3000,rakeback:6,color:"#ffd700"},{tier:4,name:"Platinum",wagered:8000,rakeback:8,color:"#e5e4e2"},{tier:5,name:"Diamond",wagered:20000,rakeback:12,color:"#b9f2ff"},{tier:6,name:"Black Diamond",wagered:50000,rakeback:15,color:"linear-gradient(135deg,#111827,#f43f5e)"},{tier:7,name:"Royal",wagered:75000,rakeback:17,color:"linear-gradient(135deg,#f43f5e,#fbbf24)"},{tier:8,name:"Legend",wagered:100000,rakeback:20,color:"linear-gradient(135deg,#fbbf24,#f43f5e,#a855f7)"}],
     levelRewards:Object.fromEntries(Array.from({length:49},(_,n)=>[n+2,(n+2)*50])),
@@ -160,10 +161,12 @@ function load(){
     quests:{settle:0,win:0,cup:0,claimed:{}},owned:{skins:["classic"],flags:[],avatars:[],frames:["none"],colours:["default"],fx:["confetti"],themes:["midnight"],sounds:["standard"],emojis:[]},
     equipped:{skin:"classic",flag:"",avatar:"",frame:"none",colour:"default",fx:"confetti",theme:"midnight",sound:"standard"},
     games:[],reactions:{},stats:{games:0,wins:0,losses:0,biggestStake:0,jackpots:0,net:0,bestWin:0,cupsWon:0,trnysWon:0},
-    waiting:[],cups:[],trnys:[],x2room:[],feed:[],jackpot:120,announcements:[],gamesEnabled:{},
+    waiting:[],cups:[],trnys:[],x2room:[],feed:[],jackpot:120,announcements:[],gamesEnabled:{},supportTickets:[],adminMessages:[],adminUsers:[],backups:[],
     bots:[],botActivity:{socialActions:0,arcadePlays:0,createdBots:0,socialLog:[],arcadeLog:[],lastCreatedAt:0},services:{apiKey:"",apiLog:[],notifications:{enabled:false},notificationLog:[],twoFactor:{secret:"",enabled:false,verifiedAt:0},antiCheat:{lastScan:0,score:0,findings:[]},promoClaims:{},activeDepositPromo:"",statements:[],emailLog:[]},rg:{depositLimits:{daily:0,weekly:0,monthly:0},pendingDepositLimits:null,deposits:[],sessionLimitMin:0,coolOffMin:1,coolOffUntil:0,selfExUntil:0,selfExPermanent:false,selfExReason:"",realityIntervalMin:5,lastRealityAt:0,sessionPoints:[]},analytics:{samples:[],lastSampleAt:0},settings:{theme:"dark",themeName:"midnight",customPalette:null,language:"en"},referralCode:"TM-0000",referredBy:"",referralCount:0,referralEarned:0,transferToday:0,transferDay:"",playerName:"",firstDepositDone:false,
     kyc:{verified:false,verifiedAt:0,name:"",docType:""},playerWithdrawals:{count:0,amount:0,log:[]},walletRefs:{deposit:1,withdraw:1},
-    login:{streak:0,lastDay:""},lossLimit:0,global:{heads:0,tails:0,totalGames:0,jackpots:0},ledger:[],botTransfers:[],botTopups:[],gid:1};
+    login:{streak:0,lastDay:""},lossLimit:0,global:{heads:0,tails:0,totalGames:0,jackpots:0},ledger:[],botTransfers:[],botTopups:[],gid:1};}
+function load(){
+  const d=defaultState();
   try{const raw=localStorage.getItem(SAVE_KEY);if(raw){const p=JSON.parse(raw);
     // deep merge config
     S=Object.assign(d,p);
@@ -198,9 +201,28 @@ function load(){
     S.ledger=p.ledger||[];
     if(!S.config.house.xfFees)S.config.house.xfFees=0;
     reconcileHouse();
+    seedAdminDefaults();
     return;
   }}catch(e){console.warn(e)}
   S=d;reconcileHouse();
+  seedAdminDefaults();
+}
+function seedAdminDefaults(){
+  if(!Array.isArray(S.adminUsers)||!S.adminUsers.length){
+    S.adminUsers=[
+      {id:"u1",name:"admin",role:"Super Admin",status:"active",createdAt:Date.now()-90*86400000},
+      {id:"u2",name:"finance",role:"Finance",status:"active",createdAt:Date.now()-60*86400000},
+      {id:"u3",name:"ops",role:"Operations",status:"active",createdAt:Date.now()-30*86400000},
+      {id:"u4",name:"support",role:"Support",status:"active",createdAt:Date.now()-12*86400000}
+    ];
+  }
+  if(!Array.isArray(S.supportTickets)||!S.supportTickets.length){
+    S.supportTickets=[
+      {id:"tk1",who:"Demo player",kind:"player",subject:"Withdrawal reference not received",body:"My withdrawal was paid but I never got the bank reference e-mail.",t:Date.now()-26*3600000,status:"open",reply:"",repliedAt:0},
+      {id:"tk2",who:"Vera",kind:"bot",subject:"Jackpot payout timing",body:"Jackpot hit mid-round; please confirm the 50% pool payout landed in my MAIN.",t:Date.now()-7*3600000,status:"open",reply:"",repliedAt:0},
+      {id:"tk3",who:"Rex",kind:"bot",subject:"Top-up bonus missing",body:"My first-top-up bonus did not appear on the cycle top-up.",t:Date.now()-3*3600000,status:"open",reply:"",repliedAt:0}
+    ];
+  }
 }
 function cfg(){return S.config;}
 function houseGross(){const h=cfg().house;return (h.fees||0)+(h.catalogFees||0)+(h.cupRakes||0)+(h.trnyRakes||0)+(h.shop||0)+(h.xfFees||0)+(h.auctionFees||0);}
@@ -293,7 +315,7 @@ function render(){
   renderPromo();
   // econ and top-up analytics
   renderEcon();renderTopupAnalytics();renderWithdrawals();renderPeople();
-  renderReports();renderGamesAdmin();renderReferrals();renderAnnouncements();
+  renderReports();renderGamesAdmin();renderReferrals();renderAnnouncements();renderSupport();
   renderRevenue();renderGameParams();renderSessionMonitor();renderAdminLiveStatus();
   // ops
   renderOps();
@@ -516,6 +538,81 @@ function renderWithdrawals(){
   if($("pydLedgerCount"))$("pydLedgerCount").textContent=(S.ledger||[]).length;
   if($("pydAuditCount"))$("pydAuditCount").textContent=(cfg().audit||[]).length;
 }
+/* ── Support & Messaging ── */
+function renderSupport(){
+  const v=VIEWS.support,q=v.filter.toLowerCase();
+  const tickets=S.supportTickets||[],msgs=S.adminMessages||[];
+  const open=tickets.filter(t=>t.status==="open").length,replied=tickets.filter(t=>t.status==="replied").length;
+  $("supTiles").innerHTML=[
+    {v:String(open),k:"Open tickets",cls:open?"gold":""},
+    {v:String(tickets.length),k:"Tickets received"},
+    {v:String(replied),k:"Replied · awaiting close"},
+    {v:String(msgs.length),k:"Messages sent"}
+  ].map(t=>`<div class="stat-tile ${t.cls||''}"><div class="v">${t.v}</div><div class="k">${t.k}</div></div>`).join("");
+  let rows=[...tickets];
+  if(v.status)rows=rows.filter(t=>t.status===v.status);
+  if(q)rows=rows.filter(t=>`${t.who} ${t.subject} ${t.body} ${t.reply||''}`.toLowerCase().includes(q));
+  rows.sort((a,b)=>v.sort==="time-asc"?(a.t||0)-(b.t||0):(b.t||0)-(a.t||0));
+  const pg=pageRows(rows,v);setPager("sup",v,pg);
+  $("supList").innerHTML=pg.rows.length?`<table><thead><tr><th>Received</th><th>From</th><th>Subject</th><th>Message / reply</th><th>Status</th><th></th></tr></thead><tbody>${pg.rows.map(t=>`<tr><td>${new Date(t.t||0).toLocaleString()}</td><td>${t.who} <span class="tag ${t.kind==="player"?"on":"warn"}">${t.kind==="player"?"Player":"Bot"}</span></td><td><b>${t.subject}</b></td><td>${t.body}${t.reply?`<br><span class="muted">↩ Admin: ${t.reply}</span>`:""}</td><td><span class="tag ${t.status==="open"?"warn":t.status==="replied"?"on":"off"}">${t.status.toUpperCase()}</span></td><td>${t.status!=="closed"?`<button class="btn btn-ghost btn-sm" data-sup-reply="${t.id}">Reply</button> <button class="btn btn-ghost btn-sm" data-sup-close="${t.id}">Close</button>`:'—'}</td></tr>`).join("")}</tbody></table>`:'<div class="muted">No tickets match.</div>';
+  $("supMsgLog").innerHTML=msgs.length?msgs.slice(0,8).map(m=>`<div class="kv"><span class="k">${new Date(m.t||0).toLocaleString()}<br><span class="muted">${m.to==="all"?"Broadcast to all players":"To the demo player"}</span></span><span class="v">${m.body}</span></div>`).join(""):'<div class="muted">No messages sent yet.</div>';
+}
+function adminReplyTicket(id){const t=(S.supportTickets||[]).find(x=>x.id===id);if(!t)return;
+  const r=prompt(`Reply to ${t.who} — ${t.subject}`,"Thanks for reaching out — we're looking into it.");
+  if(r===null)return;
+  t.reply=r.trim()||"We've noted this and will follow up.";t.status="replied";t.repliedAt=Date.now();
+  audit("ticket-reply",t.subject);renderSupport();save();toast("Reply sent to "+t.who+".");}
+function adminCloseTicket(id){const t=(S.supportTickets||[]).find(x=>x.id===id);if(!t)return;
+  t.status="closed";t.repliedAt=t.repliedAt||Date.now();
+  audit("ticket-close",t.subject);renderSupport();updateAdminNavBadges();save();toast("Ticket closed.");}
+function adminSendPlayerMessage(){const to=$("supMsgTo").value,body=$("supMsgBody").value.trim();
+  if(!body){toast("Message body is required.","err");return;}
+  S.adminMessages=S.adminMessages||[];
+  S.adminMessages.unshift({id:"msg"+Date.now(),to,body,t:Date.now()});
+  $("supMsgBody").value="";
+  audit("player-message",to+" · "+body.slice(0,60));renderSupport();save();toast(to==="all"?"Broadcast sent to all players.":"Message delivered to the demo player.");}
+/* ── Admin users & backups ── */
+function adminAddUser(){const name=$("setUserName").value.trim(),role=$("setUserRole").value;
+  if(!name){toast("Enter an admin name.","err");return;}
+  if((S.adminUsers||[]).some(u=>u.name.toLowerCase()===name.toLowerCase())){toast("That name already exists.","err");return;}
+  S.adminUsers.push({id:"u"+Date.now(),name,role,status:"active",createdAt:Date.now()});
+  $("setUserName").value="";
+  audit("admin-user-add",name+" ("+role+")");renderSettings();save();toast(name+" added as "+role+".");}
+function adminToggleUser(id){const u=(S.adminUsers||[]).find(x=>x.id===id);if(!u)return;
+  if(u.name==="admin"&&u.role==="Super Admin"){toast("The primary Super Admin cannot be disabled.","err");return;}
+  u.status=u.status==="active"?"disabled":"active";
+  audit("admin-user-"+(u.status==="active"?"enable":"disable"),u.name);renderSettings();save();toast(u.name+(u.status==="active"?" enabled.":" disabled."));}
+function adminSetUserRole(id,role){const u=(S.adminUsers||[]).find(x=>x.id===id);if(!u)return;
+  if(u.name==="admin"&&role!=="Super Admin"){toast("The primary account stays Super Admin.","err");renderSettings();return;}
+  const was=u.role;u.role=role;
+  audit("admin-user-role",u.name+": "+was+" → "+role);renderSettings();save();toast(u.name+" is now "+role+".");}
+function adminCreateBackup(){const id="bk"+Date.now();const json=JSON.stringify(S);
+  try{localStorage.setItem("tossmatch_backup_"+id,json);}catch(e){toast("Snapshot too large for browser storage.","err");return;}
+  S.backups=S.backups||[];S.backups.unshift({id,t:Date.now(),bytes:json.length});
+  while(S.backups.length>5){const oldB=S.backups.pop();try{localStorage.removeItem("tossmatch_backup_"+oldB.id);}catch(e2){}}
+  audit("backup-create",id);renderSettings();save();toast("Backup snapshot created (5 kept).");}
+function adminRestoreBackup(id){const raw=localStorage.getItem("tossmatch_backup_"+id);
+  if(!raw){toast("Backup data not found in this browser.","err");return;}
+  try{
+    const p=JSON.parse(raw),d=defaultState();
+    // Mutate the live state object in place so every module reference stays valid
+    Object.keys(S).forEach(k=>{if(!(k in p)&&!(k in d))delete S[k];});
+    Object.assign(S,d,p);
+    S.settings=Object.assign(d.settings,p.settings||{});
+    S.config=Object.assign(d.config,p.config||{});
+    S.frozen=Object.assign(d.frozen,p.frozen||{});
+    S.announcements=Array.isArray(p.announcements)?p.announcements:[];
+    S.gamesEnabled=p.gamesEnabled||{};
+    S.supportTickets=Array.isArray(p.supportTickets)?p.supportTickets:[];
+    S.adminMessages=Array.isArray(p.adminMessages)?p.adminMessages:[];
+    S.adminUsers=Array.isArray(p.adminUsers)?p.adminUsers:[];
+    S.backups=Array.isArray(p.backups)?p.backups:[];
+    audit("backup-restore",id);
+    render();save();toast("Backup restored.");
+  }catch(e){toast("Restore failed: "+e.message,"err");}}
+function adminDeleteBackup(id){try{localStorage.removeItem("tossmatch_backup_"+id);}catch(e){}
+  S.backups=(S.backups||[]).filter(b=>b.id!==id);
+  audit("backup-delete",id);renderSettings();save();toast("Backup deleted.");}
 /* ── Reports & Analytics ── */
 function reportsData(){
   const now=Date.now(),D=86400000;
@@ -638,7 +735,7 @@ function renderCatalogHistory(){
 const ADMIN_NAV_META=[
  ['Command','dash','⌁','Overview','KPIs, alerts, revenue and quick controls','dashboard command'],['Command','ops','🚦','Live Ops','Player controls, queues, bots, limits and transfers','liquidity player bot'],['Command','people','👥','Players','Searchable roster with balances, records and top-ups','directory roster players'],['Command','features','✨','Feature Hub','Community, Arcade, Progress and Economy telemetry','b1 b4 features'],['Command','directory','🗂','Feature Directory','Search every feature and open exact destinations','product map'],['Command','reports','📈','Reports & Analytics','7-day revenue, cash flow, mix and busiest games with CSV/JSON export','report analytics chart export csv json'],
  ['Commercial','rates','💹','Rates & Jackpot','Fees, jackpot rules and transfer limits','configuration'],['Commercial','econ','📈','Economy','P&L, taps, sinks, simulator and compensation','revenue finance'],['Commercial','revenue','📊','Revenue','Total volume, net profit, daily/weekly charts and transaction exports','revenue volume profit chart export csv json'],['Commercial','topups','💳','Top-ups & Deposits','Unified player and bot top-up and deposit volume, bonuses, trends and records','topup deposit credit bonus liquidity'],['Commercial','withdraw','🏦','Withdrawals','Paid cash-outs, house P&L and reversal controls','cashout payout reversal'],['Commercial','promo','🎁','Promotions','Campaigns, top-up offer and broadcast banner','offers marketing'],['Commercial','games','🎮','Games & Content','Catalog plays, fee contribution and enable/disable per game','catalog game enable disable content'],
- ['Engagement','vip','💎','VIP & Levels','Eight VIP tiers and paginated level rewards','progression'],['Engagement','trny','🏟','Tournaments','Create and inspect bot and player brackets','competition'],['Engagement','referrals','🔗','Referrals','Invite program, referred players and 5% house referral payout','referral invite program payout'],['Engagement','announcements','📣','Announcements','Create and publish in-app announcements to player Homes','announcement broadcast message home'],
+ ['Engagement','vip','💎','VIP & Levels','Eight VIP tiers and paginated level rewards','progression'],['Engagement','trny','🏟','Tournaments','Create and inspect bot and player brackets','competition'],['Engagement','referrals','🔗','Referrals','Invite program, referred players and 5% house referral payout','referral invite program payout'],['Engagement','announcements','📣','Announcements','Create and publish in-app announcements to player Homes','announcement broadcast message home'],['Engagement','support','💬','Support & Messaging','Unified ticket inbox with player and bot reporters, replies and platform messages','support ticket helpdesk message inbox'],
  ['Governance','audit','🧾','Audit & Data','Audit trail, histories, proofs and exports','compliance records'],['Governance','trust','🛡️','Trust Center','Analytics, anti-cheat, RG, PWA, API, 2FA and statements','security safety']
 ].map(x=>({group:x[0],tab:x[1],icon:x[2],name:x[3],desc:x[4],keys:x[5]}));
 const ADMIN_CATALOG_GAMES=[['overunder','Over / Under'],['speed','Speed Round'],['tug','Tug of War'],['evenodd','Even / Odd Sum'],['closest','Closest Number'],['luckybattle','Lucky Number Battle'],['sumpredict','Sum Prediction'],['higherbyte','Higher Byte'],['patternrace','Pattern Race'],['parlayduel','Parlay Duel'],['prediction','Prediction Streak'],['blind','Blind Pick'],['rangewar','Range War'],['bullseye','Bullseye'],['chain','Chain Reaction'],['ladder','Elimination Ladder'],['mirrored','Mirrored Coins'],['rps','Rock Paper Scissors'],['closest21','Closest to 21'],['triplecoin','Triple Coin Majority'],['sequencebuilder','Sequence Builder'],['dicesumduel','Dice Sum Duel'],['colourspectrum','Colour Spectrum'],['primecomposite','Prime vs Composite'],['medianbattle','Median Battle'],['streaksurvivor','Streak Survivor'],['territory','Territory Capture'],['modulo4','Modulo Four'],['pokerhigh','Poker High'],['threedicepoker','Three Dice Poker'],['lastdigit','Last Digit Duel'],['binaryduel','Binary Code Duel'],['coinbalance','Coin Balance Battle'],['bytewar','Byte War'],['sumfour','Sum Four'],['highcard','High Card Duel']];
@@ -654,10 +751,10 @@ function syncAdminNavigation(tab){$("adminNavJump").value=tab;document.querySele
 /* ── Admin access control (v13): login gate, RBAC roles, session, badges ── */
 const ADMIN_SESSION_KEY="fa_admin_session";
 const ADMIN_ROLES={
- 'Super Admin':['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','referrals','announcements','reports','games','approvals','audit','trust','settings'],
+ 'Super Admin':['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','referrals','announcements','support','reports','games','approvals','audit','trust','settings'],
  'Finance':['dash','econ','revenue','topups','withdraw','promo','audit','reports'],
- 'Operations':['dash','ops','people','features','directory','vip','trny','approvals','promo','games','announcements'],
- 'Support':['dash','people','approvals','trust']
+ 'Operations':['dash','ops','people','features','directory','vip','trny','approvals','promo','games','announcements','support'],
+ 'Support':['dash','people','approvals','trust','support']
 };
 const ADMIN_ROLE_DESC={'Super Admin':'Full access to every console screen','Finance':'Revenue, economy, liquidity and audit','Operations':'Live ops, players, engagement and approvals','Support':'Player lookups, approvals and trust tools'};
 function adminSession(){try{const x=JSON.parse(sessionStorage.getItem(ADMIN_SESSION_KEY)||'null');return x&&x.user&&x.role?x:null;}catch(e){return null;}}
@@ -701,10 +798,12 @@ function updateAdminNavBadges(){
         approvals=kycPending+flags,
         pendingPayouts=(S.bots||[]).filter(b=>b.trigger&&b.balance>=b.trigger-300).length,
         campaigns=(cfg().promotions||[]).filter(p2=>p2.active!==false).length;
-  const ba=$("adminBadgeApprovals"),bw=$("adminBadgeWithdraw"),bp=$("adminBadgePromo");
+  const openTickets=(S.supportTickets||[]).filter(t=>t.status==="open").length;
+  const ba=$("adminBadgeApprovals"),bw=$("adminBadgeWithdraw"),bp=$("adminBadgePromo"),bs=$("adminBadgeSupport");
   if(ba){ba.textContent=approvals;ba.hidden=!approvals;}
   if(bw){bw.textContent=pendingPayouts;bw.hidden=!pendingPayouts;}
   if(bp){bp.textContent=campaigns;bp.hidden=!campaigns;}
+  if(bs){bs.textContent=openTickets;bs.hidden=!openTickets;}
 }
 /* deterministic simulated KYC request queue (bot identities) */
 function kycQueue(){
@@ -770,6 +869,11 @@ function renderSettings(){
   $("setBotCount").textContent=(S.bots||[]).length+' simulated players';
   $("setTurboState").textContent=(S.turbo&&S.turbo>1)?`${S.turbo}× stress`:'Normal (1×)';
   $("setMaintState").innerHTML=c.features.maintenance?'<span class="tag">ACTIVE</span>':'<span class="tag on">OFF</span>';
+  // Admin users
+  const users=S.adminUsers||[];
+  $("setUsers").innerHTML=users.map(u=>`<div class="kv"><span class="k">${u.name}<br><span class="muted">since ${new Date(u.createdAt||0).toLocaleDateString()}</span></span><span class="v"><select data-user-role="${u.id}" style="max-width:120px">${["Super Admin","Finance","Operations","Support"].map(r=>`<option ${r===u.role?"selected":""}>${r}</option>`).join("")}</select> <span class="tag ${u.status==="active"?"on":"off"}">${u.status.toUpperCase()}</span> <button class="btn btn-ghost btn-sm" data-user-toggle="${u.id}">${u.status==="active"?"Disable":"Enable"}</button></span></div>`).join("")||'<div class="muted">No admin users.</div>';
+  // Backups
+  $("setBackups").innerHTML=(S.backups||[]).length?S.backups.map(b=>`<div class="kv"><span class="k">${new Date(b.t).toLocaleString()}<br><span class="muted">${b.id} · ${(b.bytes/1024).toFixed(1)} KB</span></span><span class="v"><button class="btn btn-ghost btn-sm" data-bk-restore="${b.id}">Restore</button> <button class="btn btn-danger btn-sm" data-bk-del="${b.id}">Delete</button></span></div>`).join(""):'<div class="muted">No snapshots yet — create one before risky changes.</div>';
 }
 function adminLogin(){
   const user=$("adminLoginUser").value.trim(),pass=$("adminLoginPass").value,role=$("adminLoginRole").value,tfa=$("adminLoginTfa").value.trim();
@@ -1068,6 +1172,7 @@ const ADMIN_TAB_RENDERERS={
   games:()=>renderGamesAdmin(),
   referrals:()=>renderReferrals(),
   announcements:()=>renderAnnouncements(),
+  support:()=>renderSupport(),
 };
 /** Render only the active Admin screen (no monolithic repaint). */
 function renderAdminTab(tab){
@@ -1152,7 +1257,7 @@ export function bind(){
 
 
 /* expose top-level symbols to globalThis so legacy inline handlers and the shared theme engine can resolve them */
-Object.assign(globalThis,{$,ADMIN_TAB_RENDERERS,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_ROLES,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAddExclusion,adminDecideKyc,adminLogin,adminLogout,adminRemoveExclusion,adminResolveFlag,adminSession,applyAdminRbac,applyAdminNavGroups,renderAdminProfile,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,drawRng,filterAdminNavigation,fmt,downloadFile,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderAdminTab,renderAdminTick,renderFeatureDirectory,renderFlags,renderGameParams,renderOps,renderRates,renderRevenue,renderSessionMonitor,renderGameHistory,renderLevels,renderPeople,renderPromo,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,renderReports,renderGamesAdmin,renderReferrals,renderAnnouncements,reportsData,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics});
+Object.assign(globalThis,{$,ADMIN_TAB_RENDERERS,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_ROLES,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAddExclusion,adminDecideKyc,adminLogin,adminLogout,adminRemoveExclusion,adminResolveFlag,adminSession,applyAdminRbac,applyAdminNavGroups,renderAdminProfile,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,drawRng,filterAdminNavigation,fmt,downloadFile,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderAdminTab,renderAdminTick,renderFeatureDirectory,renderFlags,renderGameParams,renderOps,renderRates,renderRevenue,renderSessionMonitor,renderGameHistory,renderLevels,renderPeople,renderPromo,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,renderReports,renderGamesAdmin,renderReferrals,renderAnnouncements,renderSupport,reportsData,adminReplyTicket,adminCloseTicket,adminSendPlayerMessage,adminAddUser,adminToggleUser,adminSetUserRole,adminCreateBackup,adminRestoreBackup,adminDeleteBackup,defaultState,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics});
 
-export {$,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_TAB_RENDERERS,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,downloadFile,drawRng,filterAdminNavigation,fmt,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAdminTab,renderAdminTick,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderFeatureDirectory,renderFlags,renderGameHistory,renderGameParams,renderLevels,renderOps,renderPeople,renderPromo,renderRates,renderRevenue,renderSessionMonitor,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,renderReports,renderGamesAdmin,renderReferrals,renderAnnouncements,reportsData,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics};
+export {$,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_TAB_RENDERERS,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,downloadFile,drawRng,filterAdminNavigation,fmt,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAdminTab,renderAdminTick,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderFeatureDirectory,renderFlags,renderGameHistory,renderGameParams,renderLevels,renderOps,renderPeople,renderPromo,renderRates,renderRevenue,renderSessionMonitor,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,renderReports,renderGamesAdmin,renderReferrals,renderAnnouncements,renderSupport,reportsData,adminReplyTicket,adminCloseTicket,adminSendPlayerMessage,adminAddUser,adminToggleUser,adminSetUserRole,adminCreateBackup,adminRestoreBackup,adminDeleteBackup,defaultState,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics};
 

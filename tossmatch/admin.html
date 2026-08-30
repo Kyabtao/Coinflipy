@@ -29,7 +29,7 @@
 <main>
   <nav class="tabs" id="tabs">
     <div class="admin-nav-brand"><span>CONTROL CENTER</span><b>v13.0</b></div>
-    <div class="admin-nav-tools"><input id="adminNavSearch" type="search" placeholder="Find Admin screen…" aria-label="Search Admin navigation"/><select id="adminNavJump" aria-label="Jump to Admin screen"><option value="">Quick jump…</option><optgroup label="Command"><option value="dash">Overview</option><option value="ops">Live Ops</option><option value="people">Players</option><option value="features">Feature Hub</option><option value="directory">Feature Directory</option><option value="reports">Reports &amp; Analytics</option></optgroup><optgroup label="Commercial"><option value="rates">Rates & Jackpot</option><option value="econ">Economy</option><option value="revenue">Revenue</option><option value="topups">Top-ups &amp; Deposits</option><option value="withdraw">Withdrawals</option><option value="promo">Promotions</option><option value="games">Games &amp; Content</option></optgroup><optgroup label="Engagement"><option value="vip">VIP & Levels</option><option value="trny">Tournaments</option><option value="referrals">Referrals</option><option value="announcements">Announcements</option></optgroup><optgroup label="Governance"><option value="approvals">Approvals</option><option value="audit">Audit & Data</option><option value="trust">Trust Center</option><option value="settings">Settings</option></optgroup></select><div class="admin-nav-empty" id="adminNavEmpty">No Admin screens match.</div></div>
+    <div class="admin-nav-tools"><input id="adminNavSearch" type="search" placeholder="Find Admin screen…" aria-label="Search Admin navigation"/><select id="adminNavJump" aria-label="Jump to Admin screen"><option value="">Quick jump…</option><optgroup label="Command"><option value="dash">Overview</option><option value="ops">Live Ops</option><option value="people">Players</option><option value="features">Feature Hub</option><option value="directory">Feature Directory</option><option value="reports">Reports &amp; Analytics</option></optgroup><optgroup label="Commercial"><option value="rates">Rates & Jackpot</option><option value="econ">Economy</option><option value="revenue">Revenue</option><option value="topups">Top-ups &amp; Deposits</option><option value="withdraw">Withdrawals</option><option value="promo">Promotions</option><option value="games">Games &amp; Content</option></optgroup><optgroup label="Engagement"><option value="vip">VIP & Levels</option><option value="trny">Tournaments</option><option value="referrals">Referrals</option><option value="announcements">Announcements</option><option value="support">Support &amp; Messaging</option></optgroup><optgroup label="Governance"><option value="approvals">Approvals</option><option value="audit">Audit & Data</option><option value="trust">Trust Center</option><option value="settings">Settings</option></optgroup></select><div class="admin-nav-empty" id="adminNavEmpty">No Admin screens match.</div></div>
     <div class="admin-nav-group" data-group="Command">
       <button class="admin-nav-group-head" data-group-toggle="Command" aria-expanded="true"><span class="admin-nav-chip" aria-hidden="true">⌁</span>Command<em class="nav-count">6</em><i class="chev" aria-hidden="true">▾</i></button>
       <div class="admin-nav-group-body">
@@ -54,12 +54,13 @@
       </div>
     </div>
     <div class="admin-nav-group" data-group="Engagement">
-      <button class="admin-nav-group-head" data-group-toggle="Engagement" aria-expanded="true"><span class="admin-nav-chip" aria-hidden="true">🎯</span>Engagement<em class="nav-count">4</em><i class="chev" aria-hidden="true">▾</i></button>
+      <button class="admin-nav-group-head" data-group-toggle="Engagement" aria-expanded="true"><span class="admin-nav-chip" aria-hidden="true">🎯</span>Engagement<em class="nav-count">5</em><i class="chev" aria-hidden="true">▾</i></button>
       <div class="admin-nav-group-body">
         <button class="tab" data-tab="vip">💎 VIP &amp; Levels</button>
         <button class="tab" data-tab="trny">🏟 Tournaments</button>
         <button class="tab" data-tab="referrals">🔗 Referrals</button>
         <button class="tab" data-tab="announcements">📣 Announcements</button>
+        <button class="tab" data-tab="support">💬 Support &amp; Messaging<span class="nav-badge" id="adminBadgeSupport" hidden></span></button>
       </div>
     </div>
     <div class="admin-nav-group" data-group="Governance">
@@ -594,6 +595,46 @@
         <div><label>Player name</label><input id="adminPlayerName" placeholder="Leave blank to keep default"/></div>
       </div>
       <button class="btn btn-primary" id="savePlayerPrefs" style="margin-top:12px">💾 Save player preferences</button>
+    </div>
+      <div class="grid2" style="margin-top:0">
+      <div class="card"><h3>👥 Admin users</h3>
+        <p class="muted">Console accounts and their roles. Every change is audit-logged.</p>
+        <div id="setUsers"></div>
+        <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:10px"><input id="setUserName" placeholder="New admin name" style="max-width:160px"/><select id="setUserRole" style="max-width:130px"><option>Super Admin</option><option>Finance</option><option>Operations</option><option>Support</option></select><button class="btn btn-primary btn-sm" id="setUserAdd">Add user</button></div>
+      </div>
+      <div class="card"><h3>💾 Backup &amp; restore</h3>
+        <p class="muted">Point-in-time snapshots of the whole demo state, kept in this browser. The five newest snapshots are retained.</p>
+        <div class="row" style="gap:6px;margin-bottom:8px"><button class="btn btn-primary btn-sm" id="setBackupCreate">Create snapshot</button></div>
+        <div id="setBackups"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SUPPORT & MESSAGING -->
+  <section class="panel" id="panel-support">
+    <div class="admin-hero compact"><div><span class="admin-eyebrow">PLAYER HELPDESK</span><h1>Support &amp; Messaging</h1><p>One unified inbox for tickets from the demo player and the bot network, with replies, close-outs and platform messages delivered straight to the player's Services hub.</p></div></div>
+    <div class="grid4" id="supTiles" style="margin-bottom:16px"></div>
+    <div class="grid2" style="margin-bottom:16px">
+      <div class="card"><h3>📨 Message a player</h3>
+        <div class="row" style="flex-wrap:wrap;gap:6px;margin-bottom:8px">
+          <select id="supMsgTo" style="max-width:170px"><option value="you">Demo player</option><option value="all">All players (broadcast)</option></select>
+          <input id="supMsgBody" placeholder="Your message…" style="flex:1;min-width:200px"/>
+          <button class="btn btn-primary btn-sm" id="supMsgSend">Send</button>
+        </div>
+        <p class="muted">Messages to the demo player appear live in their Services → Support tab.</p>
+      </div>
+      <div class="card"><h3>📬 Recent outgoing messages</h3><div id="supMsgLog"></div></div>
+    </div>
+    <div class="card">
+      <h3>🎫 Ticket inbox</h3>
+      <div class="row" style="margin-bottom:8px">
+        <input id="supFilter" placeholder="Filter name, subject or message…"/>
+        <select id="supStatus"><option value="">All statuses</option><option value="open">Open</option><option value="replied">Replied</option><option value="closed">Closed</option></select>
+        <select id="supSort"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option></select>
+      </div>
+      <div id="supList" style="overflow:auto"></div>
+      <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="supPrev">← Previous</button><span class="muted" id="supPage">Page 1</span><button class="btn btn-ghost btn-sm" id="supNext">Next →</button></div>
     </div>
   </section>
 

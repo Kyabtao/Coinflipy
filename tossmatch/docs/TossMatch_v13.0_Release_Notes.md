@@ -136,11 +136,11 @@ verifies `net = gross − (promo + comps + rakeback + referral)`.
 - **Login gate** — `#adminLoginOverlay` blocks the console until sign-in.
   Demo credentials **admin / flip2026**, 2FA demo code **246810**. Sessions
   persist in `sessionStorage` (`fa_admin_session`) per browser tab.
-- **RBAC roles** — *Super Admin* (21 screens), *Finance* (dash, economy,
+- **RBAC roles** — *Super Admin* (22 screens), *Finance* (dash, economy,
   revenue, top-ups, withdrawals, promotions, audit, reports, referrals),
   *Operations* (dash, live ops, players, feature hub/directory, engagement,
-  approvals, promotions, games & content, announcements), *Support* (dash,
-  players, approvals, trust). Out-of-scope tabs are hidden,
+  approvals, promotions, games & content, announcements, support),
+  *Support* (dash, players, approvals, trust, support). Out-of-scope tabs are hidden,
   the jump select and command palette stay consistent, and an active
   out-of-scope screen redirects to the role's first screen.
 - **Approvals screen** (new) — player KYC approve/reset (audit-logged), a
@@ -152,20 +152,45 @@ verifies `net = gross − (promo + comps + rakeback + referral)`.
   mode, engine speed and a factory reset. All changes audit-logged.
 - **Header** — dynamic profile (initials, user, role) with logout.
 
+
+## 8. v13.2 increment — Support, admin users and backups
+
+- **Support & Messaging screen (new, 21 → 22)** — one unified ticket inbox
+  for reporters from both the demo player and the bot network: Player/Bot
+  badges, filter, status filter (open / replied / closed), reply and
+  close actions (all audit-logged), a nav badge for open tickets, plus a
+  compose panel that sends platform messages (direct or broadcast).
+- **Player-side support** — the Services hub gains a **Support** tab:
+  "Contact Support" files a ticket that appears in the Admin inbox
+  immediately (shared state), "Messages from the platform" shows Admin
+  messages, and "My tickets" tracks each ticket's status and reply.
+- **Admin user management (Settings)** — console accounts with role
+  select, enable/disable and add-user controls; the primary Super Admin
+  is protected from demotion or disable. Every change is audit-logged.
+- **Backup & restore (Settings)** — point-in-time snapshots of the whole
+  demo state, kept in the browser (five newest retained) with create /
+  restore / delete; restore mutates the live state in place so no
+  reference is invalidated.
+- **Directory** — ADM-8 (Support & Messaging) and ADM-9 (Admin Users &
+  Backups) added to the feature directory.
+
 ## 6. Verification
 
 - `node tools/audit.js` — static + boot audit clean (module structure, ids,
   asset references, no internal codes in visible copy, both apps boot).
-- `node tools/boot-smoke.mjs` — 25/25 (boot, all 19 player tabs, all 21 Admin
+- `node tools/boot-smoke.mjs` — 25/25 (boot, all 19 player tabs, all 22 Admin
   screens, live bet + ledger invariants, Admin revenue screen).
-- `node tools/test-new-features.mjs` — 74/74 (event calendar + reminders,
+- `node tools/test-new-features.mjs` — 94/94 (event calendar + reminders,
   milestone claims, full auction flow incl. 10% fee, 36/25 game counts,
   nav groups/badges/recent/search, per-page tick stability incl. structure
-  change, Admin login, wrong-password rejection, RBAC scoping over 21
+  change, Admin login, wrong-password rejection, RBAC scoping over 22
   screens, KYC queue decisions, settings persistence, Admin groups, unified
   top-up/withdrawal tables + All/Players/Bots filters, Reports charts and
   exports, Games & Content enable/disable, Referrals registration,
-  Announcements publish → player Home banner → unpublish).
+  Announcements publish → player Home banner → unpublish, Support ticket
+  flow end-to-end (player files → Admin inbox → reply → close → filter,
+  Admin message → player hub), Admin users add/role/disable with primary
+  protection, backup create/restore/delete round-trip).
 - `bash tools/run-audit-loop.sh 20` — 20 consecutive clean passes of the
   full stack (audit + boot-smoke + new-features); log in
   `tossmatch/docs/audit-loop-v13.0.log`.

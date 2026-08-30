@@ -276,7 +276,7 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   record('overlay hidden after login', overlay.hidden && !w2.document.body.classList.contains('admin-locked'));
 
   /* ── RBAC: Finance sees scoped screens only ── */
-  const hiddenForFinance = ['ops','people','features','directory','rates','vip','trny','approvals','trust','settings'].filter(t => {
+  const hiddenForFinance = ['ops','people','features','directory','rates','vip','trny','approvals','trust','settings','support'].filter(t => {
     const b = w2.document.querySelector('.tab[data-tab="' + t + '"]');
     return b && b.style.display === 'none';
   });
@@ -284,13 +284,13 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
     const b = w2.document.querySelector('.tab[data-tab="' + t + '"]');
     return b && b.style.display !== 'none';
   });
-  record('RBAC hides out-of-scope screens for Finance', hiddenForFinance.length === 10 && visibleForFinance, 'hidden=' + hiddenForFinance.length + ' visibleOk=' + visibleForFinance);
+  record('RBAC hides out-of-scope screens for Finance', hiddenForFinance.length === 11 && visibleForFinance, 'hidden=' + hiddenForFinance.length + ' visibleOk=' + visibleForFinance);
   // role switch to Super Admin via Settings? Finance cannot see settings — switch session directly
   w2.sessionStorage.setItem('fa_admin_session', JSON.stringify({ user: 'admin', role: 'Super Admin', t: Date.now() }));
   globalThis.renderAdminProfile && globalThis.renderAdminProfile();
   globalThis.applyAdminRbac();
-  const allVisible = ['ops','settings','approvals','trust','reports','games','referrals','announcements'].every(t => { const b = w2.document.querySelector('.tab[data-tab="' + t + '"]'); return b && b.style.display !== 'none'; });
-  record('Super Admin sees all 21 screens', allVisible);
+  const allVisible = ['ops','settings','approvals','trust','reports','games','referrals','announcements','support'].every(t => { const b = w2.document.querySelector('.tab[data-tab="' + t + '"]'); return b && b.style.display !== 'none'; });
+  record('Super Admin sees all 22 screens', allVisible);
 
   /* ── Approvals screen ── */
   const apTab = w2.document.querySelector('.tab[data-tab="approvals"]');
@@ -322,14 +322,14 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   record('admin group collapse works', gov.classList.contains('collapsed') && (globalThis.S.adminNavGroups||{}).Governance === true);
 
   /* ── Full per-screen render check (17 screens, content present) ── */
-  const screenIds=['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','approvals','audit','trust','settings','reports','games','referrals','announcements'];
+  const screenIds=['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','approvals','audit','trust','settings','reports','games','referrals','announcements','support'];
   const emptyScreens=screenIds.filter(t=>{
     const b=w2.document.querySelector('.tab[data-tab="'+t+'"]');
     b.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
     const panel=w2.document.getElementById('panel-'+t);
     return !panel || !panel.classList.contains('active') || panel.innerHTML.trim().length<50;
   });
-  record('all 21 admin screens render content after login', emptyScreens.length===0, 'empty=' + emptyScreens.join(','));
+  record('all 22 admin screens render content after login', emptyScreens.length===0, 'empty=' + emptyScreens.join(','));
   // revenue register includes the new fund sources
   const revTab=w2.document.querySelector('.tab[data-tab="revenue"]');
   revTab.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
@@ -415,6 +415,83 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   globalThis.renderHome();
   record('player Home hides banner after unpublish', w.document.getElementById('homeAnnounce').hidden);
   globalThis.document=prevDoc;
+
+  /* ── Support & Messaging screen ── */
+  adminClick('.tab[data-tab="support"]');
+  const supRows0=w2.document.querySelectorAll('#supList tbody tr').length;
+  record('support: inbox seeds 3 tickets with Player/Bot badges', supRows0>=3 && /tag on">Player/.test(w2.document.getElementById('supList').innerHTML) && /tag warn">Bot/.test(w2.document.getElementById('supList').innerHTML), 'rows=' + supRows0);
+  record('support: nav badge shows open tickets', !w2.document.getElementById('adminBadgeSupport').hidden && +w2.document.getElementById('adminBadgeSupport').textContent>=3);
+  // player files a ticket (player document context)
+  globalThis.document=w.document;
+  w.document.querySelector('.tab[data-tab="services"]').dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
+  w.document.querySelector('.hub-tab[data-hubtab="support"], [data-hubtab="support"]').dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
+  w.document.getElementById('supSubj').value='Test ticket from player';
+  w.document.getElementById('supMsg2').value='Can someone look at my balance?';
+  w.document.getElementById('supSend').dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
+  record('support: player ticket appears in shared state', S2.supportTickets.some(t=>t.subject==='Test ticket from player'&&t.kind==='player'));
+  record('support: player sees own ticket with status', /Test ticket from player/.test(w.document.getElementById('servicesHub').innerHTML) && /OPEN/.test(w.document.getElementById('servicesHub').innerHTML));
+  globalThis.document=prevDoc;
+  adminClick('.tab[data-tab="support"]');
+  record('support: admin inbox shows the player ticket', /Test ticket from player/.test(w2.document.getElementById('supList').innerHTML));
+  // reply + close
+  const openRow=[...w2.document.querySelectorAll('#supList tbody tr')].find(tr=>/Test ticket from player/.test(tr.innerHTML));
+  openRow.querySelector('[data-sup-reply]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  const repliedTk=S2.supportTickets.find(t=>t.subject==='Test ticket from player');
+  record('support: reply marks ticket replied', repliedTk.status==='replied' && repliedTk.reply.length>0);
+  const closedRow=[...w2.document.querySelectorAll('#supList tbody tr')].find(tr=>/Test ticket from player/.test(tr.innerHTML));
+  closedRow.querySelector('[data-sup-close]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('support: close marks ticket closed', S2.supportTickets.find(t=>t.subject==='Test ticket from player').status==='closed');
+  // status filter
+  w2.document.getElementById('supStatus').value='closed';
+  w2.document.getElementById('supStatus').dispatchEvent(new w2.Event('change',{bubbles:true}));
+  const closedOnly=[...w2.document.querySelectorAll('#supList tbody tr')].every(tr=>/CLOSED/.test(tr.innerHTML));
+  record('support: status filter shows only closed tickets', closedOnly && w2.document.querySelectorAll('#supList tbody tr').length>=1);
+  w2.document.getElementById('supStatus').value='';
+  w2.document.getElementById('supStatus').dispatchEvent(new w2.Event('change',{bubbles:true}));
+  // message to the demo player
+  w2.document.getElementById('supMsgBody').value='Scheduled maintenance tonight.';
+  w2.document.getElementById('supMsgSend').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('support: admin message stored for the demo player', S2.adminMessages.some(m=>m.body==='Scheduled maintenance tonight.'&&m.to==='you'));
+  globalThis.document=w.document;
+  w.document.querySelector('[data-hubtab="support"]').dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
+  record('support: player hub shows the platform message', /Scheduled maintenance tonight/.test(w.document.getElementById('servicesHub').innerHTML));
+  globalThis.document=prevDoc;
+
+  /* ── Admin users & backups (Settings) ── */
+  adminClick('.tab[data-tab="settings"]');
+  record('settings: admin users list seeded (4 accounts)', w2.document.querySelectorAll('#setUsers [data-user-role]').length===4, 'rows=' + w2.document.querySelectorAll('#setUsers [data-user-role]').length);
+  w2.document.getElementById('setUserName').value='newbie';
+  w2.document.getElementById('setUserRole').value='Support';
+  w2.document.getElementById('setUserAdd').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('settings: add admin user persists', S2.adminUsers.some(u=>u.name==='newbie'&&u.role==='Support'));
+  const opsRow=[...w2.document.querySelectorAll('#setUsers .kv')].find(r=>/ops/.test((r.querySelector('.k')||{}).textContent||''));
+  const opsRole=opsRow.querySelector('[data-user-role]');
+  const opsId=opsRole.dataset.userRole;
+  opsRole.value='Finance';
+  opsRole.dispatchEvent(new w2.Event('change',{bubbles:true}));
+  record('settings: role change persists', S2.adminUsers.find(u=>u.id===opsId).role==='Finance');
+  const opsRow2=[...w2.document.querySelectorAll('#setUsers .kv')].find(r=>r.querySelector('[data-user-toggle="'+opsId+'"]'));
+  opsRow2.querySelector('[data-user-toggle="'+opsId+'"]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('settings: disable user persists', S2.adminUsers.find(u=>u.id===opsId).status==='disabled');
+  // the primary Super Admin is protected from demotion/disable
+  const adminRow=[...w2.document.querySelectorAll('#setUsers .kv')].find(r=>/^admin/.test((r.querySelector('.k')||{}).textContent||''));
+  const adminRole=adminRow.querySelector('[data-user-role]');
+  adminRole.value='Support';
+  adminRole.dispatchEvent(new w2.Event('change',{bubbles:true}));
+  record('settings: primary Super Admin cannot be demoted', S2.adminUsers.find(u=>u.name==='admin').role==='Super Admin');
+  // backup / restore round trip
+  const feeBefore2=S2.config.feePct;
+  w2.document.getElementById('setBackupCreate').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('backup: snapshot created in state + storage', (S2.backups||[]).length===1 && !!w2.localStorage.getItem('tossmatch_backup_'+S2.backups[0].id), (S2.backups||[]).length + ' backups');
+  S2.config.feePct=feeBefore2+7;
+  w2.document.querySelector('#setBackups [data-bk-restore]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('backup: restore reverts a changed value', S2.config.feePct===feeBefore2, feeBefore2 + ' → ' + S2.config.feePct);
+  record('backup: snapshot list matches restored state', (S2.backups||[]).length===0);
+  w2.document.getElementById('setBackupCreate').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  const secondId=(S2.backups||[])[0]?.id;
+  record('backup: second snapshot created', (S2.backups||[]).length===1 && !!w2.localStorage.getItem('tossmatch_backup_'+secondId));
+  w2.document.querySelector('#setBackups [data-bk-del]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('backup: delete removes snapshot from state + storage', (S2.backups||[]).length===0 && !w2.localStorage.getItem('tossmatch_backup_'+secondId));
   dom2.window.close();
 }
 

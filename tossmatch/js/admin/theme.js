@@ -1,6 +1,6 @@
 /* FlipArena admin module — theme */
 import "../shared/runtime.js";
-import {$,DIRECTORY,SAVE_KEY,VIEWS,audit,cfg,downloadFile,fmt,render,renderAnnouncements,renderAudit,renderCatalogHistory,renderFeatureDirectory,renderFlags,renderGameHistory,renderGamesAdmin,renderLevels,renderPeople,renderReferrals,renderReports,renderTopupAnalytics,renderTrny,renderWithdrawals,reportsData,save,toast} from "./core.js";
+import {$,DIRECTORY,SAVE_KEY,VIEWS,audit,cfg,downloadFile,fmt,render,renderAnnouncements,renderAudit,renderCatalogHistory,renderFeatureDirectory,renderFlags,renderGameHistory,renderGamesAdmin,renderLevels,renderPeople,renderReferrals,renderReports,renderSupport,renderTopupAnalytics,renderTrny,renderWithdrawals,reportsData,save,toast} from "./core.js";
 import {THEME_PRESETS,applyTheme,clearThemeVars,closePalette,hexToRgb,openPalette,renderThemePresets,saveThemePrefs,shadeRgb,themeName,themePalette} from "../shared/theme.js";
 
 function bindViewControls(){
@@ -20,6 +20,21 @@ function bindViewControls(){
   bindChange("trnyStatusFilter",VIEWS.tournaments,"status",renderTrny);bindChange("trnySort",VIEWS.tournaments,"sort",renderTrny);pager("trny",VIEWS.tournaments,renderTrny);
   bindInput("wdFilter",VIEWS.withdrawals,"filter",renderWithdrawals);bindChange("wdSort",VIEWS.withdrawals,"sort",renderWithdrawals);bindChange("wdWho",VIEWS.withdrawals,"who",renderWithdrawals);pager("wd",VIEWS.withdrawals,renderWithdrawals);
   bindInput("gcFilter",VIEWS.gamesAdmin,"filter",renderGamesAdmin);bindChange("gcSort",VIEWS.gamesAdmin,"sort",renderGamesAdmin);pager("gc",VIEWS.gamesAdmin,renderGamesAdmin);
+  bindInput("supFilter",VIEWS.support,"filter",renderSupport);bindChange("supSort",VIEWS.support,"sort",renderSupport);bindChange("supStatus",VIEWS.support,"status",renderSupport);pager("sup",VIEWS.support,renderSupport);
+  $("supMsgSend").onclick=adminSendPlayerMessage;
+  $("setUserAdd").onclick=adminAddUser;
+  $("setBackupCreate").onclick=adminCreateBackup;
+  document.addEventListener("click",e=>{
+    const r=e.target.closest("[data-sup-reply]");if(r){adminReplyTicket(r.dataset.supReply);return;}
+    const c=e.target.closest("[data-sup-close]");if(c){adminCloseTicket(c.dataset.supClose);return;}
+    const ut=e.target.closest("[data-user-toggle]");if(ut){adminToggleUser(ut.dataset.userToggle);return;}
+    const br=e.target.closest("[data-bk-restore]");if(br){adminRestoreBackup(br.dataset.bkRestore);return;}
+    const bd=e.target.closest("[data-bk-del]");if(bd){adminDeleteBackup(bd.dataset.bkDel);return;}
+  });
+  document.addEventListener("change",e=>{
+    const u=e.target.closest("[data-user-role]");
+    if(u){adminSetUserRole(u.dataset.userRole,u.value);}
+  });
   bindInput("peopleFilter",VIEWS.people,"filter",renderPeople);bindChange("peopleSort",VIEWS.people,"sort",renderPeople);pager("people",VIEWS.people,renderPeople);
   document.addEventListener("click",e=>{
     const g=e.target.closest("[data-gc-toggle]");
@@ -51,6 +66,7 @@ function bindViewControls(){
   $("exportReportJson").onclick=()=>{const r=reportsData(),h=cfg().house;
     downloadFile("tossmatch-report.json",JSON.stringify({generatedAt:new Date().toISOString(),last7Days:{days:r.days,rev:r.rev,dep:r.dep,wd:r.wd},revenueMix:{fees:h.fees||0,catalogFees:h.catalogFees||0,cupRakes:h.cupRakes||0,trnyRakes:h.trnyRakes||0,shop:h.shop||0,xfFees:h.xfFees||0,auctionFees:h.auctionFees||0},house:{...h},totals:{games:r.games,catalog:r.cat}},null,2),"application/json");toast("Full report JSON exported.");};
 }
+const {adminReplyTicket,adminCloseTicket,adminSendPlayerMessage,adminAddUser,adminToggleUser,adminSetUserRole,adminCreateBackup,adminRestoreBackup,adminDeleteBackup}=globalThis;
 function openDrawer(title,html){$("drawerTitle").textContent=title;$("drawerContent").innerHTML=html;$("adminDrawer").classList.add("show");$("drawerBackdrop").classList.add("show");}
 function closeDrawer(){$("adminDrawer").classList.remove("show");$("drawerBackdrop").classList.remove("show");}
 
