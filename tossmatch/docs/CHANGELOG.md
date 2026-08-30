@@ -110,7 +110,17 @@
   newest retained in the browser) with create/restore/delete; restore mutates
   the live state in place so no module reference is invalidated.
 - **Feature directory** — ADM-8 (Support & Messaging) and ADM-9 (Admin Users
-  & Backups); regression suite extended to 94 checks.
+  & Backups).
+- **Compliance & Privacy screen (new, 22 → 23)** — dated, checksummed
+  compliance reports (revenue by source, funding/cash-flow, KYC, review
+  flags, exclusions, admin users, announcements, full audit log) with JSON
+  report + audit-log CSV export.
+- **Player data portability & erasure** — player Services hub **Privacy**
+  tab: download a full personal data bundle (JSON) or erase transaction
+  history (ledger, matches, deposits, withdrawals) with career stats and
+  balance kept; the Admin Compliance screen mirrors both actions; every
+  action is audit-logged. ADM-10 added; regression suite extended to 104
+  checks.
 
 ## v12.0 — Modular Code Structure
 

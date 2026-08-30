@@ -136,10 +136,10 @@ verifies `net = gross − (promo + comps + rakeback + referral)`.
 - **Login gate** — `#adminLoginOverlay` blocks the console until sign-in.
   Demo credentials **admin / flip2026**, 2FA demo code **246810**. Sessions
   persist in `sessionStorage` (`fa_admin_session`) per browser tab.
-- **RBAC roles** — *Super Admin* (22 screens), *Finance* (dash, economy,
-  revenue, top-ups, withdrawals, promotions, audit, reports, referrals),
-  *Operations* (dash, live ops, players, feature hub/directory, engagement,
-  approvals, promotions, games & content, announcements, support),
+- **RBAC roles** — *Super Admin* (23 screens), *Finance* (dash, economy,
+  revenue, top-ups, withdrawals, promotions, audit, reports, referrals,
+  compliance), *Operations* (dash, live ops, players, feature hub/directory,
+  engagement, approvals, promotions, games & content, announcements, support),
   *Support* (dash, players, approvals, trust, support). Out-of-scope tabs are hidden,
   the jump select and command palette stay consistent, and an active
   out-of-scope screen redirects to the role's first screen.
@@ -174,13 +174,32 @@ verifies `net = gross − (promo + comps + rakeback + referral)`.
 - **Directory** — ADM-8 (Support & Messaging) and ADM-9 (Admin Users &
   Backups) added to the feature directory.
 
+
+## 9. v13.3 increment — Compliance & Privacy
+
+- **Compliance & Privacy screen (new, 22 → 23)** — dated, checksummed
+  compliance reports covering revenue (gross/net by source), funding and
+  cash-flow, KYC decisions, review flags, exclusions, admin users,
+  announcements and the **full audit log**, with one-click JSON report and
+  audit-log CSV exports.
+- **Player data portability & erasure** — the player's Services hub gains a
+  **Privacy** tab: "Download my data" bundles identity, wallet,
+  progression, ledger, matches, deposits, withdrawals, support tickets and
+  platform messages into one JSON; "Erase my data" removes transaction
+  history (ledger, matches, player catalog matches, deposits, withdrawals)
+  while keeping career stats and the live balance. The Admin Compliance
+  screen offers the same export/erasure for the demo player. Both actions
+  are audit-logged.
+- **RBAC** — Finance and Super Admin gain the Compliance screen; feature
+  directory extended with ADM-10.
+
 ## 6. Verification
 
 - `node tools/audit.js` — static + boot audit clean (module structure, ids,
   asset references, no internal codes in visible copy, both apps boot).
-- `node tools/boot-smoke.mjs` — 25/25 (boot, all 19 player tabs, all 22 Admin
+- `node tools/boot-smoke.mjs` — 25/25 (boot, all 19 player tabs, all 23 Admin
   screens, live bet + ledger invariants, Admin revenue screen).
-- `node tools/test-new-features.mjs` — 94/94 (event calendar + reminders,
+- `node tools/test-new-features.mjs` — 104/104 (event calendar + reminders,
   milestone claims, full auction flow incl. 10% fee, 36/25 game counts,
   nav groups/badges/recent/search, per-page tick stability incl. structure
   change, Admin login, wrong-password rejection, RBAC scoping over 22
@@ -190,7 +209,10 @@ verifies `net = gross − (promo + comps + rakeback + referral)`.
   Announcements publish → player Home banner → unpublish, Support ticket
   flow end-to-end (player files → Admin inbox → reply → close → filter,
   Admin message → player hub), Admin users add/role/disable with primary
-  protection, backup create/restore/delete round-trip).
+  protection, backup create/restore/delete round-trip, compliance report
+  structure/checksum/reconciliation + generated view, player data bundle,
+  admin and player-initiated data erasure with audit trail and selective
+  catalog-match removal).
 - `bash tools/run-audit-loop.sh 20` — 20 consecutive clean passes of the
   full stack (audit + boot-smoke + new-features); log in
   `tossmatch/docs/audit-loop-v13.0.log`.

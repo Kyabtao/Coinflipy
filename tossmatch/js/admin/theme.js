@@ -24,6 +24,13 @@ function bindViewControls(){
   $("supMsgSend").onclick=adminSendPlayerMessage;
   $("setUserAdd").onclick=adminAddUser;
   $("setBackupCreate").onclick=adminCreateBackup;
+  $("compGenerate").onclick=()=>{const r=buildComplianceReport();complianceReportSet(r);renderCompliance();audit("compliance-report",r.id);toast("Compliance report generated.");};
+  $("compJson").onclick=()=>{const r=buildComplianceReport();downloadFile("tossmatch-compliance-report.json",JSON.stringify(r,null,2),"application/json");toast("Compliance report JSON exported.");};
+  $("compCsv").onclick=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const rows=[["timestamp","who","action","detail"],...(cfg().audit||[]).map(a=>[new Date(a.t).toISOString(),a.who,a.action,a.detail||""])];downloadFile("tossmatch-audit-log.csv",rows.map(x=>x.map(q).join(",")).join("\n"),"text/csv");toast("Audit log CSV exported.");};
+  document.addEventListener("click",e=>{
+    if(e.target.closest("#compExportPlayer")){downloadFile("tossmatch-player-data.json",JSON.stringify(buildPlayerDataBundle(),null,2),"application/json");audit("privacy-export","Demo player data bundle exported");renderCompliance();toast("Player data exported (audit-logged).");return;}
+    if(e.target.closest("#compErase")){adminErasePlayerData();return;}
+  });
   document.addEventListener("click",e=>{
     const r=e.target.closest("[data-sup-reply]");if(r){adminReplyTicket(r.dataset.supReply);return;}
     const c=e.target.closest("[data-sup-close]");if(c){adminCloseTicket(c.dataset.supClose);return;}
@@ -66,7 +73,7 @@ function bindViewControls(){
   $("exportReportJson").onclick=()=>{const r=reportsData(),h=cfg().house;
     downloadFile("tossmatch-report.json",JSON.stringify({generatedAt:new Date().toISOString(),last7Days:{days:r.days,rev:r.rev,dep:r.dep,wd:r.wd},revenueMix:{fees:h.fees||0,catalogFees:h.catalogFees||0,cupRakes:h.cupRakes||0,trnyRakes:h.trnyRakes||0,shop:h.shop||0,xfFees:h.xfFees||0,auctionFees:h.auctionFees||0},house:{...h},totals:{games:r.games,catalog:r.cat}},null,2),"application/json");toast("Full report JSON exported.");};
 }
-const {adminReplyTicket,adminCloseTicket,adminSendPlayerMessage,adminAddUser,adminToggleUser,adminSetUserRole,adminCreateBackup,adminRestoreBackup,adminDeleteBackup}=globalThis;
+const {adminReplyTicket,adminCloseTicket,adminSendPlayerMessage,adminAddUser,adminToggleUser,adminSetUserRole,adminCreateBackup,adminRestoreBackup,adminDeleteBackup,buildComplianceReport,buildPlayerDataBundle,renderCompliance,complianceReportSet,complianceReportGet,adminErasePlayerData}=globalThis;
 function openDrawer(title,html){$("drawerTitle").textContent=title;$("drawerContent").innerHTML=html;$("adminDrawer").classList.add("show");$("drawerBackdrop").classList.add("show");}
 function closeDrawer(){$("adminDrawer").classList.remove("show");$("drawerBackdrop").classList.remove("show");}
 

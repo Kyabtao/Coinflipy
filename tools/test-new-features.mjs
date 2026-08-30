@@ -255,7 +255,7 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   record('directory has CAT34–36 / G24–25 / P6 / E10', ['CAT34','CAT35','CAT36','G24','G25','P6','E10'].every(c => codes[c] && codes[c].status.startsWith('Implemented')), Object.keys(codes).filter(c => ['CAT34','CAT35','CAT36','G24','G25','P6','E10'].includes(c)).join(','));
   record('LIVE1 Event Calendar now Implemented (demo)', codes.LIVE1 && codes.LIVE1.status === 'Implemented (demo)' && codes.LIVE1.feature === 'events', codes.LIVE1 && codes.LIVE1.status);
   record('admin catalog metadata lists 36 games / 22 arcade', globalThis.ADMIN_CATALOG_GAMES.length === 36 && globalThis.ADMIN_ARCADE_GAMES.length === 22, 'cat=' + globalThis.ADMIN_CATALOG_GAMES.length + ' arc=' + globalThis.ADMIN_ARCADE_GAMES.length);
-  record('feature directory has ADM-1 through ADM-7', ['ADM-1','ADM-2','ADM-3','ADM-4','ADM-5','ADM-6','ADM-7'].every(c => FD.some(x => x.code === c && x.status === 'Implemented')));
+  record('feature directory has ADM-1 through ADM-10', ['ADM-1','ADM-2','ADM-3','ADM-4','ADM-5','ADM-6','ADM-7','ADM-8','ADM-9','ADM-10'].every(c => FD.some(x => x.code === c && x.status === 'Implemented')));
 
   /* ── Admin login gate ── */
   const overlay = w2.document.getElementById('adminLoginOverlay');
@@ -280,7 +280,7 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
     const b = w2.document.querySelector('.tab[data-tab="' + t + '"]');
     return b && b.style.display === 'none';
   });
-  const visibleForFinance = ['dash','econ','revenue','topups','withdraw','promo','audit'].every(t => {
+  const visibleForFinance = ['dash','econ','revenue','topups','withdraw','promo','audit','reports','compliance'].every(t => {
     const b = w2.document.querySelector('.tab[data-tab="' + t + '"]');
     return b && b.style.display !== 'none';
   });
@@ -289,8 +289,8 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   w2.sessionStorage.setItem('fa_admin_session', JSON.stringify({ user: 'admin', role: 'Super Admin', t: Date.now() }));
   globalThis.renderAdminProfile && globalThis.renderAdminProfile();
   globalThis.applyAdminRbac();
-  const allVisible = ['ops','settings','approvals','trust','reports','games','referrals','announcements','support'].every(t => { const b = w2.document.querySelector('.tab[data-tab="' + t + '"]'); return b && b.style.display !== 'none'; });
-  record('Super Admin sees all 22 screens', allVisible);
+  const allVisible = ['ops','settings','approvals','trust','reports','games','referrals','announcements','support','compliance'].every(t => { const b = w2.document.querySelector('.tab[data-tab="' + t + '"]'); return b && b.style.display !== 'none'; });
+  record('Super Admin sees all 23 screens', allVisible);
 
   /* ── Approvals screen ── */
   const apTab = w2.document.querySelector('.tab[data-tab="approvals"]');
@@ -322,14 +322,14 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   record('admin group collapse works', gov.classList.contains('collapsed') && (globalThis.S.adminNavGroups||{}).Governance === true);
 
   /* ── Full per-screen render check (17 screens, content present) ── */
-  const screenIds=['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','approvals','audit','trust','settings','reports','games','referrals','announcements','support'];
+  const screenIds=['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','approvals','audit','trust','settings','reports','games','referrals','announcements','support','compliance'];
   const emptyScreens=screenIds.filter(t=>{
     const b=w2.document.querySelector('.tab[data-tab="'+t+'"]');
     b.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
     const panel=w2.document.getElementById('panel-'+t);
     return !panel || !panel.classList.contains('active') || panel.innerHTML.trim().length<50;
   });
-  record('all 22 admin screens render content after login', emptyScreens.length===0, 'empty=' + emptyScreens.join(','));
+  record('all 23 admin screens render content after login', emptyScreens.length===0, 'empty=' + emptyScreens.join(','));
   // revenue register includes the new fund sources
   const revTab=w2.document.querySelector('.tab[data-tab="revenue"]');
   revTab.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
@@ -492,6 +492,34 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   record('backup: second snapshot created', (S2.backups||[]).length===1 && !!w2.localStorage.getItem('tossmatch_backup_'+secondId));
   w2.document.querySelector('#setBackups [data-bk-del]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
   record('backup: delete removes snapshot from state + storage', (S2.backups||[]).length===0 && !w2.localStorage.getItem('tossmatch_backup_'+secondId));
+
+  /* ── Compliance & Privacy screen ── */
+  adminClick('.tab[data-tab="compliance"]');
+  record('compliance: KPI tiles populated', w2.document.querySelectorAll('#compTiles .stat-tile').length===4);
+  const rep=globalThis.buildComplianceReport();
+  record('compliance: report has id + checksum + full audit log', /^CR-\d{8}$/.test(rep.id) && /^CRC-[0-9a-f]{8}$/.test(rep.checksum) && rep.auditLog.length===(S2.config.audit||[]).length);
+  record('compliance: report revenue reconciles with house totals', rep.house.gross>=0 && Math.abs(rep.house.gross-((S2.config.house.fees||0)+(S2.config.house.catalogFees||0)+(S2.config.house.cupRakes||0)+(S2.config.house.trnyRakes||0)+(S2.config.house.shop||0)+(S2.config.house.xfFees||0)+(S2.config.house.auctionFees||0)))===0);
+  w2.document.getElementById('compGenerate').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('compliance: generated report renders id + checksum', new RegExp(rep.id).test(w2.document.getElementById('compReport').innerHTML) && /CRC-/.test(w2.document.getElementById('compReport').innerHTML));
+  const bundle=globalThis.buildPlayerDataBundle();
+  record('privacy: player data bundle contains wallet, ledger, identity', bundle.identity && bundle.wallet && Array.isArray(bundle.ledger) && Array.isArray(bundle.games));
+  // seed player transaction data, then verify selective erasure
+  S2.ledger=[{t:Date.now(),type:'bet',delta:100,note:'coin toss',balance:1000},{t:Date.now(),type:'bet',delta:-50,note:'coin toss',balance:950}];
+  S2.games=[{t:Date.now(),game:'Coin Toss',result:'WIN',stake:100,fee:5,delta:150}];
+  S2.catalogLog=[{t:Date.now(),game:'Over / Under',playerA:'You',pickA:'1',playerB:'BotX',pickB:'2',stake:10,fee:1,result:'WIN',detail:'x',proof:'abc'},{t:Date.now(),game:'Over / Under',playerA:'BotA',pickA:'1',playerB:'BotB',pickB:'2',stake:10,fee:1,result:'DRAW',detail:'y',proof:'def'}];
+  const ledgerLen0=(S2.ledger||[]).length;
+  w2.document.querySelector('#compErase').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('privacy: admin erase clears player transaction history', (S2.ledger||[]).length===0 && (S2.games||[]).length===0 && S2.privacyErasedAt>0 && ledgerLen0===2, 'ledger ' + ledgerLen0 + ' → ' + (S2.ledger||[]).length);
+  record('privacy: erasure is audit-logged', (S2.config.audit||[]).some(a=>a.action==='privacy-erase'));
+  record('privacy: erasure removes player catalog matches only', !(S2.catalogLog||[]).some(x=>x.playerA==='You') && (S2.catalogLog||[]).length>0);
+  // player side: privacy tab reflects the erasure
+  globalThis.document=w.document;
+  w.document.querySelector('[data-hubtab="privacy"]').dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
+  const privHtml=w.document.getElementById('servicesHub').innerHTML;
+  record('privacy: player tab shows erasure state + actions', /Last erasure/.test(privHtml) && !/Never/.test((privHtml.split('Last erasure')[1]||'').slice(0,120)) && w.document.getElementById('pvdDownload') && w.document.getElementById('pvdErase'));
+  w.document.getElementById('pvdErase').dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
+  record('privacy: player-initiated erasure persists + audit entry', S2.privacyErasedAt>0 && (S2.config.audit||[]).some(a=>a.action==='privacy-erase'&&a.who!=="admin"));
+  globalThis.document=prevDoc;
   dom2.window.close();
 }
 

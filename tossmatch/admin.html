@@ -29,7 +29,7 @@
 <main>
   <nav class="tabs" id="tabs">
     <div class="admin-nav-brand"><span>CONTROL CENTER</span><b>v13.0</b></div>
-    <div class="admin-nav-tools"><input id="adminNavSearch" type="search" placeholder="Find Admin screen…" aria-label="Search Admin navigation"/><select id="adminNavJump" aria-label="Jump to Admin screen"><option value="">Quick jump…</option><optgroup label="Command"><option value="dash">Overview</option><option value="ops">Live Ops</option><option value="people">Players</option><option value="features">Feature Hub</option><option value="directory">Feature Directory</option><option value="reports">Reports &amp; Analytics</option></optgroup><optgroup label="Commercial"><option value="rates">Rates & Jackpot</option><option value="econ">Economy</option><option value="revenue">Revenue</option><option value="topups">Top-ups &amp; Deposits</option><option value="withdraw">Withdrawals</option><option value="promo">Promotions</option><option value="games">Games &amp; Content</option></optgroup><optgroup label="Engagement"><option value="vip">VIP & Levels</option><option value="trny">Tournaments</option><option value="referrals">Referrals</option><option value="announcements">Announcements</option><option value="support">Support &amp; Messaging</option></optgroup><optgroup label="Governance"><option value="approvals">Approvals</option><option value="audit">Audit & Data</option><option value="trust">Trust Center</option><option value="settings">Settings</option></optgroup></select><div class="admin-nav-empty" id="adminNavEmpty">No Admin screens match.</div></div>
+    <div class="admin-nav-tools"><input id="adminNavSearch" type="search" placeholder="Find Admin screen…" aria-label="Search Admin navigation"/><select id="adminNavJump" aria-label="Jump to Admin screen"><option value="">Quick jump…</option><optgroup label="Command"><option value="dash">Overview</option><option value="ops">Live Ops</option><option value="people">Players</option><option value="features">Feature Hub</option><option value="directory">Feature Directory</option><option value="reports">Reports &amp; Analytics</option></optgroup><optgroup label="Commercial"><option value="rates">Rates & Jackpot</option><option value="econ">Economy</option><option value="revenue">Revenue</option><option value="topups">Top-ups &amp; Deposits</option><option value="withdraw">Withdrawals</option><option value="promo">Promotions</option><option value="games">Games &amp; Content</option></optgroup><optgroup label="Engagement"><option value="vip">VIP & Levels</option><option value="trny">Tournaments</option><option value="referrals">Referrals</option><option value="announcements">Announcements</option><option value="support">Support &amp; Messaging</option></optgroup><optgroup label="Governance"><option value="approvals">Approvals</option><option value="audit">Audit & Data</option><option value="trust">Trust Center</option><option value="compliance">Compliance &amp; Privacy</option><option value="settings">Settings</option></optgroup></select><div class="admin-nav-empty" id="adminNavEmpty">No Admin screens match.</div></div>
     <div class="admin-nav-group" data-group="Command">
       <button class="admin-nav-group-head" data-group-toggle="Command" aria-expanded="true"><span class="admin-nav-chip" aria-hidden="true">⌁</span>Command<em class="nav-count">6</em><i class="chev" aria-hidden="true">▾</i></button>
       <div class="admin-nav-group-body">
@@ -64,11 +64,12 @@
       </div>
     </div>
     <div class="admin-nav-group" data-group="Governance">
-      <button class="admin-nav-group-head" data-group-toggle="Governance" aria-expanded="true"><span class="admin-nav-chip" aria-hidden="true">🛡️</span>Governance<em class="nav-count">4</em><i class="chev" aria-hidden="true">▾</i></button>
+      <button class="admin-nav-group-head" data-group-toggle="Governance" aria-expanded="true"><span class="admin-nav-chip" aria-hidden="true">🛡️</span>Governance<em class="nav-count">5</em><i class="chev" aria-hidden="true">▾</i></button>
       <div class="admin-nav-group-body">
         <button class="tab" data-tab="approvals">✅ Approvals<span class="nav-badge" id="adminBadgeApprovals" hidden></span></button>
         <button class="tab" data-tab="audit">🧾 Audit &amp; Data</button>
         <button class="tab" data-tab="trust">🛡️ Trust Center</button>
+        <button class="tab" data-tab="compliance">📑 Compliance &amp; Privacy</button>
         <button class="tab" data-tab="settings">⚙️ Settings</button>
       </div>
     </div>
@@ -610,6 +611,26 @@
     </div>
   </section>
 
+
+  <!-- COMPLIANCE & PRIVACY -->
+  <section class="panel" id="panel-compliance">
+    <div class="admin-hero compact"><div><span class="admin-eyebrow">GOVERNANCE</span><h1>Compliance &amp; Privacy</h1><p>Dated, checksummed compliance reports (revenue, funding, KYC, flags, exclusions, admin users, full audit log) with JSON/CSV export — and player-data export/erasure with an audited trail.</p></div></div>
+    <div class="grid4" id="compTiles" style="margin-bottom:16px"></div>
+    <div class="grid2">
+      <div class="card"><h3>📑 Generate report</h3>
+        <div class="row" style="flex-wrap:wrap;gap:6px;margin-bottom:10px">
+          <button class="btn btn-primary btn-sm" id="compGenerate">Generate report</button>
+          <button class="btn btn-ghost btn-sm" id="compJson">Export report JSON</button>
+          <button class="btn btn-ghost btn-sm" id="compCsv">Export audit log CSV</button>
+        </div>
+        <div id="compReport"></div>
+      </div>
+      <div class="card"><h3>🔒 Player data &amp; privacy</h3>
+        <p class="muted">Data portability and right-to-erasure for the demo player. Both actions are audit-logged.</p>
+        <div id="compPrivacy"></div>
+      </div>
+    </div>
+  </section>
 
   <!-- SUPPORT & MESSAGING -->
   <section class="panel" id="panel-support">
