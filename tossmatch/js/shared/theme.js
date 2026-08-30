@@ -64,8 +64,21 @@ function renderThemePresets(){
   });
 }
 
+/* In-nav theme settings so a theme switcher is reachable from every page/screen. */
+function renderNavTheme(){
+  const root=$('navThemePresets');if(!root)return;
+  const cur=themeName();
+  const html=THEME_PRESETS.map(p=>`<button class="nav-theme-btn ${cur===p.id?'active':''}" data-theme-id="${p.id}" title="${p.name} — ${p.desc}"><i style="background:${p.dots[2]}"></i><span>${p.name}</span></button>`).join('');
+  if(root.dataset.sig!==html){root.dataset.sig=html;root.innerHTML=html;root.querySelectorAll('[data-theme-id]').forEach(b=>b.onclick=()=>{
+    S.settings.themeName=b.dataset.themeId;S.settings.customPalette=null;
+    applyTheme();saveThemePrefs();renderNavTheme();renderThemePresets();
+    toast(`${THEME_PRESETS.find(p=>p.id===b.dataset.themeId)?.name||'Theme'} applied.`,'ok');
+  });}
+  const custom=$('navThemeCustom');if(custom&&!custom.dataset.wired){custom.dataset.wired='1';custom.onclick=openPalette;}
+}
+
 
 /* expose shared engine symbols to globalThis for legacy/hybrid consumers */
-Object.assign(globalThis,{THEME_PRESETS,applyTheme,clearThemeVars,closePalette,hexToRgb,openPalette,renderThemePresets,saveThemePrefs,shadeRgb,themeName,themePalette});
+Object.assign(globalThis,{THEME_PRESETS,applyTheme,clearThemeVars,closePalette,hexToRgb,openPalette,renderNavTheme,renderThemePresets,saveThemePrefs,shadeRgb,themeName,themePalette});
 
-export {THEME_PRESETS,applyTheme,clearThemeVars,closePalette,hexToRgb,openPalette,renderThemePresets,saveThemePrefs,shadeRgb,themeName,themePalette};
+export {THEME_PRESETS,applyTheme,clearThemeVars,closePalette,hexToRgb,openPalette,renderNavTheme,renderThemePresets,saveThemePrefs,shadeRgb,themeName,themePalette};

@@ -1,11 +1,11 @@
 /* FlipArena player module — render */
 import "../shared/runtime.js";
-import {applyTheme} from "../shared/theme.js";
+import {applyTheme,renderNavTheme} from "../shared/theme.js";
 import {bc} from "./boot.js";
 import {ACHIEVEMENTS,COS,FREE_EMOJIS,HISTORY,QUESTS_SEED,SHOP_CATS,currentVipEntitlements,sessionStart} from "./bots.js";
 import {VIP_BENEFITS,VIP_DISC,VIP_SEED} from "./data.js";
 import {botByName} from "./games.js";
-import {$,applyAccessibility,applyLanguage,fmt,maxStake,playerTopupAnalytics,recordRecentTab,renderCommunityHub,renderNavRecent,renderEconomyHub,renderFeatureHubs,renderHome,renderNewGamesHub,renderProgressionHub,renderServicesHub,skillTier,syncPlayerNavigation,toast,updateNavBadges,vipFor} from "./helpers.js";
+import {$,applyAccessibility,applyLanguage,closeNavDrawer,fmt,maxStake,playerTopupAnalytics,recordRecentTab,renderCommunityHub,renderNavRecent,renderEconomyHub,renderFeatureHubs,renderHome,renderNewGamesHub,renderProgressionHub,renderServicesHub,skillTier,syncPlayerNavigation,toast,updateNavBadges,vipFor} from "./helpers.js";
 import {cfg,reconcileHouse,save} from "./state.js";
 import {GAMES,renderGames} from "./sync.js";
 
@@ -41,6 +41,7 @@ function renderChrome(){
   if(c.broadcast){const b=el("broadcast");if(b){b.innerHTML="\uD83D\uDCE3 "+c.broadcast;b.classList.add("show");}}
   else{const b=el("broadcast");if(b)b.classList.remove("show");}
   applyTheme();
+  try{renderNavTheme();}catch(e){}
   const togSound=el("togSound");if(togSound){togSound.classList.toggle("on",S.settings.sound);togSound.textContent=S.settings.sound?"\uD83D\uDD0A Sound":"\uD83D\uDD07 Muted";}
   const togInstant=el("togInstant");if(togInstant)togInstant.classList.toggle("on",S.settings.instant);
   const autoStop=Math.min(-50,Math.max(-10000,+(S.settings.autoRebetStop??-200)));S.settings.autoRebetStop=autoStop;
@@ -75,11 +76,9 @@ const TAB_RENDERERS={
   economyplus:()=>renderEconomyHub(),
   shop:()=>renderShop(),
   season:()=>renderSeason(),
-  history:()=>renderHistory(),
   updates:()=>{},
   wallet:()=>renderWallet(),
-  stats:()=>renderStats(),
-  verify:()=>{},
+  stats:()=>{renderStats();renderHistory();},
   services:()=>renderServicesHub(),
 };
 
@@ -483,6 +482,7 @@ export function bind(){
     // cheap chrome pass so wallet/jackpot tickers stay live.
     activeTab=b.dataset.tab;recordRecentTab(b.dataset.tab);syncPlayerNavigation(b.dataset.tab);
     renderTab(b.dataset.tab);renderChrome();
+    try{closeNavDrawer();}catch(e){}
   });
   $("themeBtn").onclick=()=>{S.settings.themeName=S.settings.themeName==="light"?"midnight":"light";S.settings.customPalette=null;applyTheme();render();};
   document.querySelectorAll(".lbsort").forEach(b=>b.onclick=()=>{document.querySelectorAll(".lbsort").forEach(x=>x.classList.remove("active"));b.classList.add("active");lbSort=b.dataset.sort;LB_VIEW.page=1;renderLeaderboard();});

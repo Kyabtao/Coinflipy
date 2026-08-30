@@ -438,3 +438,43 @@ body.a11y-reduced-motion .btn:hover,body.a11y-reduced-motion .card:hover{transfo
 .announce-badge{flex:none;font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#f5d0fe;background:rgba(168,85,247,.25);border:1px solid rgba(168,85,247,.5);border-radius:99px;padding:3px 9px;margin-top:2px}
 .announce-card b{font-size:13px}
 .announce-time{flex:none;font-size:10px;color:var(--mut)}
+
+/* ═══════════ v13.1 UX upgrade — stats grid, floating nav, mobile drawer, in-nav theme ═══════════ */
+/* Item 1 · two stat cards per row on compact screens (no more single-column tiles) */
+@media(max-width:900px){
+  #statTiles,#historyKpis,#homeKpis,
+  [id$="Tiles"],[id$="Summary"]{grid-template-columns:repeat(2,1fr)!important}
+}
+
+/* ── Floating navigation button + mobile drawer ──────────────────────────── */
+#playerNavFab{display:none;position:fixed;left:14px;bottom:84px;z-index:320;width:52px;height:52px;border-radius:16px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#f6c453,#e0a52e);color:#2a1f00;font-size:22px;font-weight:900;align-items:center;justify-content:center;
+  box-shadow:0 10px 28px rgba(var(--gold-rgb),.4)}
+#playerNavFab:hover{transform:translateY(-2px)}
+#playerNavBackdrop{display:none;position:fixed;inset:0;background:rgba(2,6,23,.55);backdrop-filter:blur(2px);z-index:310}
+.nav-theme{border-top:1px dashed var(--line);margin-top:8px;padding:12px 10px 6px}
+.nav-theme-head{font-size:9px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.nav-theme-presets{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.nav-theme-btn{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--line);color:var(--mut);border-radius:9px;padding:8px 9px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;width:100%}
+.nav-theme-btn i{width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.18);flex:none}
+.nav-theme-btn:hover{border-color:var(--gold);color:var(--gold)}
+.nav-theme-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(var(--gold-rgb),.08)}
+.nav-theme-custom{width:100%;margin-top:8px;background:var(--bg2);border:1px dashed var(--line2);color:var(--mut);border-radius:9px;padding:9px;font-size:11.5px;font-weight:700;cursor:pointer}
+.nav-theme-custom:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Mobile: the grouped sidebar becomes a slide-in drawer opened by the FAB. */
+@media(max-width:1120px){
+  #playerNavFab{display:flex}
+  body.nav-open #playerNavBackdrop{display:block}
+  #tabs{position:fixed;left:0;top:0;bottom:0;width:min(86vw,340px);height:100vh;max-height:100vh;margin:0;padding:14px;
+    border-radius:0 18px 18px 0;transform:translateX(-102%);transition:transform .26s ease;z-index:330;
+    flex-direction:column;overflow-y:auto;overflow-x:hidden;align-items:stretch;box-shadow:var(--glow)}
+  body.nav-open #tabs{transform:translateX(0)}
+  #tabs .nav-brand{display:flex!important}
+  #tabs .nav-tools{display:grid!important}
+  #tabs .nav-group{border-left:none;padding-left:0;flex:1 1 auto;min-width:0}
+  #tabs .nav-group-head{display:flex!important}
+  #tabs .nav-group.collapsed .nav-group-body{display:none!important}
+  #tabs .tab{width:100%;justify-content:flex-start;text-align:left;display:flex!important;flex:0 0 auto}
+  #tabs .nav-recent{display:flex!important}
+}
