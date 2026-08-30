@@ -236,10 +236,10 @@ switchTab('players');
 /* ── New catalog + arcade games registered ── */
 const GAMES = globalThis.GAMES || w.GAMES || (globalThis.CATALOG_GROUPS ? globalThis.GAMES : null);
 if(!GAMES) console.log('DEBUG GAMES missing; keys:', Object.keys(globalThis).filter(k=>/GAME|CATALOG/i.test(k)).join(','));
-record('GAMES catalog now 36 games incl. CAT34–36', GAMES && GAMES.length === 36 && ['bytewar','sumfour','highcard'].every(id => GAMES.some(g => g.id === id)), 'count=' + globalThis.GAMES.length);
+record('GAMES catalog now 100 games incl. CAT34–CAT100', GAMES && GAMES.length === 100 && ['bytewar','sumfour','highcard','suitduel','nimgame'].every(id => GAMES.some(g => g.id === id)), 'count=' + GAMES.length);
 const extKeys=Object.keys(globalThis.EXT_ARCADE||{});
 const navList=globalThis.ARCADE_NAV_META||[];
-record('Arcade 25 modes incl. roulette/blackjack', ['roulette','blackjack'].every(k => extKeys.includes(k) && navList.some(g => g.key === k)) && navList.length===25, 'nav=' + navList.length + ' ext=' + extKeys.length);
+record('Arcade 100 modes incl. roulette/blackjack + G26–G100', ['roulette','blackjack','coinflipx','dragonbridge'].every(k => (extKeys.includes(k)||navList.some(g=>g.key===k)) && navList.some(g => g.key === k)) && navList.length===100 && navList.every(g=>/^G\d+$/.test(g.code)), 'nav=' + navList.length + ' ext=' + extKeys.length);
 record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers & Dice'] || []).includes('bytewar') && (globalThis.CATALOG_GROUPS['Cards'] || []).includes('highcard'));
 
 /* ── Admin feature directory + catalog metadata ── */
@@ -252,10 +252,11 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   record('admin boots with new feature entries', ok2, err2);
   const FD = globalThis.FEATURE_DIRECTORY;
   const codes = Object.fromEntries(FD.map(x => [x.code, x]));
-  record('directory has CAT34–36 / G24–25 / P6 / E10', ['CAT34','CAT35','CAT36','G24','G25','P6','E10'].every(c => codes[c] && codes[c].status.startsWith('Implemented')), Object.keys(codes).filter(c => ['CAT34','CAT35','CAT36','G24','G25','P6','E10'].includes(c)).join(','));
+  record('directory has CAT34–100 / G24–25 / P6 / E10', ['CAT34','CAT35','CAT36','CAT37','CAT100','G24','G25','G26','G100','P6','E10'].every(c => codes[c] && codes[c].status.startsWith('Implemented')), Object.keys(codes).filter(c => ['CAT34','CAT35','CAT36','CAT37','CAT100','G24','G25','G26','G100','P6','E10'].includes(c)).join(','));
   record('LIVE1 Event Calendar now Implemented (demo)', codes.LIVE1 && codes.LIVE1.status === 'Implemented (demo)' && codes.LIVE1.feature === 'events', codes.LIVE1 && codes.LIVE1.status);
-  record('admin catalog metadata lists 36 games / 22 arcade', globalThis.ADMIN_CATALOG_GAMES.length === 36 && globalThis.ADMIN_ARCADE_GAMES.length === 22, 'cat=' + globalThis.ADMIN_CATALOG_GAMES.length + ' arc=' + globalThis.ADMIN_ARCADE_GAMES.length);
+  record('admin catalog metadata lists 100 games / 100 arcade', globalThis.ADMIN_CATALOG_GAMES.length === 100 && globalThis.ADMIN_ARCADE_GAMES.length === 100, 'cat=' + globalThis.ADMIN_CATALOG_GAMES.length + ' arc=' + globalThis.ADMIN_ARCADE_GAMES.length);
   record('feature directory has ADM-1 through ADM-10', ['ADM-1','ADM-2','ADM-3','ADM-4','ADM-5','ADM-6','ADM-7','ADM-8','ADM-9','ADM-10'].every(c => FD.some(x => x.code === c && x.status === 'Implemented')));
+  record('directory includes P7/P8/E11–13/RET-3/RET-4', ['P7','P8','E11','E12','E13','RET-3','RET-4'].every(c => codes[c] && codes[c].status.startsWith('Implemented')), ['P7','P8','E11','E12','E13','RET-3','RET-4'].filter(c=>!codes[c]).join(','));
 
   /* ── Admin login gate ── */
   const overlay = w2.document.getElementById('adminLoginOverlay');
@@ -289,8 +290,21 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   w2.sessionStorage.setItem('fa_admin_session', JSON.stringify({ user: 'admin', role: 'Super Admin', t: Date.now() }));
   globalThis.renderAdminProfile && globalThis.renderAdminProfile();
   globalThis.applyAdminRbac();
-  const allVisible = ['ops','settings','approvals','trust','reports','games','referrals','announcements','support','compliance'].every(t => { const b = w2.document.querySelector('.tab[data-tab="' + t + '"]'); return b && b.style.display !== 'none'; });
-  record('Super Admin sees all 23 screens', allVisible);
+  const allVisible = ['ops','settings','approvals','trust','reports','games','referrals','announcements','support','compliance','plus'].every(t => { const b = w2.document.querySelector('.tab[data-tab="' + t + '"]'); return b && b.style.display !== 'none'; });
+  record('Super Admin sees all 24 screens', allVisible);
+
+  /* ── VIP+ / Season+ / Progress+ / Economy+ panel (new) ── */
+  w2.document.querySelector('.tab[data-tab="plus"]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  const plusPanel=w2.document.getElementById('panel-plus');
+  record('VIP+/Season+ panel renders config + activity', plusPanel.classList.contains('active') && w2.document.getElementById('vipPlusDailyBase').value==='25' && w2.document.getElementById('seasonPlusPerGame').value==='2' && (w2.document.querySelectorAll('#vipPlusRoad .kv-row').length)===16 && (w2.document.querySelectorAll('#seasonPlusTrack .kv-row').length)===4, 'daily='+w2.document.getElementById('vipPlusDailyBase').value+' roadRows='+w2.document.querySelectorAll('#vipPlusRoad .kv-row').length);
+  w2.document.getElementById('vipPlusDailyBase').value='30';
+  w2.document.getElementById('vipPlusSave').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('VIP+ config saves to shared config', globalThis.cfg().vipPlus.dailyBase===30, 'dailyBase='+globalThis.cfg().vipPlus.dailyBase);
+  w2.document.getElementById('vipPlusDailyBase').value='25';
+  w2.document.getElementById('vipPlusSave').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  const p7Rows=w2.document.querySelectorAll('#p7Missions .kv-row').length;
+  record('Progress+ activity shows 6 missions + 12 badges', p7Rows===6 && w2.document.querySelectorAll('#p8Badges .kv-row').length===12, 'missions='+p7Rows);
+  record('Economy+ activity tiles populated', w2.document.getElementById('e11Count').textContent==='0' && w2.document.getElementById('e12Count').textContent==='0' && w2.document.getElementById('e13Count').textContent==='0');
 
   /* ── Approvals screen ── */
   const apTab = w2.document.querySelector('.tab[data-tab="approvals"]');
@@ -322,14 +336,14 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   record('admin group collapse works', gov.classList.contains('collapsed') && (globalThis.S.adminNavGroups||{}).Governance === true);
 
   /* ── Full per-screen render check (17 screens, content present) ── */
-  const screenIds=['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','approvals','audit','trust','settings','reports','games','referrals','announcements','support','compliance'];
+  const screenIds=['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','plus','trny','approvals','audit','trust','settings','reports','games','referrals','announcements','support','compliance'];
   const emptyScreens=screenIds.filter(t=>{
     const b=w2.document.querySelector('.tab[data-tab="'+t+'"]');
     b.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
     const panel=w2.document.getElementById('panel-'+t);
     return !panel || !panel.classList.contains('active') || panel.innerHTML.trim().length<50;
   });
-  record('all 23 admin screens render content after login', emptyScreens.length===0, 'empty=' + emptyScreens.join(','));
+  record('all 24 admin screens render content after login', emptyScreens.length===0, 'empty=' + emptyScreens.join(','));
   // revenue register includes the new fund sources
   const revTab=w2.document.querySelector('.tab[data-tab="revenue"]');
   revTab.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
@@ -373,7 +387,7 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   /* ── Games & Content screen ── */
   adminClick('.tab[data-tab="games"]');
   const gcRows0=w2.document.querySelectorAll('#gcList tbody tr').length;
-  record('games: catalog lists games with pager (36 total)', gcRows0===20 && /2/.test(w2.document.getElementById('gcPage').textContent), 'rows=' + gcRows0 + ' page=' + w2.document.getElementById('gcPage').textContent);
+  record('games: catalog lists games with pager (100 total)', gcRows0===20 && /5/.test(w2.document.getElementById('gcPage').textContent), 'rows=' + gcRows0 + ' page=' + w2.document.getElementById('gcPage').textContent);
   const firstToggle=w2.document.querySelector('#gcList [data-gc-toggle]');
   const firstId=firstToggle.dataset.gcToggle;
   firstToggle.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));

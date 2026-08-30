@@ -318,7 +318,7 @@ function evaluateTheme() {
 /**
  * Setup tab change listeners for targeted rendering
  */
-function tabListenersSetup = false;
+let tabListenersSetup = false;
 function setupTabListeners() {
   if (tabListenersSetup) return;
   tabListenersSetup = true;

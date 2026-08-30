@@ -85,11 +85,6 @@
         <button class="tab" data-tab="services">🛡️ Safety & Services</button>
       </div>
     </div>
-    <div class="nav-theme">
-      <div class="nav-theme-head">🎨 Theme</div>
-      <div class="nav-theme-presets" id="navThemePresets"></div>
-      <button class="nav-theme-custom" id="navThemeCustom">🎨 Custom palette…</button>
-    </div>
   </nav>
 
   <!-- HOME -->
@@ -292,11 +287,20 @@
         <div class="muted" id="vipPermanent" style="margin-top:7px"></div>
         <div class="section-title">All tiers</div>
         <div id="vipList" style="display:flex;flex-direction:column;gap:7px"></div>
-        <div class="section-title">🏁 Season</div>
+        <div class="section-title">💎 VIP Rewards</div>
+        <div class="kv-row"><span class="k">Daily VIP bonus</span><span class="v" id="vipDaily">—</span></div>
+        <div class="kv-row"><span class="k">Monthly VIP quest</span><span class="v" id="vipQuest">—</span></div>
+        <div id="vipRoad" style="display:flex;flex-direction:column;gap:7px"></div>
+        <div class="section-title">🏁 Season <span class="muted" style="font-weight:400">(points reset every season)</span></div>
         <div class="kv-row"><span class="k">Season</span><span class="v" id="seasonNum">#1</span></div>
         <div class="kv-row"><span class="k">Auto-ends</span><span class="v" id="seasonEnds">—</span></div>
         <div class="kv-row"><span class="k">Champion reward</span><span class="v">500 🪙 + title</div>
         <div class="kv-row"><span class="k">Runner-up</span><span class="v">250 🪙</span></div>
+        <div class="kv-row"><span class="k">Your season points</span><span class="v" id="seasonPoints">0</span></div>
+        <div class="kv-row"><span class="k">Faction</span><span class="v" id="seasonFaction">—</span></div>
+        <div id="seasonMissions"></div>
+        <div class="section-title">Season prize track</div>
+        <div id="seasonPrizes" style="display:flex;flex-direction:column;gap:7px"></div>
       </div>
       <div>
         <div class="card" style="margin-bottom:16px">
@@ -523,27 +527,7 @@ jackpot    = firstByte == 0  (1 in 256, only when pool armed)</pre>
 <div id="playerNavBackdrop" aria-hidden="true"></div>
 <div class="command-backdrop" id="playerCommandBg" role="dialog" aria-modal="true" aria-label="Player quick navigation" aria-hidden="true"><div class="command-palette"><div class="command-head"><input id="playerCommandSearch" type="search" placeholder="Search screens, games, wallet, safety…" aria-label="Search all player screens"/><button class="icon-btn" id="playerCommandClose" aria-label="Close quick navigation">✕</button></div><div class="command-list" id="playerCommandList"></div></div></div>
 <div class="sr-only" id="a11yLive" aria-live="polite"></div>
-<div class="modal-bg" id="paletteBg">
-  <div class="modal palette-modal" id="paletteContent">
-    <h3>🎨 Theme &amp; Appearance</h3>
-    <p class="muted">Pick a preset or build your own palette. Your choice is saved instantly across the player app and admin panel.</p>
-    <div class="theme-preset-grid" id="themePresetGrid"></div>
-    <div class="palette-custom">
-      <h4>Custom palette</h4>
-      <div class="palette-fields">
-        <label>Background</label><input type="color" id="pcBg" value="#0b1020"/>
-        <label>Surface</label><input type="color" id="pcCard" value="#121a2e"/>
-        <label>Accent</label><input type="color" id="pcAccent" value="#f6c453"/>
-        <label>Text</label><input type="color" id="pcTxt" value="#e8edf7"/>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <button class="btn btn-primary btn-sm" id="pcApply">Apply custom</button>
-        <button class="btn btn-ghost btn-sm" id="pcReset">Reset to default</button>
-      </div>
-    </div>
-    <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn btn-ghost" id="paletteClose">Done</button></div>
-  </div>
-</div>
+
 
 <div id="toasts"></div>
 <div class="modal-bg" id="modalBg"><div class="modal" id="modalContent"></div></div>
