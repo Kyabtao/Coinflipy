@@ -4,9 +4,12 @@ import {coin,enforceWalletInvariants,numOr,reconciliation,sub} from "../shared/m
 import {SAVE_KEY} from "./core.js";
 import {BOTS_SEED,VIP_SEED} from "./data.js";
 
+/* Demo bots that signed up with the player's referral code — their 5% fee
+   share accrues to the player (S.referralEarned) and books to house.referralCost. */
+const REFERRAL_SEED_BOTS=["Neo","Sofia","Maya"];
 function cfg(){return S.config;}
-function houseGross(){const h=cfg().house;return (h.fees||0)+(h.catalogFees||0)+(h.cupRakes||0)+(h.trnyRakes||0)+(h.shop||0)+(h.xfFees||0);}
-function houseNet(){const h=cfg().house;return houseGross()-(h.promoCost||0)-(h.comps||0);}
+function houseGross(){const h=cfg().house;return (h.fees||0)+(h.catalogFees||0)+(h.cupRakes||0)+(h.trnyRakes||0)+(h.shop||0)+(h.xfFees||0)+(h.auctionFees||0);}
+function houseNet(){const h=cfg().house;return houseGross()-(h.promoCost||0)-(h.comps||0)-(h.rakebackPaid||0)-(h.referralCost||0);}
 function houseCashIn(){const h=cfg().house;return (h.deposits||0)+(h.botDeposits||0);}
 function houseCashOut(){const h=cfg().house;return (h.withdrawals||0)+(h.playerWithdrawals||0);}
 function houseNetCash(){return houseCashIn()-houseCashOut();}
@@ -38,10 +41,10 @@ function defaultState(){
     histories:{friendChallenges:[],rooms:[],roomGames:[],clanGames:[],arcade:[],progression:[],economy:[],social:[]},
     trophies:{cups:0,trnys:0},
     achievements:{},levelMilestones:{},
-    waiting:[],cups:[],trnys:[],x2room:[],feed:[],gameCarries:{},
+    waiting:[],cups:[],trnys:[],x2room:[],feed:[],gameCarries:{},announcements:[],privacyErasedAt:0,
     jackpot:120,
-    bots:BOTS_SEED.map(b=>({...b,balance:0,bonusBalance:1000,walletVersion:2,startingBonus:1000,startingBonusAccounted:false,startingBonusAt:0,wins:0,losses:0,net:0,streak:0,bestStreak:0,biggestWin:0,jackpots:0,games:0,shop:b.shop||[],title2:b.title2||"",firstTopupDone:false,firstTopupAt:0,topupCount:0,topupTotal:0})),
-    settings:{theme:"dark",themeName:"midnight",customPalette:null,sound:true,instant:false,autoRebet:false,autoRebetStop:-200,language:"en",catalogFavorites:[],arcadeFavorites:[],accessibility:{highContrast:false,reducedMotion:false,textScale:100,colorVision:"none",screenReaderHints:true},dashboardWidgets:["wallet","net","jackpot","level","network","topups"],dashboardSections:["opportunities","vip","feed","explore"],gamePresets:[]},
+    bots:BOTS_SEED.map(b=>({...b,balance:0,bonusBalance:1000,walletVersion:2,startingBonus:1000,startingBonusAccounted:false,startingBonusAt:0,wins:0,losses:0,net:0,streak:0,bestStreak:0,biggestWin:0,jackpots:0,games:0,shop:b.shop||[],title2:b.title2||"",firstTopupDone:false,firstTopupAt:0,topupCount:0,topupTotal:0,referredByPlayer:REFERRAL_SEED_BOTS.includes(b.name)})),
+    settings:{theme:"dark",themeName:"midnight",customPalette:null,sound:true,instant:false,autoRebet:false,autoRebetStop:-200,language:"en",catalogFavorites:[],arcadeFavorites:[],accessibility:{highContrast:false,reducedMotion:false,textScale:100,colorVision:"none",screenReaderHints:true},dashboardWidgets:["wallet","net","jackpot","level","network","topups"],dashboardSections:["opportunities","vip","feed","explore"],gamePresets:[],navGroups:{},recentTabs:[]},
     referralCode:"TM-"+Math.floor(1000+Math.random()*9000),referredBy:"",referralCount:0,referralEarned:0,
     transferToday:0,transferDay:new Date().toDateString(),transferCount:0,catalogPlayed:{},
     playerName:"",firstDepositDone:false,
@@ -49,14 +52,14 @@ function defaultState(){
     playerWithdrawals:{count:0,amount:0,log:[]},
     walletRefs:{deposit:1,withdraw:1},
     login:{streak:0,lastDay:""},
-    social:{friends:[],friendRequests:[],botFriendships:[],blocked:[],muted:[],chat:[],privateRooms:[],gifts:[],clan:null,clanScore:0},
+    social:{friends:[],friendRequests:[],botFriendships:[],blocked:[],muted:[],chat:[],privateRooms:[],gifts:[],clan:null,clanScore:0,eventReminders:{}},
     botActivity:{socialActions:0,arcadePlays:0,createdBots:0,socialLog:[],arcadeLog:[],lastCreatedAt:0},
     services:{apiKey:"tm_demo_"+Math.random().toString(36).slice(2,10),apiLog:[],notifications:{enabled:false,match:true,friend:true,jackpot:true,quest:true},notificationLog:[],twoFactor:{secret:"",enabled:false,verifiedAt:0},antiCheat:{lastScan:0,score:0,findings:[]},promoClaims:{},activeDepositPromo:"",statements:[],emailLog:[],pwaInstallSeen:false},
     rg:{depositLimits:{daily:0,weekly:0,monthly:0},pendingDepositLimits:null,deposits:[],sessionLimitMin:0,coolOffMin:1,coolOffUntil:0,selfExUntil:0,selfExPermanent:false,selfExReason:"",realityIntervalMin:5,lastRealityAt:Date.now(),sessionPoints:[{t:Date.now(),net:0}]},
     analytics:{samples:[],lastSampleAt:0},
     featureGames:{wheel:{lastFreeDay:"",spins:0,lastPrize:""},scratch:[],dice:[],raffle:{week:"",playerTickets:0,botTickets:80,pool:800,lastWinner:""},ladder:[],war:[],extended:{plays:[],last:{},lastTriviaDay:"",fishingCollection:{}}},
-    engagement:{battlePass:{month:"",xp:0,premium:false,claimedFree:[],claimedPremium:[]},weekly:{key:"",wins:0,games:0,gameTypes:{},bestStreak:0,claimed:[]},prestige:0,skillOnly:false},
-    economyPlus:{cratesOpened:0,tradingListings:[],staking:{balance:0,lastClaim:Date.now()},subscription:{tier:"none",expires:0,lastDropMonth:""},boosters:{xpUntil:0,rakeUntil:0},utility:{crafts:[],eventTickets:0,ticketPurchases:[],clanTreasury:0,clanLevel:1,roomUpgrade:'basic',roomPurchases:[]}},
+    engagement:{battlePass:{month:"",xp:0,premium:false,claimedFree:[],claimedPremium:[]},weekly:{key:"",wins:0,games:0,gameTypes:{},bestStreak:0,claimed:[]},prestige:0,skillOnly:false,milestones:{claimed:{}}},
+    economyPlus:{cratesOpened:0,tradingListings:[],staking:{balance:0,lastClaim:Date.now()},subscription:{tier:"none",expires:0,lastDropMonth:""},boosters:{xpUntil:0,rakeUntil:0},utility:{crafts:[],eventTickets:0,ticketPurchases:[],clanTreasury:0,clanLevel:1,roomUpgrade:'basic',roomPurchases:[]},auction:{weekKey:"",lots:[],history:[]}},
     spectatorEvents:[],
     lossLimit:0,
     frozen:{you:false,reason:"",at:0,by:""},
@@ -71,7 +74,7 @@ function defaultState(){
       broadcast:"",
       promotions:[],
       seasonNumber:1, seasonEnds: lastDayOfMonthUTC20(),
-      house:{capital:100000,fees:0,catalogFees:0,cupRakes:0,trnyRakes:0,shop:0,xfFees:0,promoCost:0,comps:0,withdrawals:0,playerWithdrawals:0,deposits:0,botDeposits:0,netRevenue:0,netCash:0},
+      house:{capital:100000,fees:0,catalogFees:0,cupRakes:0,trnyRakes:0,shop:0,xfFees:0,auctionFees:0,promoCost:0,comps:0,rakebackPaid:0,referralCost:0,withdrawals:0,playerWithdrawals:0,deposits:0,botDeposits:0,netRevenue:0,netCash:0},
       taps:0, sinks:0,
       audit:[], reviewFlags:[]
     },
@@ -98,8 +101,8 @@ function load(){
       S.services=Object.assign(defaultState().services,p.services||{});S.services.notifications=Object.assign(defaultState().services.notifications,(p.services&&p.services.notifications)||{});S.services.twoFactor=Object.assign(defaultState().services.twoFactor,(p.services&&p.services.twoFactor)||{});S.services.antiCheat=Object.assign(defaultState().services.antiCheat,(p.services&&p.services.antiCheat)||{});S.services.promoClaims=Object.assign({},(p.services&&p.services.promoClaims)||{});
       S.rg=Object.assign(defaultState().rg,p.rg||{});S.rg.depositLimits=Object.assign(defaultState().rg.depositLimits,(p.rg&&p.rg.depositLimits)||{});S.rg.sessionPoints=Array.isArray(p.rg&&p.rg.sessionPoints)?p.rg.sessionPoints:defaultState().rg.sessionPoints;S.rg.deposits=Array.isArray(p.rg&&p.rg.deposits)?p.rg.deposits:defaultState().rg.deposits;S.kyc=Object.assign(defaultState().kyc,p.kyc||{});S.playerWithdrawals=Object.assign(defaultState().playerWithdrawals,p.playerWithdrawals||{});if(!Array.isArray(S.playerWithdrawals.log))S.playerWithdrawals.log=[];S.walletRefs=Object.assign(defaultState().walletRefs,p.walletRefs||{});S.playerName=typeof p.playerName==='string'?p.playerName:'';S.analytics=Object.assign(defaultState().analytics,p.analytics||{});
       S.social=Object.assign(defaultState().social,p.social||{});S.featureGames=Object.assign(defaultState().featureGames,p.featureGames||{});S.featureGames.wheel=Object.assign(defaultState().featureGames.wheel,(p.featureGames&&p.featureGames.wheel)||{});S.featureGames.raffle=Object.assign(defaultState().featureGames.raffle,(p.featureGames&&p.featureGames.raffle)||{});S.featureGames.extended=Object.assign(defaultState().featureGames.extended,(p.featureGames&&p.featureGames.extended)||{});S.featureGames.extended.last=Object.assign({},(p.featureGames&&p.featureGames.extended&&p.featureGames.extended.last)||{});S.featureGames.extended.fishingCollection=Object.assign({},(p.featureGames&&p.featureGames.extended&&p.featureGames.extended.fishingCollection)||{});
-      S.engagement=Object.assign(defaultState().engagement,p.engagement||{});S.engagement.battlePass=Object.assign(defaultState().engagement.battlePass,(p.engagement&&p.engagement.battlePass)||{});S.engagement.weekly=Object.assign(defaultState().engagement.weekly,(p.engagement&&p.engagement.weekly)||{});
-      S.economyPlus=Object.assign(defaultState().economyPlus,p.economyPlus||{});S.economyPlus.staking=Object.assign(defaultState().economyPlus.staking,(p.economyPlus&&p.economyPlus.staking)||{});S.economyPlus.subscription=Object.assign(defaultState().economyPlus.subscription,(p.economyPlus&&p.economyPlus.subscription)||{});S.economyPlus.boosters=Object.assign(defaultState().economyPlus.boosters,(p.economyPlus&&p.economyPlus.boosters)||{});S.economyPlus.utility=Object.assign(defaultState().economyPlus.utility,(p.economyPlus&&p.economyPlus.utility)||{});
+      S.engagement=Object.assign(defaultState().engagement,p.engagement||{});S.engagement.battlePass=Object.assign(defaultState().engagement.battlePass,(p.engagement&&p.engagement.battlePass)||{});S.engagement.weekly=Object.assign(defaultState().engagement.weekly,(p.engagement&&p.engagement.weekly)||{});S.engagement.milestones=Object.assign(defaultState().engagement.milestones,(p.engagement&&p.engagement.milestones)||{});
+      S.economyPlus=Object.assign(defaultState().economyPlus,p.economyPlus||{});S.economyPlus.staking=Object.assign(defaultState().economyPlus.staking,(p.economyPlus&&p.economyPlus.staking)||{});S.economyPlus.subscription=Object.assign(defaultState().economyPlus.subscription,(p.economyPlus&&p.economyPlus.subscription)||{});S.economyPlus.boosters=Object.assign(defaultState().economyPlus.boosters,(p.economyPlus&&p.economyPlus.boosters)||{});S.economyPlus.utility=Object.assign(defaultState().economyPlus.utility,(p.economyPlus&&p.economyPlus.utility)||{});S.economyPlus.auction=Object.assign(defaultState().economyPlus.auction,(p.economyPlus&&p.economyPlus.auction)||{});if(!Array.isArray(S.economyPlus.auction.lots))S.economyPlus.auction.lots=[];if(!Array.isArray(S.economyPlus.auction.history))S.economyPlus.auction.history=[];
       S.vipUnlockedTier=Math.max(1,p.vipUnlockedTier||1);S.vipBenefits=Object.assign(defaultState().vipBenefits,p.vipBenefits||{});S.vipBenefits.unlockedAt=Object.assign({1:Date.now()},(p.vipBenefits&&p.vipBenefits.unlockedAt)||{});
       S.config=Object.assign(defaultState().config,p.config||{});
       S.frozen=Object.assign(defaultState().frozen,p.frozen||{});
@@ -127,6 +130,8 @@ function load(){
           else{if(ex.losses===undefined)ex.losses=0;if(ex.games===undefined)ex.games=0;if(ex.shop===undefined)ex.shop=[];if(!ex.about)ex.about=b.about;if(!ex.country)ex.country=b.country;if(!ex.title)ex.title=b.title;if(!ex.skin)ex.skin=b.skin;if(ex.jackpots===undefined)ex.jackpots=0;if(ex.bestStreak===undefined)ex.bestStreak=0;if(ex.biggestWin===undefined)ex.biggestWin=0;if(ex.firstTopupDone===undefined)ex.firstTopupDone=false;if(ex.topupCount===undefined)ex.topupCount=0;if(ex.topupTotal===undefined)ex.topupTotal=0;}
         });
         S.bots.forEach(initializeBotStartingWallet);
+        // Referral program: keep the seed referral set stable across saves.
+        S.bots.forEach(b=>{if(REFERRAL_SEED_BOTS.includes(b.name))b.referredByPlayer=true;});
       }
       // Bot-created Series Cups are public; another bot may complete them.
       S.cups=Array.isArray(S.cups)?S.cups:[];

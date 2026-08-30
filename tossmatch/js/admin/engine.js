@@ -70,23 +70,26 @@ export function bind(){
   $("broadcastInput").addEventListener("input",e=>{const v=e.target.value;$("bcPreview").style.display=v?"block":"none";$("bcPreview").textContent="📣 "+v;});
   $("runSim").onclick=()=>{
     const games=+$("simGames").value,stake=+$("simStake").value,cups=+$("simCups").value,trnys=+$("simTrny").value,
-      trnyPool=+$("simTrnyPool").value,shop=+$("simShop").value;
+      trnyPool=+$("simTrnyPool").value,shop=+$("simShop").value,auction=+$("simAuction")?+$("simAuction").value:0;
     const pot=stake*2;
     const feePerGame=Math.round(pot*cfg().feePct/100);
     const grossFee=games*feePerGame;
     const jpFund=Math.round(grossFee*cfg().jpFundPct/100);
     const cupRake=cups*Math.round(pot*cfg().cupRakePct/100);
     const trnyRake=trnys*Math.round(trnyPool*cfg().trnyRakePct/100);
-    const gross=grossFee-jpFund+cupRake+trnyRake+shop;
+    const gross=grossFee-jpFund+cupRake+trnyRake+shop+auction;
     const rbCost=Math.round(grossFee*.08); // approx avg rakeback
-    const net=gross-rbCost;
+    const refShare=Math.round(grossFee*.02); // ~5% referral cut on ~40% referred volume
+    const net=gross-rbCost-refShare;
     $("simOut").innerHTML=`
       <div class="kv"><span class="k">Regular fees (gross)</span><span class="v">${fmt(grossFee)}</span></div>
       <div class="kv"><span class="k">− Jackpot funding</span><span class="v" style="color:var(--red)">−${fmt(jpFund)}</span></div>
       <div class="kv"><span class="k">Cup rake</span><span class="v">${fmt(cupRake)}</span></div>
       <div class="kv"><span class="k">Tournament rake</span><span class="v">${fmt(trnyRake)}</span></div>
-      <div class="kv"><span class="k">Shop</span><span class="v">${fmt(shop)}</span></div>
+      <div class="kv"><span class="k">Shop &amp; commerce</span><span class="v">${fmt(shop)}</span></div>
+      <div class="kv"><span class="k">Auction house fees</span><span class="v">${fmt(auction)}</span></div>
       <div class="kv"><span class="k">− Est. rakeback cost</span><span class="v" style="color:var(--red)">−${fmt(rbCost)}</span></div>
+      <div class="kv"><span class="k">− Est. referral payouts</span><span class="v" style="color:var(--red)">−${fmt(refShare)}</span></div>
       <div class="kv" style="border-top:2px solid var(--line);padding-top:8px;margin-top:4px"><span class="k" style="font-weight:800">Net / day</span><span class="v" style="color:var(--gold);font-size:15px">${fmt(net)}</span></div>
       <div class="kv"><span class="k">Net / month (30d)</span><span class="v" style="color:var(--green)">${fmt(net*30)}</span></div>`;
   };

@@ -94,7 +94,27 @@ body.light header{background:rgba(255,255,255,.92)}
 .admin-link{font-size:11px;font-weight:700;color:var(--purple);border-color:rgba(var(--purple-rgb),.4);text-decoration:none;display:grid;place-items:center}
 .admin-link:hover{border-color:var(--purple);color:#fff}
 main{max-width:1280px;margin:0 auto;padding:18px}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;position:sticky;top:60px;z-index:40;overflow-x:auto}
+.tabs{display:flex;gap:8px 14px;flex-wrap:wrap;margin-bottom:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;position:sticky;top:60px;z-index:40;overflow-x:auto;align-items:flex-start}
+.nav-brand,.nav-tools,.nav-recent{flex:1 1 100%}
+.nav-group{display:flex;flex-direction:column;gap:3px;flex:1 1 230px;min-width:210px;border-left:1px solid var(--line);padding-left:10px}
+.nav-group:first-of-type{border-left:none;padding-left:0}
+.nav-group-head{display:flex;align-items:center;gap:6px;background:transparent;border:none;color:var(--mut2);font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;padding:5px 8px;border-radius:8px;cursor:pointer;transition:.15s}
+.nav-group-head:hover{color:var(--txt);background:var(--bg2)}
+.nav-group-head .nav-chip{font-size:11px}
+.nav-group-head .chev{margin-left:auto;transition:transform .15s;font-style:normal;font-size:9px}
+.nav-group.collapsed .nav-group-head .chev{transform:rotate(-90deg)}
+.nav-group.collapsed .nav-group-body{display:none}
+.nav-group.collapsed .nav-group-head{padding-bottom:14px}
+.nav-count{font-size:9px;font-style:normal;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:1px 6px;color:var(--mut)}
+.nav-group-body{display:flex;gap:6px;flex-wrap:wrap}
+.nav-badge{min-width:18px;height:18px;border-radius:9px;background:linear-gradient(135deg,#f6c453,#e0a52e);color:#2a1f00;font-size:10px;font-weight:800;display:inline-grid;place-items:center;padding:0 5px;box-shadow:0 0 10px rgba(var(--gold-rgb),.4)}
+.nav-recent{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:0 4px 8px;border-bottom:1px dashed var(--line)}
+.nav-recent-label{font-size:9.5px;font-weight:800;letter-spacing:1.2px;color:var(--mut2);text-transform:uppercase}
+.nav-recent-chip{background:var(--bg2);border:1px solid var(--line);border-radius:8px;color:var(--mut);font-size:11px;font-weight:700;padding:4px 9px;cursor:pointer;transition:.15s}
+.nav-recent-chip:hover{border-color:var(--gold);color:var(--gold)}
+#tabs.searching .nav-group-head{display:none}
+#tabs.searching .nav-group.collapsed .nav-group-body{display:flex}
+#tabs.searching .nav-group{border-left:none;padding-left:0;flex:1 1 100%;min-width:0}
 .tab{background:transparent;border:none;color:var(--mut);padding:9px 13px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:.15s;white-space:nowrap}
 .tab:hover{color:var(--txt);background:var(--bg2)}.tab.active{background:linear-gradient(135deg,rgba(var(--gold-rgb),.18),rgba(var(--gold2-rgb),.08));color:var(--gold);border:1px solid rgba(var(--gold-rgb),.3)}
 body.light .tab.active{color:#8b6914}
@@ -405,3 +425,16 @@ body.a11y-reduced-motion .btn:hover,body.a11y-reduced-motion .card:hover{transfo
    until the viewport is wide enough for the vertical sidebar. */
 @media(max-width:1120px){.nav-label,.nav-brand,.nav-chip{display:none!important}}
 @media(min-width:1121px){.nav-label{display:flex}.nav-brand{display:flex}}
+.lb-pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
+.lb-pager .muted{font-size:11px}
+/* Home stability: numbers change without reflowing the layout */
+.home-kpi .value{font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#homeFeed{min-height:120px}
+#homeOpportunities{min-height:64px}
+.bar i{transition:width .4s ease}
+/* ── Home announcement banner (v13.1) ── */
+#homeAnnounce{margin-bottom:14px}
+.announce-card{display:flex;align-items:flex-start;gap:10px;background:linear-gradient(135deg,rgba(124,58,237,.14),rgba(244,63,94,.10));border:1px solid rgba(124,58,237,.4);border-radius:14px;padding:12px 14px}
+.announce-badge{flex:none;font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#f5d0fe;background:rgba(168,85,247,.25);border:1px solid rgba(168,85,247,.5);border-radius:99px;padding:3px 9px;margin-top:2px}
+.announce-card b{font-size:13px}
+.announce-time{flex:none;font-size:10px;color:var(--mut)}

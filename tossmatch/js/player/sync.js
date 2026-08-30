@@ -5,7 +5,7 @@ import {SAVE_KEY,SIM_LEADER_KEY,SIM_TAB_ID,TAB_KEY,botLiveChannel} from "./core.
 import {COS,HUB,applyVipUnlocks,currentVipEntitlements} from "./bots.js";
 import {randHex,shaHex} from "./crypto.js";
 import {autoMatchBotTossBet,botByName,botFillCup,checkGuards,checkProgressAchievements,createTournament,escrow,fillTournamentBots,makeCup,refund,runTournament,seedBotBets,seedBotCatalogBets,unlockAch} from "./games.js";
-import {$,EXT_ARCADE,addFeed,applyPendingDepositLimits,awardXp,checkRealityReminder,confettiFx,effectiveRakeback,filterSkillBots,fmt,pushHistory,recordAnalyticsSample,recordEngagement,recordPlayerMetrics,recordSessionPoint,renderNewGamesHub,toast,vipFor} from "./helpers.js";
+import {$,EXT_ARCADE,addFeed,applyPendingDepositLimits,awardXp,botAuctionBids,checkRealityReminder,confettiFx,effectiveRakeback,filterSkillBots,fmt,pushHistory,recordAnalyticsSample,recordEngagement,recordPlayerMetrics,recordSessionPoint,renderNewGamesHub,toast,vipFor} from "./helpers.js";
 import {checkVipMonthReset} from "./misc.js";
 import {playerAviHTML,playerName,render,renderTick} from "./render.js";
 import {cfg,initializeBotStartingWallet,load,save} from "./state.js";
@@ -24,7 +24,7 @@ async function backgroundTick(source='player-interval'){
     // jackpots can actually trigger here (byte 00, 1/256 when pool armed).
     // S.turbo runs many flips per tick for the stress test (100,000+ games).
     // 1x = steady 3 flips/tick (normal); higher = stress-test multipliers
-    growBotRoster();botSocialActivity();await botArcadeActivity();
+    growBotRoster();botSocialActivity();botAuctionBids();await botArcadeActivity();
     const flipsThisTick=(S.turbo&&S.turbo>1)?S.turbo:8;
     for(let fi=0; fi<flipsThisTick; fi++){
       if(true){
@@ -135,6 +135,9 @@ async function settleBotFlip(a,b,stake){
   if(jpHit){w.jackpots=(w.jackpots||0)+1;}
   S.global.totalGames++;if(result==="HEADS")S.global.heads++;else S.global.tails++;
   cfg().house.fees+=fee-jpc;cfg().house.netRevenue+=fee-jpc;cfg().sinks+=fee;
+  // Referral program: bots flagged as referred-by-player pass 5% of their fees
+  // to the demo player (S.referralEarned). The same share is a house cost line.
+  if(a.referredByPlayer||b.referredByPlayer){const refShare=pct(fee,5);if(refShare>0){S.referralEarned=(S.referralEarned||0)+refShare;cfg().house.referralCost=(cfg().house.referralCost||0)+refShare;const refBot=a.referredByPlayer?a:b;S.referralBots=S.referralBots||{};S.referralBots[refBot.name]=(S.referralBots[refBot.name]||0)+refShare;}}
   if(!window._suppressFeed){
     if(jpHit){
       addFeed(`🎰 <b>${w.name}</b> ${w.flag} hit the JACKPOT on a bot flip — +${fmt(jpPayout)}! <b>${result}</b> @ ${fmt(stake)}`,true);
@@ -245,7 +248,7 @@ async function botArcadeActivity(){
   }
 }
 function createAutoBot(reason='Automatic network growth'){
-  const max=Math.max(99,Math.min(1000,+(cfg().botGrowthMax??250)));if(S.bots.length>=max)return null;const seq=S.bots.length+1,adjs=['Swift','Lucky','Nova','Royal','Pixel','Turbo','Cosmic','Golden','Mystic','Prime'],nouns=['Flipper','Rival','Player','Ace','Challenger','Duelist','Ranger','Captain','Knight','Star'];let name=`${adjs[seq%adjs.length]} ${nouns[(seq*3)%nouns.length]} ${seq}`;while(S.bots.some(b=>b.name===name))name+=String.fromCharCode(65+Math.floor(Math.random()*26));const places=[['India','🇮🇳'],['Brazil','🇧🇷'],['USA','🇺🇸'],['UK','🇬🇧'],['Japan','🇯🇵'],['Germany','🇩🇪'],['UAE','🇦🇪'],['Canada','🇨🇦'],['Australia','🇦🇺'],['Singapore','🇸🇬']],place=places[Math.floor(Math.random()*places.length)],avatars=['🤖','😎','🧑','👩','🥷','🧙','🦸','👽','🦊','🐼'],skins=['classic','silver','neon','arctic','ember','ruby','emerald','sapphire','obsidian','jade'];const bot={name,avi:avatars[Math.floor(Math.random()*avatars.length)],flag:place[1],balance:0,bonusBalance:1000,walletVersion:2,startingBonus:1000,startingBonusAccounted:false,startingBonusAt:0,level:2+Math.floor(Math.random()*24),country:place[0],title:'Network Newcomer',about:'Automatically joined the growing FlipArena demo network.',skin:skins[Math.floor(Math.random()*skins.length)],joined:0,wins:0,losses:0,net:0,streak:0,bestStreak:0,biggestWin:0,jackpots:0,games:0,arcadeGames:0,shop:[],title2:'',firstTopupDone:false,topupCount:0,topupTotal:0,autoCreated:true,createdAt:Date.now()};S.bots.push(bot);ensureBotFirstTopup(bot,'Required first top-up on bot creation');S.botActivity.createdBots=(S.botActivity.createdBots||0)+1;S.botActivity.lastCreatedAt=Date.now();botActivityLog('social',{area:'Player network',icon:'🌐',detail:`${bot.name} ${bot.flag} joined automatically · ${S.bots.length+1} total players`});if(!window._suppressFeed)addFeed(`🌐 <b>${bot.name}</b> joined the network automatically · ${S.bots.length+1} players online`);return bot;
+  const max=Math.max(99,Math.min(1000,+(cfg().botGrowthMax??250)));if(S.bots.length>=max)return null;const seq=S.bots.length+1,adjs=['Swift','Lucky','Nova','Royal','Pixel','Turbo','Cosmic','Golden','Mystic','Prime'],nouns=['Flipper','Rival','Player','Ace','Challenger','Duelist','Ranger','Captain','Knight','Star'];let name=`${adjs[seq%adjs.length]} ${nouns[(seq*3)%nouns.length]} ${seq}`;while(S.bots.some(b=>b.name===name))name+=String.fromCharCode(65+Math.floor(Math.random()*26));const places=[['India','🇮🇳'],['Brazil','🇧🇷'],['USA','🇺🇸'],['UK','🇬🇧'],['Japan','🇯🇵'],['Germany','🇩🇪'],['UAE','🇦🇪'],['Canada','🇨🇦'],['Australia','🇦🇺'],['Singapore','🇸🇬']],place=places[Math.floor(Math.random()*places.length)],avatars=['🤖','😎','🧑','👩','🥷','🧙','🦸','👽','🦊','🐼'],skins=['classic','silver','neon','arctic','ember','ruby','emerald','sapphire','obsidian','jade'];const bot={name,avi:avatars[Math.floor(Math.random()*avatars.length)],flag:place[1],balance:0,bonusBalance:1000,walletVersion:2,startingBonus:1000,startingBonusAccounted:false,startingBonusAt:0,level:2+Math.floor(Math.random()*24),country:place[0],title:'Network Newcomer',about:'Automatically joined the growing FlipArena demo network.',skin:skins[Math.floor(Math.random()*skins.length)],joined:0,wins:0,losses:0,net:0,streak:0,bestStreak:0,biggestWin:0,jackpots:0,games:0,arcadeGames:0,shop:[],title2:'',firstTopupDone:false,topupCount:0,topupTotal:0,referredByPlayer:Math.random()<.1,autoCreated:true,createdAt:Date.now()};S.bots.push(bot);ensureBotFirstTopup(bot,'Required first top-up on bot creation');S.botActivity.createdBots=(S.botActivity.createdBots||0)+1;S.botActivity.lastCreatedAt=Date.now();botActivityLog('social',{area:'Player network',icon:'🌐',detail:`${bot.name} ${bot.flag} joined automatically · ${S.bots.length+1} total players`});if(!window._suppressFeed)addFeed(`🌐 <b>${bot.name}</b> joined the network automatically · ${S.bots.length+1} players online`);return bot;
 }
 function growBotRoster(){
   if(!cfg().features.bots||cfg().features.botGrowth===false)return;const interval=Math.max(5,Math.min(3600,+(cfg().botGrowthIntervalSec??15)))*1000;if(Date.now()-(S.botActivity.lastCreatedAt||0)<interval)return;const batch=Math.max(1,Math.min(10,+(cfg().botGrowthBatch??1)));for(let n=0;n<batch;n++)if(!createAutoBot())break;
@@ -283,13 +286,16 @@ const GAMES=[
  {id:"threedicepoker",code:"CAT30",name:"🎲 Three Dice Poker",edge:"3 dice each",type:"none",desc:"Each entrant receives three proof dice. Triple beats pair, then higher total, then higher die; exact category/total ties split."},
  {id:"lastdigit",code:"CAT31",name:"🔟 Last Digit Duel",edge:"0–9",type:"options",options:["0","1","2","3","4","5","6","7","8","9"],desc:"Choose a digit 0–9 distinct from the bot's. The last digit of a proof number wins if claimed; an unclaimed digit carries. Identical digits split."},
  {id:"binaryduel",code:"CAT32",name:"🧬 Binary Code Duel",edge:"3 bits",type:"pattern3",desc:"Choose a three-bit H/T code distinct from the bot's. The code with the lowest Hamming distance to the proof code wins; equal distance splits."},
- {id:"coinbalance",code:"CAT33",name:"⚖️ Coin Balance Battle",edge:"10 flips",type:"number",min:2,max:8,desc:"Predict the number of HEADS in ten fair flips. The closest distinct prediction wins; equal distance splits the pot."}
+ {id:"coinbalance",code:"CAT33",name:"⚖️ Coin Balance Battle",edge:"10 flips",type:"number",min:2,max:8,desc:"Predict the number of HEADS in ten fair flips. The closest distinct prediction wins; equal distance splits the pot."},
+ {id:"bytewar",code:"CAT34",name:"🔥 Byte Showdown",edge:"3 bytes each",type:"none",desc:"Each entrant receives three independent fair bytes. The higher total wins the pot; an equal total splits it."},
+ {id:"sumfour",code:"CAT35",name:"📊 Sum of Four",edge:"0–1020",type:"number",min:0,max:1020,desc:"Predict the sum of four fair bytes (0–1020). The two bytes are revealed in pairs, summed, and the closest prediction wins; equal distance splits."},
+ {id:"highcard",code:"CAT36",name:"🃏 High Card Duel",edge:"2–Ace",type:"none",desc:"Each entrant is dealt one proof-derived card from 2 through Ace. The higher card wins the pot; an equal card splits it."}
 ];
 const CATALOG_GROUPS={
  'Side Picks':['overunder','speed','tug','evenodd','blind','chain','ladder','mirrored','rps','triplecoin','primecomposite','streaksurvivor'],
- 'Numbers & Dice':['closest','luckybattle','sumpredict','higherbyte','closest21','dicesumduel','medianbattle','modulo4','threedicepoker','lastdigit','coinbalance'],
+ 'Numbers & Dice':['closest','luckybattle','sumpredict','higherbyte','closest21','dicesumduel','medianbattle','modulo4','threedicepoker','lastdigit','coinbalance','bytewar','sumfour'],
  'Patterns & Territory':['patternrace','parlayduel','prediction','rangewar','bullseye','sequencebuilder','colourspectrum','territory','binaryduel'],
- 'Cards':['pokerhigh']
+ 'Cards':['pokerhigh','highcard']
 };
 const CATALOG_NAV={search:'',group:'',favorites:false};
 function catalogGroup(id){return Object.keys(CATALOG_GROUPS).find(k=>CATALOG_GROUPS[k].includes(id))||'Other';}
@@ -465,6 +471,9 @@ function resolveCatalogGame(g,pickA,pickB,bytes){
   if(g.id==="lastdigit"){const n=(bytes[0]*256+bytes[1])%10000,digit=String(n%10);return {winner:digit===pickA?'player':digit===pickB?'bot':'carry',detail:`proof number ${n} · last digit ${digit}`};}
   if(g.id==="binaryduel"){const code=bytes.slice(0,3).map(x=>side(x)[0]).join(''),dist=p=>[0,1,2].filter(i=>p[i]!==code[i]).length,da=dist(pickA),db=dist(pickB);return {winner:da===db?'split':da<db?'player':'bot',detail:`proof code ${code} · Hamming distance ${da}/${db}`};}
   if(g.id==="coinbalance"){const flips=bytes.slice(0,10).map(side),heads=flips.filter(x=>x==='HEADS').length,da=Math.abs(+pickA-heads),db=Math.abs(+pickB-heads);return {winner:da===db?'split':da<db?'player':'bot',detail:`${flips.map(x=>x[0]).join('')} · ${heads} HEADS · distances ${da}/${db}`};}
+  if(g.id==="bytewar"){const ta=bytes[0]+bytes[1]+bytes[2],tb=bytes[3]+bytes[4]+bytes[5];return {winner:ta===tb?'split':ta>tb?'player':'bot',detail:`bytes ${bytes.slice(0,3).join('+')}=${ta} vs ${bytes.slice(3,6).join('+')}=${tb}`};}
+  if(g.id==="sumfour"){const s=bytes[0]+bytes[1]+bytes[2]+bytes[3],da=Math.abs(+pickA-s),db=Math.abs(+pickB-s);return {winner:da===db?'split':da<db?'player':'bot',detail:`sum ${bytes.slice(0,4).join('+')}=${s} · distances ${da}/${db}`};}
+  if(g.id==="highcard"){const val=x=>x%13+2,n=x=>x<=10?x:['J','Q','K','A'][x-11],a=val(bytes[0]),b=val(bytes[1]);return {winner:a===b?'split':a>b?'player':'bot',detail:`your card ${n(a)} · bot card ${n(b)}`};}
   return {winner:"split",detail:"fair split"};
 }
 function logCatalogMatch(entry){S.catalogLog=S.catalogLog||[];S.catalogLog.unshift(entry);if(S.catalogLog.length>100)S.catalogLog.length=100;}
@@ -498,6 +507,8 @@ async function settleCatalogBet(g,bet,bot,botPick){
     const fair=await catalogFairOutcome(g,stake,pick,botPick),out=resolveCatalogGame(g,String(pick),String(botPick),fair.bytes);
     const pot=stake*2,fee=Math.round(pot*cfg().feePct/100),jpContrib=Math.max(0,Math.min(fee-1,Math.max(cfg().jpFloor,Math.round(fee*cfg().jpFundPct/100)))),vip=vipFor(S.monthWagered),rbEarned=Math.round((fee/2)*effectiveRakeback(vip.rakeback)/100);
     S.accruedRakeback+=rbEarned;S.jackpot+=jpContrib;cfg().house.catalogFees=(cfg().house.catalogFees||0)+fee-jpContrib;cfg().house.netRevenue+=fee-jpContrib;cfg().sinks+=fee;
+    // Referral cost when the demo player was referred by an external code.
+    if(S.referredBy){const refCost=pct(fee,5);if(refCost>0)cfg().house.referralCost=(cfg().house.referralCost||0)+refCost;}
     S.gameCarries=S.gameCarries||{};const carry=S.gameCarries[g.id]||0,available=pot-fee+carry;
     let delta=-stake,kind="LOSE",playerPaid=0,botPaid=0;
     if(out.winner==="player"){playerPaid=available;S.wallet.main+=playerPaid;bot.net=(bot.net||0)-stake;bot.losses=(bot.losses||0)+1;bot.streak=0;delta=playerPaid-stake;kind="WIN";S.gameCarries[g.id]=0;}
@@ -522,7 +533,7 @@ async function settleCatalogBet(g,bet,bot,botPick){
 }
 function filteredCatalogGames(){const q=CATALOG_NAV.search.trim().toLowerCase(),fav=S.settings.catalogFavorites||[];return GAMES.filter(g=>(!CATALOG_NAV.group||catalogGroup(g.id)===CATALOG_NAV.group)&&(!CATALOG_NAV.favorites||fav.includes(g.id))&&(!q||`${g.code||''} ${g.name} ${g.desc} ${g.edge} ${catalogGroup(g.id)}`.toLowerCase().includes(q)));}
 function syncCatalogNavigation(){const groups=Object.keys(CATALOG_GROUPS),group=$("catalogNavGroup"),jump=$("catalogNavJump"),fav=S.settings.catalogFavorites||[];if(!group.dataset.ready){group.innerHTML='<option value="">All categories</option><option value="__favorites">★ Favorites</option>'+groups.map(x=>`<option value="${x}">${x}</option>`).join('');group.dataset.ready='1';}if(!jump.dataset.ready){jump.innerHTML='<option value="">Select a game…</option>'+groups.map(x=>`<optgroup label="${x}">${GAMES.filter(g=>catalogGroup(g.id)===x).map(g=>`<option value="${g.id}">${g.code?g.code+' · ':''}${g.name.replace(/^\S+\s/,'')}</option>`).join('')}</optgroup>`).join('');jump.dataset.ready='1';}group.value=CATALOG_NAV.favorites?'__favorites':CATALOG_NAV.group;jump.value=activeGame;if(document.activeElement!==$("catalogNavSearch"))$("catalogNavSearch").value=CATALOG_NAV.search;$("catalogFavoriteBtn").textContent=fav.includes(activeGame)?'★ Favorited':'☆ Favorite';$("catalogFavoriteBtn").classList.toggle('btn-primary',fav.includes(activeGame));}
-function renderCatalogTabs(){const rows=filteredCatalogGames(),fav=S.settings.catalogFavorites||[];$("gameTabs").innerHTML=rows.length?rows.map(g=>`<button class="game-tab ${activeGame===g.id?'active':''}" data-gtab="${g.id}">${g.name}${fav.includes(g.id)?'<span class="fav-star">★</span>':''} <span class="muted" style="font-size:10px;margin-left:4px">${g.code||g.edge}</span></button>`).join(""):'<div class="game-nav-empty">No Catalog games match these filters.</div>';$("catalogNavSummary").textContent=`Showing ${rows.length} of ${GAMES.length} games${CATALOG_NAV.group?' · '+CATALOG_NAV.group:''}${CATALOG_NAV.favorites?' · favorites only':''}`;syncCatalogNavigation();}
+function renderCatalogTabs(){const rows=filteredCatalogGames(),fav=S.settings.catalogFavorites||[];$("gameTabs").innerHTML=rows.length?rows.map(g=>`<button class="game-tab ${activeGame===g.id?'active':''}" data-gtab="${g.id}">${g.name}${fav.includes(g.id)?'<span class="fav-star">★</span>':''} <span class="muted" style="font-size:10px;margin-left:4px">${g.edge}</span></button>`).join(""):'<div class="game-nav-empty">No Catalog games match these filters.</div>';$("catalogNavSummary").textContent=`Showing ${rows.length} of ${GAMES.length} games${CATALOG_NAV.group?' · '+CATALOG_NAV.group:''}${CATALOG_NAV.favorites?' · favorites only':''}`;syncCatalogNavigation();}
 function renderGames(){
   renderCatalogTabs();
   $("gamePanels").innerHTML=GAMES.map(g=>`<div class="card game-panel ${activeGame===g.id?'active':''}" id="gpanel-${g.id}"></div>`).join("");

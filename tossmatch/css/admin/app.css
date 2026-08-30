@@ -211,3 +211,41 @@ header:after{content:"";display:block;height:2px;background:linear-gradient(90de
 /* Mobile: sidebar becomes a horizontal tab bar; group labels stay hidden. */
 @media(max-width:1100px){.admin-nav-label,.admin-nav-brand,.admin-nav-chip{display:none!important}}
 @media(min-width:1101px){.admin-nav-label{display:flex}.admin-nav-brand{display:flex}}
+/* ── v13 navigation redesign: collapsible groups, live badges ─────────────── */
+.admin-nav-group{display:flex;flex-direction:column;gap:2px}
+.admin-nav-group-head{display:flex;align-items:center;gap:6px;width:100%;background:transparent;border:none;color:var(--mut2);font-size:8px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;padding:13px 10px 4px;cursor:pointer;transition:.15s;text-align:left}
+.admin-nav-group-head:hover{color:var(--txt)}
+.admin-nav-group-head .chev{margin-left:auto;font-style:normal;font-size:8px;transition:transform .15s}
+.admin-nav-group.collapsed .admin-nav-group-head .chev{transform:rotate(-90deg)}
+.admin-nav-group.collapsed .admin-nav-group-body{display:none}
+.admin-nav-group-body{display:flex;flex-direction:column;gap:2px;padding-bottom:4px}
+.nav-count{font-size:7px;font-style:normal;background:rgba(148,163,184,.12);border:1px solid var(--line2);border-radius:7px;padding:1px 5px;color:var(--mut)}
+.nav-badge{min-width:16px;height:16px;border-radius:8px;background:linear-gradient(135deg,#f6c453,#e0a52e);color:#2a1f00;font-size:9px;font-weight:900;display:inline-grid;place-items:center;padding:0 4px;margin-left:auto;box-shadow:0 0 10px rgba(var(--gold-rgb),.35)}
+.tab .nav-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);margin-left:0}
+#tabs.searching .admin-nav-group-head{display:none}
+#tabs.searching .admin-nav-group.collapsed .admin-nav-group-body{display:flex}
+/* ── v13 login gate ───────────────────────────────────────────────────────── */
+body.admin-locked main,body.admin-locked header .h-stat,body.admin-locked header .admin-live{filter:blur(5px);pointer-events:none;user-select:none}
+#adminLoginOverlay{position:fixed;inset:0;z-index:950;display:grid;place-items:center;background:radial-gradient(900px 500px at 80% -10%,rgba(var(--purple-rgb),.16),transparent 60%),rgba(4,7,15,.88);backdrop-filter:blur(10px);padding:16px}
+#adminLoginOverlay[hidden]{display:none}
+.admin-login-card{width:min(390px,94vw);background:linear-gradient(160deg,#171d38,#0a0f20);border:1px solid rgba(var(--purple-rgb),.35);border-radius:18px;padding:26px;box-shadow:0 28px 80px rgba(0,0,0,.58)}
+.admin-login-brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:15px;margin-bottom:16px}
+.admin-login-brand .shield{box-shadow:0 0 22px rgba(var(--violet2-rgb),.35)}
+.admin-login-card h3{margin:0 0 6px;font-size:18px}
+.admin-login-card label{display:block;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin:12px 0 4px}
+.admin-login-card input,.admin-login-card select{width:100%}
+.admin-login-error{margin-top:12px;padding:9px 11px;border-radius:9px;border:1px solid rgba(var(--red-rgb),.35);background:rgba(var(--red-rgb),.08);color:var(--red);font-size:11px}
+/* Mobile: horizontal bar — hide group heads, keep flat tabs (as before) */
+@media(max-width:1100px){
+  .admin-nav-group-head{display:none!important}
+  .admin-nav-group.collapsed .admin-nav-group-body{display:flex!important}
+  .admin-nav-group-body{padding-bottom:0}
+}
+/* ── Reports & Analytics bar charts (v13.1) ── */
+.rep-chart{display:flex;gap:8px;align-items:flex-end;height:150px;padding:8px 4px 0}
+.rep-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;min-width:0}
+.rep-col em{font-size:9px;color:var(--mut);font-style:normal;white-space:nowrap}
+.rep-bar{width:70%;max-width:28px;border-radius:4px 4px 0 0;transition:height .4s ease}
+.rep-bar.gold{background:linear-gradient(180deg,var(--gold),rgba(251,191,36,.3))}
+.rep-bar.blue{background:linear-gradient(180deg,#38bdf8,rgba(56,189,248,.32))}
+.rep-bar.red{background:linear-gradient(180deg,#f43f5e,rgba(244,63,94,.32))}

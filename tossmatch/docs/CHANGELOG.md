@@ -10,7 +10,7 @@
 - **Ledger invariants** — `ledgerAudit()` verifies non-negative whole-coin
   balances, escrow integrity, duplicate-settlement detection, well-formed ledger
   rows and the reconciliation formula
-  `net profit = gross revenue − promo cost − comps`. `enforceWalletInvariants()`
+  `net profit = gross revenue − total costs (promo + comps + rakeback + referral)`. `enforceWalletInvariants()`
   repairs drift on boot and on every reconcile.
 - **Concurrency** — `withWalletLock()` serialises wallet-critical sections, so
   rapid clicks and overlapping bot ticks can never double-spend.
@@ -45,6 +45,82 @@
   invariants) and `tools/boot-smoke.mjs` (headless jsdom boot + screen walk).
   `tossmatch/docs/audit-loop-v13.0.log` records **20/20 clean passes** —
   157 checks per pass, 3,140 assertions, 0 failures.
+
+### Phase 7 — New features, redesigned navigation and real-world Admin console
+- **P2P catalog +3** — CAT34 Byte War, CAT35 Sum of Four and CAT36 High Card Duel
+  (36 catalog games total), with proof resolvers, groups and Admin command entries.
+- **Arcade Zone +2** — G24 Roulette (16-pocket proof wheel, 2×/2×/15×, house zero)
+  and G25 Blackjack Hit-or-Stand (natural 3×, win 2×, push 1×; 25 arcade modes).
+- **Event Calendar (LIVE1 → demo)** — Social Hub *Events* tab: daily trivia, weekly
+  raffle, live auto-tournaments, season/VIP resets and active campaigns in one
+  timezone-aware schedule (local + UTC) with persisted per-event reminders.
+- **Career Milestones (P6)** — twelve lifetime goals (games, wins, wager, jackpots,
+  level, achievements) with one-time BONUS claims that survive Prestige.
+- **Auction House (E10)** — three weekly cosmetic lots, autonomous bot bidding,
+  winner pays at the hammer and the house keeps a 10% hammer fee recognised as
+  `house.auctionFees` in the revenue fund-source register.
+- **Revenue fund-source register** — Admin Revenue now classifies every source as
+  REVENUE / COST / FUNDING / CASH-OUT / LIABILITY with % of gross and an NGR total;
+  the ledger audit verifies `net = gross − (promo + comps + rakeback + referral)`.
+- **Navigation redesign (both apps)** — collapsible nav groups with persisted state,
+  live badges (open bets, friend requests; Admin approvals, cash-out triggers,
+  campaigns), a Recent row (last 4 screens), and search that flattens groups.
+- **Leaderboard & Roster list controls** — name/country filter, sort modes and
+  Prev/Next pagination on the player Leaderboard (10/page) and Player Roster (12/page).
+- **UI copy cleanup** — every internal spec code (CAT23, G24, S1, T1, SEC2, RG1,
+  OPS4, AC-*) removed from visible buttons, nav, headings and descriptions in both
+  apps and rewritten as human-readable copy.
+- **Home stability** — live ticks now update KPI values in place (tabular
+  numerals) and rebuild Home cards only when their data changes, eliminating the
+  full-screen reflow/shake on every bot tick.
+- **Real-world Admin console** — session-gated sign-in (admin / flip2026) with
+  2FA demo code 246810, RBAC roles (Super Admin, Finance, Operations, Support),
+  header profile + logout, new **Approvals** screen (KYC player verify/reset plus
+  simulated request queue, review-flag triage, freeze and exclusion controls,
+  decision history — all audit-logged) and new **Settings** screen (house
+  economics, role switching, maintenance, engine speed, factory reset).
+- **All-page stability** — shared `patchHTML` / `withPatchedDom` DOM patcher merges
+  background-tick `innerHTML` writes in place when the structure is unchanged, so
+  every player and Admin screen stays still on live data (no full-screen reflow,
+  no lost focus/scroll) instead of only Home.
+- **Unified player/bot Admin screens** — *Top-up Analytics* becomes **Top-ups &
+  Deposits — Players and Bots** (one stats block + one records table with an All /
+  Players / Bots filter, unified search, sorts, pagination, CSV export); the
+  Withdrawals ledger merges bot cash-outs and player withdrawals into one table
+  with Player/Bot badges and the same filter.
+- **Four new Admin screens (17 → 21)** — **Reports & Analytics** (7-day revenue
+  and cash-flow charts, revenue mix, busiest games, CSV/JSON export), **Games &
+  Content** (36 catalog games with plays, fee contribution and per-game
+  enable/disable), **Referrals** (referral code, referred roster, 5% house payout,
+  register action) and **Announcements** (create/publish/unpublish/delete in-app
+  announcements that appear on player Homes), all wired into nav, RBAC, command
+  palette and the feature directory (ADM-4…ADM-7).
+- **Continuous audit loop** — `run-audit-loop.sh` now runs the full stack
+  (static audit + boot smoke + feature regression) for 20 consecutive passes;
+  log in `tossmatch/docs/audit-loop-v13.0.log`.
+- **Support & Messaging screen (new, 21 → 22)** — unified ticket inbox for
+  player and bot reporters with Player/Bot badges, filter, status filter,
+  reply and close (audit-logged), open-ticket nav badge, and a compose panel
+  that delivers platform messages (direct/broadcast) to the player Services
+  hub's new **Support** tab (contact form + "My tickets" + platform messages).
+- **Admin user management (Settings)** — console accounts with role select,
+  enable/disable and add-user; the primary Super Admin is protected from
+  demotion/disable; all changes audit-logged.
+- **Backup & restore (Settings)** — point-in-time state snapshots (five
+  newest retained in the browser) with create/restore/delete; restore mutates
+  the live state in place so no module reference is invalidated.
+- **Feature directory** — ADM-8 (Support & Messaging) and ADM-9 (Admin Users
+  & Backups).
+- **Compliance & Privacy screen (new, 22 → 23)** — dated, checksummed
+  compliance reports (revenue by source, funding/cash-flow, KYC, review
+  flags, exclusions, admin users, announcements, full audit log) with JSON
+  report + audit-log CSV export.
+- **Player data portability & erasure** — player Services hub **Privacy**
+  tab: download a full personal data bundle (JSON) or erase transaction
+  history (ledger, matches, deposits, withdrawals) with career stats and
+  balance kept; the Admin Compliance screen mirrors both actions; every
+  action is audit-logged. ADM-10 added; regression suite extended to 104
+  checks.
 
 ## v12.0 — Modular Code Structure
 

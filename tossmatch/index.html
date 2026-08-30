@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>FlipArena v12.0 — Player App</title>
+<title>FlipArena v13.0 — Player App</title>
 <meta name="theme-color" content="#f6c453">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,7 +17,7 @@
 <body>
 <header>
   <div class="hwrap">
-    <div class="logo"><span class="coin-ico"><img src="img/logo.jpg" alt="FlipArena coin" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🪙'}))"></span> FlipArena <span class="vbadge">v12.0</span></div>
+    <div class="logo"><span class="coin-ico"><img src="img/logo.jpg" alt="FlipArena coin" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🪙'}))"></span> FlipArena <span class="vbadge">v13.0</span></div>
     <div class="h-spacer"></div>
     <div class="jp-meter" id="jpMeter" title="Jackpot — armed at ≥50, triggers on byte 00 (1/256)"><div><div class="jpl">🎰 Jackpot</div><div class="jpv" id="jpVal">0</div></div></div>
     <div class="wallet-chip" title="MAIN balance"><div><div class="wcl">🟢 Main</div><div class="wcv" id="mainVal">0</div></div></div>
@@ -42,30 +42,51 @@
   <nav class="tabs" id="tabs">
     <div class="nav-brand"><span>MENU</span><b id="navPlayerLevel">LEVEL 1</b></div>
     <div class="nav-tools"><input id="playerNavSearch" type="search" placeholder="Find a screen…" aria-label="Search player navigation"/><select id="playerNavJump" aria-label="Jump to player screen"><option value="">Quick jump…</option><optgroup label="Home"><option value="home">Home</option><option value="lobby">Live Lobby</option></optgroup><optgroup label="Play"><option value="play">Coin Toss</option><option value="series">Cups & Tournaments</option><option value="games">P2P Games</option><option value="newgames">Arcade Zone</option></optgroup><optgroup label="Community"><option value="leaderboard">Leaderboard</option><option value="players">Player Roster</option><option value="community">Social Hub</option></optgroup><optgroup label="Progress & Economy"><option value="progressionplus">Progress+</option><option value="economyplus">Economy+</option><option value="shop">Shop</option><option value="season">VIP & Season</option></optgroup><optgroup label="Account"><option value="wallet">Wallet</option><option value="history">History</option><option value="stats">Statistics</option><option value="services">Safety & Services</option></optgroup></select><div class="nav-search-empty" id="playerNavEmpty">No screens match.</div></div>
-    <div class="nav-label"><span class="nav-chip" aria-hidden="true">🏠</span>Home</div>
-    <button class="tab active" data-tab="home">✨ Home</button>
-    <button class="tab" data-tab="lobby">📡 Live Lobby</button>
-    <div class="nav-label"><span class="nav-chip" aria-hidden="true">🎮</span>Play</div>
-    <button class="tab" data-tab="play">🪙 Coin Toss</button>
-    <button class="tab" data-tab="series">⚔️ Cups & Tournaments</button>
-    <button class="tab" data-tab="games">🎲 P2P Games</button>
-    <button class="tab" data-tab="newgames">🎮 Arcade Zone</button>
-    <div class="nav-label"><span class="nav-chip" aria-hidden="true">🤝</span>Community</div>
-    <button class="tab" data-tab="leaderboard">🏆 Leaderboard</button>
-    <button class="tab" data-tab="players">👥 Player Roster</button>
-    <button class="tab" data-tab="community">🤝 Social Hub</button>
-    <div class="nav-label"><span class="nav-chip" aria-hidden="true">📈</span>Progress & Economy</div>
-    <button class="tab" data-tab="progressionplus">🚀 Progress+</button>
-    <button class="tab" data-tab="economyplus">💼 Economy+</button>
-    <button class="tab" data-tab="shop">🛍️ Shop</button>
-    <button class="tab" data-tab="season">⭐ VIP & Season</button>
-    <div class="nav-label"><span class="nav-chip" aria-hidden="true">⚙️</span>Account</div>
-    <button class="tab" data-tab="history">🕘 History</button>
-    <button class="tab" data-tab="updates">🧾 What's New</button>
-    <button class="tab" data-tab="wallet">👛 Wallet</button>
-    <button class="tab" data-tab="stats">📊 Statistics</button>
-    <button class="tab" data-tab="verify">🔍 Fairness</button>
-    <button class="tab" data-tab="services">🛡️ Safety & Services</button>
+    <div class="nav-recent" id="navRecent" hidden></div>
+    <div class="nav-group" data-group="Home">
+      <button class="nav-group-head" data-group-toggle="Home" aria-expanded="true"><span class="nav-chip" aria-hidden="true">🏠</span>Home<em class="nav-count">2</em><i class="chev" aria-hidden="true">▾</i></button>
+      <div class="nav-group-body">
+        <button class="tab active" data-tab="home">✨ Home</button>
+        <button class="tab" data-tab="lobby">📡 Live Lobby<span class="nav-badge" id="navBadgeLobby" hidden></span></button>
+      </div>
+    </div>
+    <div class="nav-group" data-group="Play">
+      <button class="nav-group-head" data-group-toggle="Play" aria-expanded="true"><span class="nav-chip" aria-hidden="true">🎮</span>Play<em class="nav-count">4</em><i class="chev" aria-hidden="true">▾</i></button>
+      <div class="nav-group-body">
+        <button class="tab" data-tab="play">🪙 Coin Toss</button>
+        <button class="tab" data-tab="series">⚔️ Cups & Tournaments</button>
+        <button class="tab" data-tab="games">🎲 P2P Games</button>
+        <button class="tab" data-tab="newgames">🎮 Arcade Zone</button>
+      </div>
+    </div>
+    <div class="nav-group" data-group="Community">
+      <button class="nav-group-head" data-group-toggle="Community" aria-expanded="true"><span class="nav-chip" aria-hidden="true">🤝</span>Community<em class="nav-count">3</em><i class="chev" aria-hidden="true">▾</i></button>
+      <div class="nav-group-body">
+        <button class="tab" data-tab="leaderboard">🏆 Leaderboard</button>
+        <button class="tab" data-tab="players">👥 Player Roster</button>
+        <button class="tab" data-tab="community">🤝 Social Hub<span class="nav-badge" id="navBadgeCommunity" hidden></span></button>
+      </div>
+    </div>
+    <div class="nav-group" data-group="Progress &amp; Economy">
+      <button class="nav-group-head" data-group-toggle="Progress &amp; Economy" aria-expanded="true"><span class="nav-chip" aria-hidden="true">📈</span>Progress &amp; Economy<em class="nav-count">4</em><i class="chev" aria-hidden="true">▾</i></button>
+      <div class="nav-group-body">
+        <button class="tab" data-tab="progressionplus">🚀 Progress+</button>
+        <button class="tab" data-tab="economyplus">💼 Economy+</button>
+        <button class="tab" data-tab="shop">🛍️ Shop</button>
+        <button class="tab" data-tab="season">⭐ VIP & Season</button>
+      </div>
+    </div>
+    <div class="nav-group" data-group="Account">
+      <button class="nav-group-head" data-group-toggle="Account" aria-expanded="true"><span class="nav-chip" aria-hidden="true">⚙️</span>Account<em class="nav-count">6</em><i class="chev" aria-hidden="true">▾</i></button>
+      <div class="nav-group-body">
+        <button class="tab" data-tab="history">🕘 History</button>
+        <button class="tab" data-tab="updates">🧾 What's New</button>
+        <button class="tab" data-tab="wallet">👛 Wallet</button>
+        <button class="tab" data-tab="stats">📊 Statistics</button>
+        <button class="tab" data-tab="verify">🔍 Fairness</button>
+        <button class="tab" data-tab="services">🛡️ Safety & Services</button>
+      </div>
+    </div>
   </nav>
 
   <!-- HOME -->
@@ -74,6 +95,7 @@
       <div><span class="eyebrow">FLIPARENA PLAYER DECK</span><h1 id="homeWelcome">Welcome back, Player</h1><p id="homeIntro">Your bankroll, VIP climb and live tables are one tap away. Jump into a coin flip, browse the arcade, or stack your rewards.</p></div>
       <div class="hero-actions"><button class="btn btn-primary" data-go-tab="play">🪙 Quick Toss</button><button class="btn btn-ghost" data-go-tab="games">🎲 Explore Games</button></div>
     </div>
+    <div id="homeAnnounce" hidden></div>
     <div class="home-kpis" id="homeKpis"></div>
     <div class="grid2 home-grid" id="homeDashboardSections">
       <div class="card premium-card" data-dashboard-section="opportunities"><h3>⚡ Live opportunities <span class="status-pill live" style="margin-left:auto">LIVE</span></h3><div id="homeOpportunities"></div></div>
@@ -184,13 +206,18 @@
     <div class="card">
       <h3>🏆 Leaderboard <span class="muted" style="margin-left:auto;font-weight:400" id="lbSortLbl">— net</span></h3>
       <p class="muted" style="margin-top:-4px;margin-bottom:14px">Compare every player by profit, wins, streak, or level. Select any bot to open their profile.</p>
-      <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
-        <button class="qchip lbsort active" data-sort="net">Net profit</button>
-        <button class="qchip lbsort" data-sort="wins">Wins</button>
-        <button class="qchip lbsort" data-sort="streak">Streak</button>
-        <button class="qchip lbsort" data-sort="level">Level</button>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+        <input id="lbFilter" type="search" placeholder="Filter players by name…" aria-label="Filter leaderboard" style="max-width:220px"/>
+        <span style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="qchip lbsort active" data-sort="net">Net profit</button>
+          <button class="qchip lbsort" data-sort="wins">Wins</button>
+          <button class="qchip lbsort" data-sort="streak">Streak</button>
+          <button class="qchip lbsort" data-sort="games">Games</button>
+          <button class="qchip lbsort" data-sort="level">Level</button>
+        </span>
       </div>
       <div class="lb" id="leaderboard"></div>
+      <div class="lb-pager" id="lbPager"></div>
     </div>
   </section>
 
@@ -199,7 +226,20 @@
     <div class="card">
       <h3>👥 Player Roster <span class="muted" style="margin-left:auto;font-weight:400"><span id="botCount">0</span> players online · click for profile</span></h3>
       <p class="muted" style="margin-top:-4px;margin-bottom:16px">Browse every active player and open their level, record, country, cosmetics and full profile.</p>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+        <input id="rosterFilter" type="search" placeholder="Filter players by name or country…" aria-label="Filter player roster" style="max-width:240px"/>
+        <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mut)">Sort
+          <select id="rosterSort" aria-label="Sort player roster">
+            <option value="net">Net profit</option>
+            <option value="wins">Wins</option>
+            <option value="games">Games</option>
+            <option value="level">Level</option>
+            <option value="balance">Balance</option>
+          </select>
+        </label>
+      </div>
       <div class="players-grid" id="playersGrid"></div>
+      <div class="lb-pager" id="rosterPager"></div>
     </div>
   </section>
 
@@ -290,8 +330,14 @@
 
   <!-- RELEASE NOTES -->
   <section class="panel" id="panel-updates">
-    <div class="player-hero compact-history"><div><span class="eyebrow">FEATURE CONSISTENCY RELEASE</span><h1>FlipArena v12.0</h1><p>Verified before-and-after details for the current player, bot, game, economy and admin experience.</p></div><div class="hero-actions"><button class="btn btn-primary" data-go-tab="home">Return Home</button></div></div>
+    <div class="player-hero compact-history"><div><span class="eyebrow">NEW FEATURES · REVENUE · NAVIGATION · ADMIN</span><h1>FlipArena v13.0</h1><p>Five new games, the Event Calendar, Career Milestones, the Auction House, a full revenue fund-source register, redesigned navigation and a real-world Admin console.</p></div><div class="hero-actions"><button class="btn btn-primary" data-go-tab="home">Return Home</button></div></div>
     <div class="release-grid">
+      <div class="release-card"><span class="feature-code">NEW GAMES v13.0</span><h3>Five new ways to play: three P2P catalog games and two arcade classics</h3><div class="before">Before · the catalog had 33 catalog games and the Arcade Zone 23 modes; no card or wheel classics.</div><div class="after">After · Byte War (three-byte sums), Sum of Four (predict 0–1020 against four proof bytes) and High Card Duel (proof cards 2–A) join P2P Games; Roulette (16-pocket proof wheel, colours 2×, green 15×, house zero) and one-shot Blackjack (natural 3×, win 2×, push 1×) join Arcade Zone — 36 catalog games and 25 arcade modes total.</div></div>
+      <div class="release-card"><span class="feature-code">EVENT CALENDAR v13.0</span><h3>Every scheduled opportunity in one timezone-aware place</h3><div class="before">Before · trivia, raffles, tournaments, season and VIP resets lived on separate screens with no shared timeline or reminders.</div><div class="after">After · the Social Hub Events tab lists daily trivia, the weekly raffle draw, live auto-tournaments, season end, VIP month reset and active campaigns with local + UTC times, countdowns and persisted reminders — the long-planned calendar is now a working demo.</div></div>
+      <div class="release-card"><span class="feature-code">MILESTONES & AUCTIONS v13.0</span><h3>Career milestones and a weekly auction house</h3><div class="before">Before · rewards were pass/weekly/prestige only, and cosmetics could only be bought outright or won from crates.</div><div class="after">After · twelve Career Milestones pay one-time BONUS rewards for lifetime goals (surviving Prestige), and the Auction House runs three weekly cosmetic lots with autonomous bot bidding — the winner pays at the hammer and the house keeps a 10% hammer fee shown as auction revenue.</div></div>
+      <div class="release-card"><span class="feature-code">REVENUE REGISTER v13.0</span><h3>Every funding source classified: revenue, cost, funding, cash-out</h3><div class="before">Before · the Revenue screen showed totals but a deposit and a fee looked the same; rakeback and referral payouts were invisible.</div><div class="after">After · the Admin Revenue screen presents a 16-line fund-source register (fees, catalog fees, rakes, shop, transfer fees, auction fees; promo cost, comps, rakeback paid, referral payouts; deposits as FUNDING, withdrawals as CASH-OUT, jackpot as LIABILITY) with % of gross, an NGR total, reconciliation readout and CSV export with a Treatment column. The ledger audit now verifies net = gross − total costs.</div></div>
+      <div class="release-card"><span class="feature-code">NAVIGATION v13.0</span><h3>Grouped, collapsible, badge-driven navigation in both apps</h3><div class="before">Before · both apps used flat lists of static labels; nothing in the menu told you what needed attention.</div><div class="after">After · five player groups and four Admin groups collapse and persist, live badges show open bets and friend requests (player) and approvals, cash-out triggers and campaigns (Admin), a Recent row jumps to your last four screens, and search flattens the groups to match everything at once.</div></div>
+      <div class="release-card"><span class="feature-code">ADMIN CONSOLE v13.0</span><h3>Sign-in, roles, approvals and settings — a real-world admin page</h3><div class="before">Before · the Admin console opened directly with 15 screens and no access control, and KYC/flags were scattered.</div><div class="after">After · session-gated sign-in (admin / flip2026, 2FA demo 246810) with RBAC roles (Super Admin, Finance, Operations, Support), header profile and logout; a new Approvals screen (KYC verification + request queue, review-flag triage, freeze and exclusion controls, decision history) and a new Settings screen (house economics, role switching, maintenance, engine speed, factory reset) — 17 screens total, all audit-logged.</div></div>
       <div class="release-card"><span class="feature-code">CLASSICS RESTORED v12.0</span><h3>Crash, Hi-Lo and Mines return to the Arcade Zone</h3><div class="before">Before · the classic provably-fair bank games existed in the codebase but were unreachable after the Arcade Zone hub restructure.</div><div class="after">After · Crash (auto cash-out), Hi-Lo (1.7× streaks) and Mines (gem multipliers with a 3% edge) are playable again inside Arcade Zone with wallet settlement, proofs, history and jackpot hooks.</div></div>
       <div class="release-card"><span class="feature-code">UNIFIED MERGE v12.0</span><h3>Five archives, one project</h3><div class="before">Before · the spec documents, demos, modular redesign and v10.8 app lived in five separate workspaces with overlapping and conflicting files.</div><div class="after">After · one cohesive app: the bot-withdrawal economy loop and Admin Player Directory from the modular redesign are integrated, the real coin photographs return as the Photoreal skin, all image assets and icons are unified, and every historical document is archived under docs/legacy.</div></div>
       <div class="release-card"><span class="feature-code">BOT WITHDRAWALS v12.0</span><h3>Bots cash out at 3,000–5,000 MAIN</h3><div class="before">Before · bot wallets could grow without an outflow path and the Admin had no Withdrawals screen.</div><div class="after">After · each bot has a personal cash-out trigger; when MAIN reaches it the bot files a withdrawal that leaves the bot wallet, is counted as a coin sink and is deducted from house revenue. The Admin Withdrawals screen tracks paid requests, statistics, the ledger and closest-to-cash-out, with CSV export.</div></div>
@@ -464,7 +510,7 @@ jackpot    = firstByte == 0  (1 in 256, only when pool armed)</pre>
     <div id="servicesHub"></div>
   </section>
 
-  <div class="footer-note">FlipArena v12.0 — player app · real Web Crypto SHA-256 · play coins only · state saved to localStorage<br>Companion: <a href="admin.html" target="_blank" rel="noopener">Open the Admin console (new tab)</a></div>
+  <div class="footer-note">FlipArena v13.0 — player app · real Web Crypto SHA-256 · play coins only · state saved to localStorage<br>Companion: <a href="admin.html" target="_blank" rel="noopener">Open the Admin console (new tab)</a></div>
 </main>
 <nav class="quick-dock" id="playerQuickDock" aria-label="Player quick navigation"><button data-go-tab="home"><span>✨</span>Home</button><button data-go-tab="play"><span>🪙</span>Coin Toss</button><button data-go-tab="games"><span>🎲</span>P2P Games</button><button data-go-tab="wallet"><span>👛</span>Wallet</button><button id="playerMobileMore"><span>☰</span>More</button></nav>
 <div class="command-backdrop" id="playerCommandBg" role="dialog" aria-modal="true" aria-label="Player quick navigation" aria-hidden="true"><div class="command-palette"><div class="command-head"><input id="playerCommandSearch" type="search" placeholder="Search screens, games, wallet, safety…" aria-label="Search all player screens"/><button class="icon-btn" id="playerCommandClose" aria-label="Close quick navigation">✕</button></div><div class="command-list" id="playerCommandList"></div></div></div>
