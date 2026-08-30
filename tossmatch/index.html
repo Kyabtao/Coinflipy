@@ -41,7 +41,7 @@
   <div class="broadcast" id="broadcast"></div>
   <nav class="tabs" id="tabs">
     <div class="nav-brand"><span>MENU</span><b id="navPlayerLevel">LEVEL 1</b></div>
-    <div class="nav-tools"><input id="playerNavSearch" type="search" placeholder="Find a screen…" aria-label="Search player navigation"/><select id="playerNavJump" aria-label="Jump to player screen"><option value="">Quick jump…</option><optgroup label="Home"><option value="home">Home</option><option value="lobby">Live Lobby</option></optgroup><optgroup label="Play"><option value="play">Coin Toss</option><option value="series">Cups & Tournaments</option><option value="games">P2P Games</option><option value="newgames">Arcade Zone</option></optgroup><optgroup label="Community"><option value="leaderboard">Leaderboard</option><option value="players">Player Roster</option><option value="community">Social Hub</option></optgroup><optgroup label="Progress & Economy"><option value="progressionplus">Progress+</option><option value="economyplus">Economy+</option><option value="shop">Shop</option><option value="season">VIP & Season</option></optgroup><optgroup label="Account"><option value="wallet">Wallet</option><option value="history">History</option><option value="stats">Statistics</option><option value="services">Safety & Services</option></optgroup></select><div class="nav-search-empty" id="playerNavEmpty">No screens match.</div></div>
+    <div class="nav-tools"><input id="playerNavSearch" type="search" placeholder="Find a screen…" aria-label="Search player navigation"/><select id="playerNavJump" aria-label="Jump to player screen"><option value="">Quick jump…</option><optgroup label="Home"><option value="home">Home</option><option value="lobby">Live Lobby</option></optgroup><optgroup label="Play"><option value="play">Coin Toss</option><option value="series">Cups & Tournaments</option><option value="games">P2P Games</option><option value="newgames">Arcade Zone</option></optgroup><optgroup label="Community"><option value="leaderboard">Leaderboard</option><option value="players">Player Roster</option><option value="community">Social Hub</option></optgroup><optgroup label="Progress & Economy"><option value="progressionplus">Progress+</option><option value="economyplus">Economy+</option><option value="shop">Shop</option><option value="season">VIP & Season</option></optgroup><optgroup label="Account"><option value="updates">What's New</option><option value="wallet">Wallet</option><option value="stats">Stats & History</option><option value="services">Safety & Services</option></optgroup></select><div class="nav-search-empty" id="playerNavEmpty">No screens match.</div></div>
     <div class="nav-recent" id="navRecent" hidden></div>
     <div class="nav-group" data-group="Home">
       <button class="nav-group-head" data-group-toggle="Home" aria-expanded="true"><span class="nav-chip" aria-hidden="true">🏠</span>Home<em class="nav-count">2</em><i class="chev" aria-hidden="true">▾</i></button>
@@ -77,15 +77,18 @@
       </div>
     </div>
     <div class="nav-group" data-group="Account">
-      <button class="nav-group-head" data-group-toggle="Account" aria-expanded="true"><span class="nav-chip" aria-hidden="true">⚙️</span>Account<em class="nav-count">6</em><i class="chev" aria-hidden="true">▾</i></button>
+      <button class="nav-group-head" data-group-toggle="Account" aria-expanded="true"><span class="nav-chip" aria-hidden="true">⚙️</span>Account<em class="nav-count">4</em><i class="chev" aria-hidden="true">▾</i></button>
       <div class="nav-group-body">
-        <button class="tab" data-tab="history">🕘 History</button>
         <button class="tab" data-tab="updates">🧾 What's New</button>
         <button class="tab" data-tab="wallet">👛 Wallet</button>
-        <button class="tab" data-tab="stats">📊 Statistics</button>
-        <button class="tab" data-tab="verify">🔍 Fairness</button>
+        <button class="tab" data-tab="stats">📊 Stats & History</button>
         <button class="tab" data-tab="services">🛡️ Safety & Services</button>
       </div>
+    </div>
+    <div class="nav-theme">
+      <div class="nav-theme-head">🎨 Theme</div>
+      <div class="nav-theme-presets" id="navThemePresets"></div>
+      <button class="nav-theme-custom" id="navThemeCustom">🎨 Custom palette…</button>
     </div>
   </nav>
 
@@ -193,7 +196,7 @@
   <!-- GAMES -->
   <section class="panel" id="panel-games">
     <div class="card">
-      <h3>🎮 P2P Games <span class="muted" style="margin-left:auto;font-weight:400">33 live games · bot auto-match · one universal fairness proof</span></h3>
+      <h3>🎮 P2P Games <span class="muted" style="margin-left:auto;font-weight:400"><span id="p2pGameCount">36</span> live games · bot auto-match · one universal fairness proof</span></h3>
       <p class="muted">Pick a game and your side, then either post for automatic matching or take a bot’s open bet. Bots post and match each other too — every stake stays escrowed and every result is derived from a single merged proof hash.</p>
       <div class="game-nav-toolbar"><div><label for="catalogNavSearch">Find Catalog game</label><input id="catalogNavSearch" type="search" placeholder="Search name or rule…"/></div><div><label for="catalogNavGroup">Category</label><select id="catalogNavGroup"><option value="">All categories</option></select></div><div><label for="catalogNavJump">Quick jump</label><select id="catalogNavJump"><option value="">Select a game…</option></select></div><button class="btn btn-ghost" id="catalogFavoriteBtn" title="Favorite the current game">☆ Favorite</button></div><div class="game-nav-summary" id="catalogNavSummary"></div>
       <div class="game-tabs" id="gameTabs"></div>
@@ -317,17 +320,6 @@
     <div class="card" style="margin-top:16px"><h3>🏅 Achievements</h3><div class="ach-grid" id="achList"></div></div>
   </section>
 
-  <!-- PLAYER HISTORY -->
-  <section class="panel" id="panel-history">
-    <div class="player-hero compact-history"><div><span class="eyebrow">FULL ACTIVITY LEDGER</span><h1>History</h1><p>Search, inspect and export every flip, challenge, room, clan event, Arcade Zone run and Economy+ transaction.</p></div><div class="hero-actions"><button class="btn btn-ghost" id="historyExport">📦 Export history JSON</button></div></div>
-    <div class="home-kpis" id="historyKpis"></div>
-    <div class="card">
-      <div class="history-toolbar"><div class="hub-tabs" id="historyTabs"></div><div class="history-filters"><input id="historySearch" placeholder="Search history…"/><select id="historySort"><option value="time-desc">Newest first</option><option value="time-asc">Oldest first</option><option value="amount-desc">Highest amount</option></select></div></div>
-      <div id="historyList"></div>
-      <div class="history-pager"><button class="btn btn-sm btn-ghost" id="historyPrev">← Previous</button><span class="muted" id="historyPage">Page 1</span><button class="btn btn-sm btn-ghost" id="historyNext">Next →</button></div>
-    </div>
-  </section>
-
   <!-- RELEASE NOTES -->
   <section class="panel" id="panel-updates">
     <div class="player-hero compact-history"><div><span class="eyebrow">NEW FEATURES · REVENUE · NAVIGATION · ADMIN</span><h1>FlipArena v13.0</h1><p>Five new games, the Event Calendar, Career Milestones, the Auction House, a full revenue fund-source register, redesigned navigation and a real-world Admin console.</p></div><div class="hero-actions"><button class="btn btn-primary" data-go-tab="home">Return Home</button></div></div>
@@ -444,55 +436,68 @@
     </div>
   </section>
 
-  <!-- STATS -->
+  <!-- STATS & HISTORY & FAIRNESS (merged single screen with internal sub-tabs) -->
   <section class="panel" id="panel-stats">
-    <div class="grid3" id="statTiles" style="margin-bottom:16px"></div>
-    <div class="grid2">
-      <div class="card"><h3>📊 Career</h3><div id="careerList"></div></div>
-      <div class="card">
-        <h3>🪙 Global Coin Bias</h3>
-        <p class="muted">Heads vs tails across all settled games. Fair coin trends 50/50; RNG monitor alerts beyond 3σ.</p>
-        <div class="bias-bar" id="biasBar"></div>
-        <div class="kv-row" style="margin-top:14px"><span class="k">z-score</span><span class="v" id="zscore">0.00</span></div>
-        <div class="kv-row"><span class="k">Total games</span><span class="v" id="totalGames">0</span></div>
-        <div class="kv-row"><span class="k">Jackpots hit</span><span class="v" id="totalJp">0</span></div>
-      </div>
+    <div class="hub-tabs" id="accTabs">
+      <button class="hub-tab active" data-acc="stats">📊 Statistics</button>
+      <button class="hub-tab" data-acc="history">🕘 History</button>
+      <button class="hub-tab" data-acc="verify">🔍 Fairness</button>
     </div>
-    <div class="grid2" style="margin-top:16px">
-      <div class="card"><h3>💰 Overall financial performance</h3><div id="overallStats"></div></div>
-      <div class="card"><h3>🎮 Game participation breakdown</h3><div id="gameBreakdown"></div></div>
-    </div>
-    <div class="card" style="margin-top:16px">
-      <h3>💳 Top-up analytics</h3>
-      <p class="muted">Tracks your demo top-up count, base coins, promotional bonuses and credited total. Top-ups are play-coin liquidity, not deposits or house revenue.</p>
-      <div class="service-kpis" id="topupStatsTiles"></div>
+    <div class="acc-view" id="accStats">
+      <div class="grid3" id="statTiles" style="margin-bottom:16px"></div>
       <div class="grid2">
-        <div><div class="section-title">Top-up breakdown</div><div id="topupStatsBreakdown"></div></div>
-        <div><div class="section-title">Recent top-ups</div><div id="recentPlayerTopups"></div></div>
-      </div>
-    </div>
-    <div class="card" style="margin-top:16px"><h3>📈 Recent payout trend</h3><div id="payoutTrend" class="payout-chart"></div></div>
-  </section>
-
-  <!-- VERIFY -->
-  <section class="panel" id="panel-verify">
-    <div class="grid2">
-      <div class="card">
-        <h3>🔍 Standalone Verifier</h3>
-        <p class="muted">Paste any game's four inputs. Recomputes every hash locally — nothing trusted from the server.</p>
-        <label class="muted" style="font-size:11px">Server seed (revealed)</label><input class="vfy-input" id="vSeed"/>
-        <label class="muted" style="font-size:11px">Maker bet hash</label><input class="vfy-input" id="vMaker"/>
-        <label class="muted" style="font-size:11px">Taker bet hash</label><input class="vfy-input" id="vTaker"/>
-        <label class="muted" style="font-size:11px">Game ID</label><input class="vfy-input" id="vGid"/>
-        <div style="display:flex;gap:8px;margin-top:6px">
-          <button class="btn btn-primary" id="vfyBtn">Verify</button>
-          <button class="btn btn-ghost btn-sm" id="vfyLast">Load last game</button>
+        <div class="card"><h3>📊 Career</h3><div id="careerList"></div></div>
+        <div class="card">
+          <h3>🪙 Global Coin Bias</h3>
+          <p class="muted">Heads vs tails across all settled games. Fair coin trends 50/50; RNG monitor alerts beyond 3σ.</p>
+          <div class="bias-bar" id="biasBar"></div>
+          <div class="kv-row" style="margin-top:14px"><span class="k">z-score</span><span class="v" id="zscore">0.00</span></div>
+          <div class="kv-row"><span class="k">Total games</span><span class="v" id="totalGames">0</span></div>
+          <div class="kv-row"><span class="k">Jackpots hit</span><span class="v" id="totalJp">0</span></div>
         </div>
       </div>
-      <div class="card"><h3>🧾 Result</h3><div class="vfy-out" id="vfyOut"></div><div class="empty" id="vfyEmpty">Enter the four inputs and press Verify.</div></div>
+      <div class="grid2" style="margin-top:16px">
+        <div class="card"><h3>💰 Overall financial performance</h3><div id="overallStats"></div></div>
+        <div class="card"><h3>🎮 Game participation breakdown</h3><div id="gameBreakdown"></div></div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3>💳 Top-up analytics</h3>
+        <p class="muted">Tracks your demo top-up count, base coins, promotional bonuses and credited total. Top-ups are play-coin liquidity, not deposits or house revenue.</p>
+        <div class="service-kpis" id="topupStatsTiles"></div>
+        <div class="grid2">
+          <div><div class="section-title">Top-up breakdown</div><div id="topupStatsBreakdown"></div></div>
+          <div><div class="section-title">Recent top-ups</div><div id="recentPlayerTopups"></div></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px"><h3>📈 Recent payout trend</h3><div id="payoutTrend" class="payout-chart"></div></div>
     </div>
-    <div class="card" style="margin-top:16px">
-      <h3>📖 Fairness Formula</h3>
+    <div class="acc-view" id="accHistory" style="display:none">
+      <div class="player-hero compact-history"><div><span class="eyebrow">FULL ACTIVITY LEDGER</span><h1>History</h1><p>Search, inspect and export every flip, challenge, room, clan event, Arcade Zone run and Economy+ transaction.</p></div><div class="hero-actions"><button class="btn btn-ghost" id="historyExport">📦 Export history JSON</button></div></div>
+      <div class="home-kpis" id="historyKpis"></div>
+      <div class="card">
+        <div class="history-toolbar"><div class="hub-tabs" id="historyTabs"></div><div class="history-filters"><input id="historySearch" placeholder="Search history…"/><select id="historySort"><option value="time-desc">Newest first</option><option value="time-asc">Oldest first</option><option value="amount-desc">Highest amount</option></select></div></div>
+        <div id="historyList"></div>
+        <div class="history-pager"><button class="btn btn-sm btn-ghost" id="historyPrev">← Previous</button><span class="muted" id="historyPage">Page 1</span><button class="btn btn-sm btn-ghost" id="historyNext">Next →</button></div>
+      </div>
+    </div>
+    <div class="acc-view" id="accVerify" style="display:none">
+      <div class="grid2">
+        <div class="card">
+          <h3>🔍 Standalone Verifier</h3>
+          <p class="muted">Paste any game's four inputs. Recomputes every hash locally — nothing trusted from the server.</p>
+          <label class="muted" style="font-size:11px">Server seed (revealed)</label><input class="vfy-input" id="vSeed"/>
+          <label class="muted" style="font-size:11px">Maker bet hash</label><input class="vfy-input" id="vMaker"/>
+          <label class="muted" style="font-size:11px">Taker bet hash</label><input class="vfy-input" id="vTaker"/>
+          <label class="muted" style="font-size:11px">Game ID</label><input class="vfy-input" id="vGid"/>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <button class="btn btn-primary" id="vfyBtn">Verify</button>
+            <button class="btn btn-ghost btn-sm" id="vfyLast">Load last game</button>
+          </div>
+        </div>
+        <div class="card"><h3>🧾 Result</h3><div class="vfy-out" id="vfyOut"></div><div class="empty" id="vfyEmpty">Enter the four inputs and press Verify.</div></div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3>📖 Fairness Formula</h3>
 <pre>makerHash  = SHA256(makerSeed : gameId : amount : side)
 takerHash  = SHA256(takerSeed : gameId : amount : side)
 commit     = SHA256(serverSeed)        <span style="color:var(--mut)"># published pre-flip</span>
@@ -501,6 +506,7 @@ finalHash  = SHA256(combined.toString(16) + ':' + gameId)
 firstByte  = parseInt(finalHash.slice(0,2), 16)
 result     = firstByte % 2 == 0 ? HEADS : TAILS
 jackpot    = firstByte == 0  (1 in 256, only when pool armed)</pre>
+      </div>
     </div>
   </section>
 
@@ -513,6 +519,8 @@ jackpot    = firstByte == 0  (1 in 256, only when pool armed)</pre>
   <div class="footer-note">FlipArena v13.0 — player app · real Web Crypto SHA-256 · play coins only · state saved to localStorage<br>Companion: <a href="admin.html" target="_blank" rel="noopener">Open the Admin console (new tab)</a></div>
 </main>
 <nav class="quick-dock" id="playerQuickDock" aria-label="Player quick navigation"><button data-go-tab="home"><span>✨</span>Home</button><button data-go-tab="play"><span>🪙</span>Coin Toss</button><button data-go-tab="games"><span>🎲</span>P2P Games</button><button data-go-tab="wallet"><span>👛</span>Wallet</button><button id="playerMobileMore"><span>☰</span>More</button></nav>
+<button id="playerNavFab" aria-label="Open navigation menu" title="Menu">☰</button>
+<div id="playerNavBackdrop" aria-hidden="true"></div>
 <div class="command-backdrop" id="playerCommandBg" role="dialog" aria-modal="true" aria-label="Player quick navigation" aria-hidden="true"><div class="command-palette"><div class="command-head"><input id="playerCommandSearch" type="search" placeholder="Search screens, games, wallet, safety…" aria-label="Search all player screens"/><button class="icon-btn" id="playerCommandClose" aria-label="Close quick navigation">✕</button></div><div class="command-list" id="playerCommandList"></div></div></div>
 <div class="sr-only" id="a11yLive" aria-live="polite"></div>
 <div class="modal-bg" id="paletteBg">

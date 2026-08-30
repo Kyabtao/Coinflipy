@@ -73,6 +73,11 @@
         <button class="tab" data-tab="settings">⚙️ Settings</button>
       </div>
     </div>
+    <div class="nav-theme">
+      <div class="nav-theme-head">🎨 Theme</div>
+      <div class="nav-theme-presets" id="navThemePresets"></div>
+      <button class="nav-theme-custom" id="navThemeCustom">🎨 Custom palette…</button>
+    </div>
   </nav>
 
   <!-- DASHBOARD -->
@@ -721,6 +726,8 @@
   <div class="footer-note">FlipArena v13.0 Admin console · keeps the bot engine live with the <a href="index.html" target="_blank" rel="noopener">player app</a> via BroadcastChannel + localStorage · every change is audited · play coins only</div>
 </main>
 <nav class="admin-quick-dock" id="adminQuickDock" aria-label="Admin quick navigation"><button data-admin-tab="dash"><span>⌁</span>Overview</button><button data-admin-tab="ops"><span>🚦</span>Live Ops</button><button data-admin-tab="directory"><span>🗂</span>Directory</button><button data-admin-tab="trust"><span>🛡️</span>Trust</button><button id="adminMobileMore"><span>☰</span>More</button></nav>
+<button id="adminNavFab" aria-label="Open navigation menu" title="Menu">☰</button>
+<div id="adminNavBackdrop" aria-hidden="true"></div>
 <div class="admin-command-bg" id="adminCommandBg" role="dialog" aria-modal="true" aria-label="Admin quick navigation" aria-hidden="true"><div class="admin-command"><div class="admin-command-head"><input id="adminCommandSearch" type="search" placeholder="Search operations, rates, promotions, audit…" aria-label="Search all Admin screens"/><button class="icon-btn" id="adminCommandClose" aria-label="Close Admin quick navigation">✕</button></div><div class="admin-command-list" id="adminCommandList"></div></div></div>
 <div class="admin-drawer" id="adminDrawer"><div class="drawer-head"><div><span class="admin-eyebrow">RECORD INSPECTOR</span><h3 id="drawerTitle">Details</h3></div><button class="icon-btn" id="drawerClose">✕</button></div><div id="drawerContent"></div></div>
 <div class="drawer-backdrop" id="drawerBackdrop"></div>
