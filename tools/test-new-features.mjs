@@ -194,7 +194,7 @@ switchTab('players');
   rf.value='';
   rf.dispatchEvent(new w.Event('input',{bubbles:true}));
 }
-/* ── Home stability: live updates must not rebuild the DOM ── */
+/* ── Page stability: live ticks must not rebuild unchanged pages ── */
 {
   switchTab('home');
   const kpi1=w.document.querySelector('#homeKpis .home-kpi');
@@ -204,6 +204,33 @@ switchTab('players');
   const kpi2=w.document.querySelector('#homeKpis .home-kpi');
   record('home KPI nodes preserved across live tick', kpi1===kpi2 && kpi1.querySelector('.value').textContent.length>0);
   record('home feed updates when new activity arrives', /Stab/.test((w.document.querySelector('#homeFeed .feed-item')||{}).textContent||''));
+}
+{
+  const targets=[['lobby','#waitList'],['wallet','#segGrid'],['stats','#statTiles'],['season','#vipTierName'],['shop','#shopGrid']];
+  const bad=[];
+  for(const [tab,sel] of targets){
+    try{
+      switchTab(tab);
+      const before=w.document.querySelector(sel);
+      if(!before){bad.push(tab+':no-anchor');continue;}
+      const beforeHtml=before.innerHTML;
+      globalThis.renderTick();
+      const after=w.document.querySelector(sel);
+      if(before!==after||beforeHtml!==after.innerHTML)bad.push(tab);
+    }catch(e){bad.push(tab+':'+e.message);}
+  }
+  record('lobby/wallet/stats/season/shop stable across live tick', bad.length===0, bad.join(','));
+}
+{
+  // structure change (new waiting bet) must still update the page
+  switchTab('lobby');
+  const beforeCount=w.document.querySelectorAll('#waitList>*').length;
+  S.waiting.unshift({id:'stab1',name:'StabBot',side:'HEADS',stake:25,kind:'toss',owner:'bot',t:Date.now(),wait:0});
+  globalThis.renderTick();
+  const afterHtml=w.document.getElementById('waitList').innerHTML;
+  record('lobby list updates when a new bet arrives', /StabBot/.test(afterHtml));
+  S.waiting.shift();
+  globalThis.renderTick();
 }
 
 /* ── New catalog + arcade games registered ── */
@@ -228,7 +255,7 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   record('directory has CAT34–36 / G24–25 / P6 / E10', ['CAT34','CAT35','CAT36','G24','G25','P6','E10'].every(c => codes[c] && codes[c].status.startsWith('Implemented')), Object.keys(codes).filter(c => ['CAT34','CAT35','CAT36','G24','G25','P6','E10'].includes(c)).join(','));
   record('LIVE1 Event Calendar now Implemented (demo)', codes.LIVE1 && codes.LIVE1.status === 'Implemented (demo)' && codes.LIVE1.feature === 'events', codes.LIVE1 && codes.LIVE1.status);
   record('admin catalog metadata lists 36 games / 22 arcade', globalThis.ADMIN_CATALOG_GAMES.length === 36 && globalThis.ADMIN_ARCADE_GAMES.length === 22, 'cat=' + globalThis.ADMIN_CATALOG_GAMES.length + ' arc=' + globalThis.ADMIN_ARCADE_GAMES.length);
-  record('feature directory has ADM-1/2/3', ['ADM-1','ADM-2','ADM-3'].every(c => FD.some(x => x.code === c && x.status === 'Implemented')));
+  record('feature directory has ADM-1 through ADM-7', ['ADM-1','ADM-2','ADM-3','ADM-4','ADM-5','ADM-6','ADM-7'].every(c => FD.some(x => x.code === c && x.status === 'Implemented')));
 
   /* ── Admin login gate ── */
   const overlay = w2.document.getElementById('adminLoginOverlay');
@@ -262,8 +289,8 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   w2.sessionStorage.setItem('fa_admin_session', JSON.stringify({ user: 'admin', role: 'Super Admin', t: Date.now() }));
   globalThis.renderAdminProfile && globalThis.renderAdminProfile();
   globalThis.applyAdminRbac();
-  const allVisible = ['ops','settings','approvals','trust'].every(t => { const b = w2.document.querySelector('.tab[data-tab="' + t + '"]'); return b && b.style.display !== 'none'; });
-  record('Super Admin sees all 17 screens', allVisible);
+  const allVisible = ['ops','settings','approvals','trust','reports','games','referrals','announcements'].every(t => { const b = w2.document.querySelector('.tab[data-tab="' + t + '"]'); return b && b.style.display !== 'none'; });
+  record('Super Admin sees all 21 screens', allVisible);
 
   /* ── Approvals screen ── */
   const apTab = w2.document.querySelector('.tab[data-tab="approvals"]');
@@ -295,19 +322,99 @@ record('catalog groups contain new games', (globalThis.CATALOG_GROUPS['Numbers &
   record('admin group collapse works', gov.classList.contains('collapsed') && (globalThis.S.adminNavGroups||{}).Governance === true);
 
   /* ── Full per-screen render check (17 screens, content present) ── */
-  const screenIds=['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','approvals','audit','trust','settings'];
+  const screenIds=['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','approvals','audit','trust','settings','reports','games','referrals','announcements'];
   const emptyScreens=screenIds.filter(t=>{
     const b=w2.document.querySelector('.tab[data-tab="'+t+'"]');
     b.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
     const panel=w2.document.getElementById('panel-'+t);
     return !panel || !panel.classList.contains('active') || panel.innerHTML.trim().length<50;
   });
-  record('all 17 admin screens render content after login', emptyScreens.length===0, 'empty=' + emptyScreens.join(','));
+  record('all 21 admin screens render content after login', emptyScreens.length===0, 'empty=' + emptyScreens.join(','));
   // revenue register includes the new fund sources
   const revTab=w2.document.querySelector('.tab[data-tab="revenue"]');
   revTab.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
   const revHtml=w2.document.getElementById('panel-revenue').innerHTML;
   record('revenue register shows auction + referral treatment', /auction/i.test(revHtml) && /referral/i.test(revHtml) && /FUNDING/i.test(revHtml));
+
+  /* ── Unified player/bot admin screens (no separate player vs bot screens) ── */
+  const S2 = globalThis.S;
+  S2.rg.deposits.push({t:Date.now(),base:500,bonus:250,credited:750,method:'UPI',reference:'UNI-1',status:'completed',source:'Player wallet'});
+  S2.botTopups.push({t:Date.now()-1000,bot:'UnitBot',base:200,bonus:100,walletCredit:300,reason:'Low balance'});
+  S2.withdrawals = S2.withdrawals || {count:0,amount:0,log:[]};
+  S2.withdrawals.log.push({t:Date.now()-2000,name:'UnitBot2',amount:3200,keep:200,status:'paid'});
+  S2.playerWithdrawals.log.push({t:Date.now()-3000,amount:400,method:'UPI',reference:'UNI-WD',status:'paid'});
+  const adminClick = sel => w2.document.querySelector(sel).dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  adminClick('.tab[data-tab="topups"]');
+  const tuAll = w2.document.getElementById('topupList').innerHTML;
+  record('topups: one table lists player deposits and bot top-ups', /UNI-1/.test(tuAll) && /UnitBot/.test(tuAll));
+  record('topups: rows carry Player/Bot badges', /tag on">Player/.test(tuAll) && /tag warn">Bot/.test(tuAll));
+  w2.document.querySelector('[data-topup-who="bots"]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  const tuBots = w2.document.getElementById('topupList').innerHTML;
+  record('topups: who=Bots hides player deposits', /UnitBot/.test(tuBots) && !/UNI-1/.test(tuBots));
+  w2.document.querySelector('[data-topup-who="players"]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  const tuPl = w2.document.getElementById('topupList').innerHTML;
+  record('topups: who=Players hides bot top-ups', /UNI-1/.test(tuPl) && !/UnitBot/.test(tuPl));
+  w2.document.querySelector('[data-topup-who="all"]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  adminClick('.tab[data-tab="withdraw"]');
+  const wdAll = w2.document.getElementById('wdList').innerHTML;
+  record('withdrawals: one ledger lists player and bot payouts', /UNI-WD/.test(wdAll) && /UnitBot2/.test(wdAll));
+  w2.document.getElementById('wdWho').value='players';
+  w2.document.getElementById('wdWho').dispatchEvent(new w2.Event('change',{bubbles:true}));
+  const wdPl = w2.document.getElementById('wdList').innerHTML;
+  record('withdrawals: who=Players hides bot payouts', /UNI-WD/.test(wdPl) && !/UnitBot2/.test(wdPl));
+  w2.document.getElementById('wdWho').value='all';
+  w2.document.getElementById('wdWho').dispatchEvent(new w2.Event('change',{bubbles:true}));
+
+  /* ── Reports & Analytics screen ── */
+  adminClick('.tab[data-tab="reports"]');
+  record('reports: 7-day revenue chart renders 7 bars', w2.document.querySelectorAll('#repDailyRev .rep-bar').length===7, 'bars=' + w2.document.querySelectorAll('#repDailyRev .rep-bar').length);
+  record('reports: tiles + mix + busiest games populated', w2.document.querySelectorAll('#repTiles .stat-tile').length===4 && /Revenue mix|Coin Toss fees/.test(w2.document.getElementById('panel-reports').innerHTML) && w2.document.getElementById('exportReportCsv').hidden===false);
+
+  /* ── Games & Content screen ── */
+  adminClick('.tab[data-tab="games"]');
+  const gcRows0=w2.document.querySelectorAll('#gcList tbody tr').length;
+  record('games: catalog lists games with pager (36 total)', gcRows0===20 && /2/.test(w2.document.getElementById('gcPage').textContent), 'rows=' + gcRows0 + ' page=' + w2.document.getElementById('gcPage').textContent);
+  const firstToggle=w2.document.querySelector('#gcList [data-gc-toggle]');
+  const firstId=firstToggle.dataset.gcToggle;
+  firstToggle.dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('games: disable switch persists in state', S2.config.gamesEnabled[firstId]===false, firstId);
+  record('games: row shows Disabled tag', /Disabled/.test(w2.document.querySelector('#gcList tbody tr').outerHTML));
+  w2.document.querySelector('#gcList [data-gc-toggle="'+firstId+'"]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('games: re-enable restores state', S2.config.gamesEnabled[firstId]===undefined || S2.config.gamesEnabled[firstId]===true);
+
+  /* ── Referrals screen ── */
+  adminClick('.tab[data-tab="referrals"]');
+  const botsBefore=S2.bots.length;
+  w2.document.getElementById('refName').value='RefTest';
+  w2.document.getElementById('refAddBtn').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('referrals: register adds a referred bot', S2.bots.length===botsBefore+1 && S2.bots.some(b=>b.name==='RefTest'&&b.referredBy===S2.referralCode));
+  record('referrals: referred table shows the new player', /RefTest/.test(w2.document.getElementById('refList').innerHTML) && /TM-/.test(w2.document.getElementById('refList').innerHTML));
+  record('referrals: program tiles show code + 5% rate', /TM-/.test(w2.document.getElementById('refTiles').innerHTML) && /5%/.test(w2.document.getElementById('refProgram').innerHTML));
+
+  /* ── Announcements screen ── */
+  adminClick('.tab[data-tab="announcements"]');
+  w2.document.getElementById('annTitle').value='Welcome to FlipArena';
+  w2.document.getElementById('annBody').value='Tournaments are live this week.';
+  w2.document.getElementById('annPublish').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  record('announcements: publish stores a published entry', (S2.announcements||[]).some(a=>a.status==='published'&&a.title==='Welcome to FlipArena'));
+  record('announcements: history + current panel update', /Welcome to FlipArena/.test(w2.document.getElementById('annList').innerHTML) && /Tournaments are live/.test(w2.document.getElementById('annCurrent').innerHTML));
+  // player side: same shared state → banner on the player Home.
+  // The admin env swapped globalThis.document, so restore the player document
+  // while re-rendering the player app, then hand it back to the admin env.
+  const prevDoc=globalThis.document;
+  globalThis.document=w.document;
+  S.announcements=S2.announcements;
+  globalThis.renderHome();
+  const annEl=w.document.getElementById('homeAnnounce');
+  record('player Home shows the published announcement', !!annEl && !annEl.hidden && /Welcome to FlipArena/.test(annEl.innerHTML));
+  globalThis.document=prevDoc;
+  // unpublish hides it
+  w2.document.querySelector('#annList [data-ann-toggle]').dispatchEvent(new w2.MouseEvent('click',{bubbles:true}));
+  globalThis.document=w.document;
+  S.announcements=S2.announcements;
+  globalThis.renderHome();
+  record('player Home hides banner after unpublish', w.document.getElementById('homeAnnounce').hidden);
+  globalThis.document=prevDoc;
   dom2.window.close();
 }
 

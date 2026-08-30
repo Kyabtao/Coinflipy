@@ -93,10 +93,14 @@ function renderTab(tab){
 
 /** Background/periodic refresh: chrome + the active tab only. */
 function renderTick(){
-  renderChrome();
-  updateNavBadges();
-  renderTab(activeTab);
-  if(activeTab==="games"&&S.waiting.some(b=>b.kind==="catalog"&&b.catalogGame===activeGame)){try{renderGamePanel();}catch(e){}}
+  // Live data updates must never reflow the page: every innerHTML write below
+  // merges in place when the structure is unchanged (no screen shake).
+  withPatchedDom(()=>{
+    renderChrome();
+    updateNavBadges();
+    renderTab(activeTab);
+    if(activeTab==="games"&&S.waiting.some(b=>b.kind==="catalog"&&b.catalogGame===activeGame)){try{renderGamePanel();}catch(e){}}
+  });
 }
 
 /** Full initialisation: chrome, every tab, hubs, theme, accessibility. */

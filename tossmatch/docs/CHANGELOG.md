@@ -79,6 +79,25 @@
   simulated request queue, review-flag triage, freeze and exclusion controls,
   decision history — all audit-logged) and new **Settings** screen (house
   economics, role switching, maintenance, engine speed, factory reset).
+- **All-page stability** — shared `patchHTML` / `withPatchedDom` DOM patcher merges
+  background-tick `innerHTML` writes in place when the structure is unchanged, so
+  every player and Admin screen stays still on live data (no full-screen reflow,
+  no lost focus/scroll) instead of only Home.
+- **Unified player/bot Admin screens** — *Top-up Analytics* becomes **Top-ups &
+  Deposits — Players and Bots** (one stats block + one records table with an All /
+  Players / Bots filter, unified search, sorts, pagination, CSV export); the
+  Withdrawals ledger merges bot cash-outs and player withdrawals into one table
+  with Player/Bot badges and the same filter.
+- **Four new Admin screens (17 → 21)** — **Reports & Analytics** (7-day revenue
+  and cash-flow charts, revenue mix, busiest games, CSV/JSON export), **Games &
+  Content** (36 catalog games with plays, fee contribution and per-game
+  enable/disable), **Referrals** (referral code, referred roster, 5% house payout,
+  register action) and **Announcements** (create/publish/unpublish/delete in-app
+  announcements that appear on player Homes), all wired into nav, RBAC, command
+  palette and the feature directory (ADM-4…ADM-7).
+- **Continuous audit loop** — `run-audit-loop.sh` now runs the full stack
+  (static audit + boot smoke + 74-check feature regression) for 20 consecutive
+  passes; log in `tossmatch/docs/audit-loop-v13.0.log`.
 
 ## v12.0 — Modular Code Structure
 

@@ -41,7 +41,7 @@ function defaultState(){
     histories:{friendChallenges:[],rooms:[],roomGames:[],clanGames:[],arcade:[],progression:[],economy:[],social:[]},
     trophies:{cups:0,trnys:0},
     achievements:{},levelMilestones:{},
-    waiting:[],cups:[],trnys:[],x2room:[],feed:[],gameCarries:{},
+    waiting:[],cups:[],trnys:[],x2room:[],feed:[],gameCarries:{},announcements:[],
     jackpot:120,
     bots:BOTS_SEED.map(b=>({...b,balance:0,bonusBalance:1000,walletVersion:2,startingBonus:1000,startingBonusAccounted:false,startingBonusAt:0,wins:0,losses:0,net:0,streak:0,bestStreak:0,biggestWin:0,jackpots:0,games:0,shop:b.shop||[],title2:b.title2||"",firstTopupDone:false,firstTopupAt:0,topupCount:0,topupTotal:0,referredByPlayer:REFERRAL_SEED_BOTS.includes(b.name)})),
     settings:{theme:"dark",themeName:"midnight",customPalette:null,sound:true,instant:false,autoRebet:false,autoRebetStop:-200,language:"en",catalogFavorites:[],arcadeFavorites:[],accessibility:{highContrast:false,reducedMotion:false,textScale:100,colorVision:"none",screenReaderHints:true},dashboardWidgets:["wallet","net","jackpot","level","network","topups"],dashboardSections:["opportunities","vip","feed","explore"],gamePresets:[],navGroups:{},recentTabs:[]},

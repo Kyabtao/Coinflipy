@@ -91,7 +91,7 @@ const FEATURE_DIRECTORY=[
  {cat:'Player & Retention',code:'RET-3',name:'Player History',desc:'Nine categories, search, sorting, pagination, details and export.',status:'Implemented',tab:'history'},
  {cat:'Player & Retention',code:'RET-4',name:'Advanced Statistics',desc:'Lifetime wager, total/max payout, fees, averages, ROI, payout trend and Player top-up analytics.',status:'Implemented',tab:'stats'},
  {cat:'Wallet & Commerce',code:'WAL-1',name:'Segmented Wallet',desc:'MAIN, BONUS, REFERRAL, RAKEBACK and BANK with stake caps.',status:'Implemented',tab:'wallet'},
- {cat:'Wallet & Commerce',code:'WAL-2',name:'Deposit & Top-up Analytics',desc:'Player payment-method deposits with references/status and bot initialization at 0 MAIN + 1,000 BONUS, required first-top-up gate, Admin promotion control and complete Player/bot analytics.',status:'Implemented',tab:'stats',admin:'topups'},
+ {cat:'Wallet & Commerce',code:'WAL-2',name:'Top-ups & Deposits',desc:'Unified player and bot top-up and deposit records with references/status, bot initialization at 0 MAIN + 1,000 BONUS, required first-top-up gate, Admin promotion control and combined analytics with an All / Players / Bots filter.',status:'Implemented',tab:'stats',admin:'topups'},
  {cat:'Wallet & Commerce',code:'WAL-5',name:'Player Deposits & Withdrawals',desc:'Demo deposit confirmation/receipt (method, reference, processing state) and KYC-verified withdrawals with min checks and full Admin visibility.',status:'Implemented',tab:'wallet',admin:'withdraw'},
  {cat:'Wallet & Commerce',code:'WAL-3',name:'Shop & Cosmetics',desc:'Nine expanded categories, 38 new items, VIP rewards, discounts and equip controls.',status:'Implemented',tab:'shop'},
  {cat:'Wallet & Commerce',code:'WAL-4',name:'Transfers & Bot Economy',desc:'Bots start at 0 MAIN + 1,000 BONUS, complete a varied first MAIN top-up before activity, then use active economy, later top-ups and roster growth.',status:'Implemented',tab:'wallet',admin:'ops'},
@@ -99,7 +99,7 @@ const FEATURE_DIRECTORY=[
  {cat:'Operations',code:'OPS-2',name:'Feature Hub',desc:'Community, Arcade Zone, Progress+ and Economy+ telemetry with feature administration controls.',status:'Implemented',admin:'features'},
  {cat:'Operations',code:'OPS-3',name:'Audit & Exports',desc:'Audit trail, review flags, filtering, pagination and data exports.',status:'Implemented',admin:'audit'},
  {cat:'Operations',code:'OPS-4',name:'Promotions Manager',desc:'Scheduled campaigns now support Player credit/cash-drop claims, next-top-up activation, one-claim tracking and Admin counts.',status:'Implemented',tab:'services',feature:'offers',admin:'promo'},
- {cat:'Operations',code:'OPS-5',name:'Withdrawals',desc:'Bots file cash-outs when MAIN reaches a personal 3,000-5,000 trigger; the Admin ledger tracks paid bot requests and the demo player\'s KYC-verified withdrawals with references.',status:'Implemented',admin:'withdraw'},
+ {cat:'Operations',code:'OPS-5',name:'Withdrawals',desc:'Bots file cash-outs when MAIN reaches a personal 3,000-5,000 trigger; the unified Admin ledger tracks paid bot requests and the demo player\'s KYC-verified withdrawals in one table with an All / Players / Bots filter.',status:'Implemented',admin:'withdraw'},
  {cat:'Operations',code:'OPS-6',name:'Player Directory',desc:'Searchable, sortable Admin table of the demo player and the full simulated roster with balances, records, net, level and top-ups.',status:'Implemented',admin:'people'},
  {cat:'Responsible Gaming',code:'RG-D',name:'Demo RG Controls',desc:'Persistent deposit/session limits, cool-off, durable self-exclusion, loss limit, reality graph, bank and Auto Bet stop.',status:'Implemented',tab:'services',feature:'rg',admin:'trust'},
  {cat:'Platform',code:'T1',name:'Installable PWA',desc:'Manifest, 192/512 icons, install readiness and offline service-worker cache.',status:'Implemented',tab:'services',feature:'platform',admin:'trust'},
@@ -125,6 +125,10 @@ const FEATURE_DIRECTORY=[
  {cat:'Admin Console',code:'ADM-1',name:'Admin Login & RBAC',desc:'Session-gated sign-in (admin/flip2026) with role-based screen access for Super Admin, Finance, Operations and Support, 2FA demo code 246810, header profile and logout; sessions persist per browser tab.',status:'Implemented',admin:'settings'},
  {cat:'Admin Console',code:'ADM-2',name:'Approvals & Review Queue',desc:'KYC verification with player approve/reset plus a simulated bot request queue, automated review-flag triage (clear/escalate), freeze controls and a persistent exclusion list — all audit-logged with nav badges.',status:'Implemented',admin:'approvals'},
  {cat:'Admin Console',code:'ADM-3',name:'Admin Settings',desc:'House economics (fees, rakes, jackpot arm/pay, stake range), administrator role switching, maintenance mode, engine speed and factory reset with audit logging.',status:'Implemented',admin:'settings'},
+ {cat:'Admin Console',code:'ADM-4',name:'Reports & Analytics',desc:'Seven-day revenue, deposits and cash-out charts, all-time revenue mix, busiest games and one-click CSV/JSON report exports.',status:'Implemented',admin:'reports'},
+ {cat:'Admin Console',code:'ADM-5',name:'Games & Content',desc:'Catalog-wide plays and fee contribution per game with live enable/disable controls, filter and sort.',status:'Implemented',admin:'games'},
+ {cat:'Admin Console',code:'ADM-6',name:'Referrals',desc:'Demo player referral code, referred player roster and the house 5% referral payout, with a register action.',status:'Implemented',admin:'referrals'},
+ {cat:'Admin Console',code:'ADM-7',name:'Announcements',desc:'Create, publish, unpublish and delete in-app announcements; published ones show on player Homes.',status:'Implemented',admin:'announcements'},
  {cat:'Suggested — Trust & Compliance',code:'TRUST1',name:'Identity, Age & Jurisdiction Checks',desc:'Age gate, KYC status, geofencing and jurisdiction-specific feature eligibility.',status:'Suggested'},
  {cat:'Suggested — Trust & Compliance',code:'TRUST2',name:'Privacy & Data Rights Center',desc:'Consent history, data export, correction and deletion requests with retention status.',status:'Suggested'},
  {cat:'Suggested — Trust & Compliance',code:'TRUST3',name:'Dispute & Support Case Center',desc:'Open cases from a game or transaction, attach proof, track SLA and record resolution.',status:'Suggested'},
@@ -133,7 +137,7 @@ const FEATURE_DIRECTORY=[
 ];
 const PAGE_SIZE=20;
 const DIRECTORY={search:"",category:"",status:""};
-const VIEWS={revenue:{range:"day"},withdrawals:{page:1,filter:"",sort:"time-desc"},people:{page:1,filter:"",sort:"balance"},audit:{page:1,filter:"",sort:"time-desc"},games:{page:1,filter:"",sort:"time-desc"},catalog:{page:1,filter:"",result:"",sort:"time-desc"},transfers:{page:1,filter:"",sort:"time-desc"},topups:{page:1,filter:"",sort:"time-desc"},playerTopups:{page:1,filter:"",sort:"time-desc"},levels:{page:1,filter:"",sort:"level-asc"},queue:{page:1,filter:"",sort:"wait-desc"},flags:{page:1,filter:"",sort:"time-desc"},tournaments:{page:1,status:"",sort:"time-desc"}};
+const VIEWS={revenue:{range:"day"},withdrawals:{page:1,filter:"",sort:"time-desc",who:"all"},people:{page:1,filter:"",sort:"balance"},audit:{page:1,filter:"",sort:"time-desc"},games:{page:1,filter:"",sort:"time-desc"},catalog:{page:1,filter:"",result:"",sort:"time-desc"},transfers:{page:1,filter:"",sort:"time-desc"},topups:{page:1,filter:"",sort:"time-desc",who:"all"},playerTopups:{page:1,filter:"",sort:"time-desc"},gamesAdmin:{page:1,filter:"",sort:"plays-desc"},announcements:{page:1,filter:"",sort:"time-desc"},levels:{page:1,filter:"",sort:"level-asc"},queue:{page:1,filter:"",sort:"wait-desc"},flags:{page:1,filter:"",sort:"time-desc"},tournaments:{page:1,status:"",sort:"time-desc"}};
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.round(n).toLocaleString("en-IN");
 function pageRows(rows,view){const pages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE));view.page=Math.max(1,Math.min(view.page,pages));return {rows:rows.slice((view.page-1)*PAGE_SIZE,view.page*PAGE_SIZE),pages,total:rows.length};}
@@ -156,7 +160,7 @@ function load(){
     quests:{settle:0,win:0,cup:0,claimed:{}},owned:{skins:["classic"],flags:[],avatars:[],frames:["none"],colours:["default"],fx:["confetti"],themes:["midnight"],sounds:["standard"],emojis:[]},
     equipped:{skin:"classic",flag:"",avatar:"",frame:"none",colour:"default",fx:"confetti",theme:"midnight",sound:"standard"},
     games:[],reactions:{},stats:{games:0,wins:0,losses:0,biggestStake:0,jackpots:0,net:0,bestWin:0,cupsWon:0,trnysWon:0},
-    waiting:[],cups:[],trnys:[],x2room:[],feed:[],jackpot:120,
+    waiting:[],cups:[],trnys:[],x2room:[],feed:[],jackpot:120,announcements:[],gamesEnabled:{},
     bots:[],botActivity:{socialActions:0,arcadePlays:0,createdBots:0,socialLog:[],arcadeLog:[],lastCreatedAt:0},services:{apiKey:"",apiLog:[],notifications:{enabled:false},notificationLog:[],twoFactor:{secret:"",enabled:false,verifiedAt:0},antiCheat:{lastScan:0,score:0,findings:[]},promoClaims:{},activeDepositPromo:"",statements:[],emailLog:[]},rg:{depositLimits:{daily:0,weekly:0,monthly:0},pendingDepositLimits:null,deposits:[],sessionLimitMin:0,coolOffMin:1,coolOffUntil:0,selfExUntil:0,selfExPermanent:false,selfExReason:"",realityIntervalMin:5,lastRealityAt:0,sessionPoints:[]},analytics:{samples:[],lastSampleAt:0},settings:{theme:"dark",themeName:"midnight",customPalette:null,language:"en"},referralCode:"TM-0000",referredBy:"",referralCount:0,referralEarned:0,transferToday:0,transferDay:"",playerName:"",firstDepositDone:false,
     kyc:{verified:false,verifiedAt:0,name:"",docType:""},playerWithdrawals:{count:0,amount:0,log:[]},walletRefs:{deposit:1,withdraw:1},
     login:{streak:0,lastDay:""},lossLimit:0,global:{heads:0,tails:0,totalGames:0,jackpots:0},ledger:[],botTransfers:[],botTopups:[],gid:1};
@@ -289,20 +293,34 @@ function render(){
   renderPromo();
   // econ and top-up analytics
   renderEcon();renderTopupAnalytics();renderWithdrawals();renderPeople();
+  renderReports();renderGamesAdmin();renderReferrals();renderAnnouncements();
   renderRevenue();renderGameParams();renderSessionMonitor();renderAdminLiveStatus();
   // ops
   renderOps();
 
 }
 function renderTopupAnalytics(){
-  const a=topupAnalytics(),p=a.playerStats,b=a.botStats,c=a.combined;
-  $("topupAdminTiles").innerHTML=[{v:fmt(c.credited),k:'Combined credits',cls:'blue'},{v:fmt(c.base),k:'Base top-up volume'},{v:fmt(c.bonus),k:'Top-up promo credits',cls:'red'},{v:fmt(c.count),k:'Top-up events'},{v:fmt(p.credited),k:'Player credits',cls:'green'},{v:fmt(b.credited),k:'Bot credits',cls:'purple'},{v:fmt(p.last30+b.last30),k:'30-day base volume'},{v:fmt(b.unique),k:'Bots topped up'}].map(x=>`<div class="stat-tile ${x.cls||''}"><div class="v">${x.v}</div><div class="k">${x.k}</div></div>`).join('');
-  $("playerTopupSummary").innerHTML=`<div class="kv"><span class="k">Top-up count</span><span class="v">${fmt(p.count)}</span></div><div class="kv"><span class="k">Base volume</span><span class="v">${fmt(p.base)}</span></div><div class="kv"><span class="k">Bonus / total credited</span><span class="v">${fmt(p.bonus)} / ${fmt(p.credited)}</span></div><div class="kv"><span class="k">Average / largest base</span><span class="v">${fmt(p.average)} / ${fmt(p.largest)}</span></div><div class="kv"><span class="k">Last 7 / 30 days</span><span class="v">${fmt(p.last7)} / ${fmt(p.last30)}</span></div><div class="kv"><span class="k">Bonus rate</span><span class="v">${p.promoRate.toFixed(1)}%</span></div>`;
-  $("botTopupSummary").innerHTML=`<div class="kv"><span class="k">First-top-up ready / blocked</span><span class="v">${fmt(b.ready)} / ${fmt(b.pending)}</span></div><div class="kv"><span class="k">Top-up count / unique bots</span><span class="v">${fmt(b.count)} / ${fmt(b.unique)}</span></div><div class="kv"><span class="k">Base volume</span><span class="v">${fmt(b.base)}</span></div><div class="kv"><span class="k">Starting bonus / first promo</span><span class="v">${fmt(b.startingBonus)} / ${fmt(b.firstPromo)}</span></div><div class="kv"><span class="k">All bonus / total credited</span><span class="v">${fmt(b.bonus)} / ${fmt(b.credited)}</span></div><div class="kv"><span class="k">Average / largest base</span><span class="v">${fmt(b.average)} / ${fmt(b.largest)}</span></div><div class="kv"><span class="k">Last 7 / 30 days</span><span class="v">${fmt(b.last7)} / ${fmt(b.last30)}</span></div><div class="kv"><span class="k">Bonus rate</span><span class="v">${b.promoRate.toFixed(1)}%</span></div>`;
-  const v=VIEWS.playerTopups,q=v.filter.toLowerCase();let rows=[...a.player];if(q)rows=rows.filter(x=>`${x.source} ${x.campaignId||''} ${x.method||''} ${x.reference||''} ${x.status||''} ${x.base} ${x.bonus} ${x.credited}`.toLowerCase().includes(q));rows.sort((x,y)=>v.sort==='time-asc'?x.t-y.t:v.sort==='base-desc'?y.base-x.base:v.sort==='bonus-desc'?y.bonus-x.bonus:v.sort==='credited-desc'?y.credited-x.credited:y.t-x.t);const pg=pageRows(rows,v);setPager('playerTopup',v,pg);
-  $("playerTopupList").innerHTML=pg.rows.length?`<table><thead><tr><th>When</th><th>Base</th><th>First promo</th><th>Campaign promo</th><th>Total bonus</th><th>Credited</th><th>Method / Ref</th><th>Status</th></tr></thead><tbody>${pg.rows.map(x=>`<tr><td>${new Date(x.t).toLocaleString()}</td><td>${fmt(x.base)}</td><td>${x.firstBonus?`+${fmt(x.firstBonus)}`:'—'}</td><td>${x.campaignBonus?`+${fmt(x.campaignBonus)}`:'—'}</td><td>${fmt(x.bonus)}</td><td><b>${fmt(x.credited)}</b></td><td>${x.method||'Wallet'}${x.reference?' · '+x.reference:''}</td><td><span class="tag on">${(x.status||'completed').toUpperCase()}</span></td></tr>`).join('')}</tbody></table>`:'<div class="muted">No Player deposits match.</div>';
-  $("topupRecentBots").innerHTML=a.bots.slice(0,10).map(x=>`<div class="kv"><span class="k">${new Date(x.t).toLocaleString()} · ${x.bot}<br><span class="muted">${x.reason||'Low balance'}</span></span><span class="v">${fmt(x.base)} MAIN${x.startingBonus?` + ${fmt(x.startingBonus)} starting BONUS`:''}${x.firstPromo?` + ${fmt(x.firstPromo)} promo BONUS`:''}</span></div>`).join('')||'<div class="muted">No bot top-ups yet. Full filtered history is in Live Operations.</div>';
+  const a=topupAnalytics(),p=a.playerStats,b=a.botStats,c=a.combined,v=VIEWS.topups,q=v.filter.toLowerCase();
+  $( "topupAdminTiles").innerHTML=[{v:fmt(c.credited),k:'Combined credits',cls:'blue'},{v:fmt(c.base),k:'Base top-up volume'},{v:fmt(c.bonus),k:'Top-up promo credits',cls:'red'},{v:fmt(c.count),k:'Top-up events'},{v:fmt(p.credited),k:'Player credits',cls:'green'},{v:fmt(b.credited),k:'Bot credits',cls:'purple'},{v:fmt(p.last30+b.last30),k:'30-day base volume'},{v:fmt(b.unique),k:'Bots topped up'}].map(x=>`<div class="stat-tile ${x.cls||''}"><div class="v">${x.v}</div><div class="k">${x.k}</div></div>`).join('');
+  const who=v.who||'all';
+  $( "topupWhoToggle").innerHTML=['all','players','bots'].map(k=>`<button class="btn btn-sm ${who===k?'btn-primary':'btn-ghost'}" data-topup-who="${k}">${k==='all'?'All':k==='players'?'Players':'Bots'}</button>`).join('');
+  const st=who==='players'?p:who==='bots'?b:{count:p.count+b.count,base:p.base+b.base,bonus:p.bonus+b.bonus,credited:p.credited+b.credited,average:(p.count+b.count)?Math.round((p.base+b.base)/(p.count+b.count)):0,largest:Math.max(p.largest,b.largest),last7:p.last7+b.last7,last30:p.last30+b.last30,promoRate:(p.base+b.base)?(p.bonus+b.bonus)/(p.base+b.base)*100:0};
+  let extra='';
+  if(who==='bots')extra=`<div class="kv"><span class="k">Unique bots</span><span class="v">${fmt(b.unique)}</span></div><div class="kv"><span class="k">First-top-up ready / blocked</span><span class="v">${fmt(b.ready)} / ${fmt(b.pending)}</span></div><div class="kv"><span class="k">Starting bonus / first promo</span><span class="v">${fmt(b.startingBonus)} / ${fmt(b.firstPromo)}</span></div>`;
+  if(who==='all')extra=`<div class="kv"><span class="k">Player / bot events</span><span class="v">${fmt(p.count)} / ${fmt(b.count)}</span></div><div class="kv"><span class="k">Player / bot credited</span><span class="v">${fmt(p.credited)} / ${fmt(b.credited)}</span></div><div class="kv"><span class="k">Unique bots topped up</span><span class="v">${fmt(b.unique)}</span></div>`;
+  $( "topupSummary").innerHTML=`<div class="kv"><span class="k">Showing</span><span class="v">${who==='all'?'Players and bots':who==='players'?'Players':'Bots'}</span></div><div class="kv"><span class="k">Top-up count</span><span class="v">${fmt(st.count)}</span></div><div class="kv"><span class="k">Base volume</span><span class="v">${fmt(st.base)}</span></div><div class="kv"><span class="k">Bonus / total credited</span><span class="v">${fmt(st.bonus)} / ${fmt(st.credited)}</span></div><div class="kv"><span class="k">Average / largest base</span><span class="v">${fmt(st.average)} / ${fmt(st.largest)}</span></div><div class="kv"><span class="k">Last 7 / 30 days</span><span class="v">${fmt(st.last7)} / ${fmt(st.last30)}</span></div><div class="kv"><span class="k">Bonus rate</span><span class="v">${st.promoRate.toFixed(1)}%</span></div>`+extra;
+  let rows=[
+    ...a.player.map(x=>({kind:'player',who:S.playerName||'Demo player',t:x.t||0,base:x.base,bonus:x.bonus,credited:x.credited,note:`${x.method||'Wallet'}${x.reference?' · '+x.reference:''}`,status:x.status||'completed',src:x.source||'Player deposit'})),
+    ...a.bots.map(x=>({kind:'bot',who:x.bot,t:x.t||0,base:x.base,bonus:x.bonus,credited:x.credited,note:x.reason||'Low balance',status:'credited',src:'Bot cycle top-up'}))
+  ];
+  if(who==='players')rows=rows.filter(x=>x.kind==='player');
+  if(who==='bots')rows=rows.filter(x=>x.kind==='bot');
+  if(q)rows=rows.filter(x=>`${x.who} ${x.note} ${x.src} ${x.status} ${x.base} ${x.bonus} ${x.credited}`.toLowerCase().includes(q));
+  rows.sort((x,y)=>v.sort==='time-asc'?x.t-y.t:v.sort==='base-desc'?y.base-x.base:v.sort==='bonus-desc'?y.bonus-x.bonus:v.sort==='credited-desc'?y.credited-x.credited:y.t-x.t);
+  const pg=pageRows(rows,v);setPager('topups',v,pg);
+  $( "topupList").innerHTML=pg.rows.length?`<table><thead><tr><th>When</th><th>Who</th><th>Base</th><th>Bonus</th><th>Credited</th><th>Detail</th><th>Status</th></tr></thead><tbody>${pg.rows.map(x=>`<tr><td>${new Date(x.t).toLocaleString()}</td><td>${x.who} <span class="tag ${x.kind==='player'?'on':'warn'}">${x.kind==='player'?'Player':'Bot'}</span></td><td>${fmt(x.base)}</td><td>${x.bonus?`+${fmt(x.bonus)}`:'—'}</td><td><b>${fmt(x.credited)}</b></td><td>${x.note}</td><td><span class="tag on">${x.status.toUpperCase()}</span></td></tr>`).join('')}</tbody></table>`:'<div class="muted">No top-ups match.</div>';
 }
+
 function renderDash(){
   const c=cfg(),h=c.house,tu=topupAnalytics();
   const gross=houseGross(),net=houseNet();
@@ -466,11 +484,19 @@ function renderWithdrawals(){
   $("wdSummary").innerHTML=[["Requests paid",fmt(w.count||0)+" / "+fmt(unique)+" bots"],["Average / largest",fmt(avg)+" / "+fmt(largest)],["Last 7 days",fmt(d7)],["Coins removed (sinks)",fmt(w.amount||0)]].map(x=>`<div class="kv"><span class="k">${x[0]}</span><span class="v">${x[1]}</span></div>`).join("");
   const h=cfg().house,gross=houseGross(),net=houseNet(),cin=houseCashIn(),cout=houseCashOut(),ncash=houseNetCash();
   $("wdPnl").innerHTML=[["Gross revenue",fmt(gross)],["Promo cost","−"+fmt(h.promoCost||0)],["Comps paid","−"+fmt(h.comps||0)],["Rakeback paid","−"+fmt(h.rakebackPaid||0)],["Referral payouts","−"+fmt(h.referralCost||0)],["Net revenue (NGR)",fmt(net),net>=0?"g":"r"],["Cash in — player deposits","+"+fmt(h.deposits||0)],["Cash in — bot deposits","+"+fmt(h.botDeposits||0)],["Cash in total","+"+fmt(cin)],["Cash out — bot withdrawals","−"+fmt(h.withdrawals||0)],["Cash out — player withdrawals","−"+fmt(h.playerWithdrawals||0)],["Cash out total","−"+fmt(cout)],["Net cash flow",fmt(ncash),ncash>=0?"g":"r"]].map(x=>`<div class="kv"><span class="k">${x[0]}</span><span class="v ${x[2]||''}">${x[1]}</span></div>`).join("");
-  let rows=log.slice();
-  if(q)rows=rows.filter(x=>`${x.name} ${x.amount}`.toLowerCase().includes(q));
+  const pLog=(S.playerWithdrawals||{}).log||[];
+  let rows=[
+    ...log.map(x=>({kind:'bot',who:x.name,t:x.t||0,amount:x.amount||0,keep:x.keep||0,detail:'Bot cash-out',status:x.status||'paid'})),
+    ...pLog.map(x=>({kind:'player',who:S.playerName||'Demo player',t:x.t||0,amount:x.amount||0,keep:0,detail:`${x.method||'Wallet'}${x.reference?' · '+x.reference:''}`,status:x.status||'paid'}))
+  ];
+  const wh=v.who||'all';
+  if(wh==='players')rows=rows.filter(x=>x.kind==='player');
+  if(wh==='bots')rows=rows.filter(x=>x.kind==='bot');
+  if(q)rows=rows.filter(x=>`${x.who} ${x.amount} ${x.detail}`.toLowerCase().includes(q));
   rows.sort((a,b)=>v.sort==="time-asc"?(a.t||0)-(b.t||0):v.sort==="amount-desc"?(b.amount||0)-(a.amount||0):(b.t||0)-(a.t||0));
   const pg=pageRows(rows,v);setPager("wd",v,pg);
-  $("wdList").innerHTML=`<table><thead><tr><th>When</th><th>Bot</th><th>Amount</th><th>Kept MAIN</th><th>Status</th></tr></thead><tbody>${pg.rows.map(x=>`<tr><td>${new Date(x.t||0).toLocaleString()}</td><td>${x.name}</td><td>${fmt(x.amount||0)}</td><td>${fmt(x.keep||0)}</td><td><span class="tag on">paid</span></td></tr>`).join("")||'<tr><td colspan="5" class="muted">No withdrawals yet. Bots cash out after MAIN reaches '+fmt(lo)+"–"+fmt(hi)+'.</td></tr>'}</tbody></table>`;
+  $("wdWho").value=wh;
+  $("wdList").innerHTML=`<table><thead><tr><th>When</th><th>Who</th><th>Amount</th><th>Detail</th><th>Kept MAIN</th><th>Status</th></tr></thead><tbody>${pg.rows.map(x=>`<tr><td>${new Date(x.t||0).toLocaleString()}</td><td>${x.who} <span class="tag ${x.kind==='player'?'on':'warn'}">${x.kind==='player'?'Player':'Bot'}</span></td><td>${fmt(x.amount||0)}</td><td>${x.detail}</td><td>${fmt(x.keep||0)}</td><td><span class="tag on">${x.status}</span></td></tr>`).join("")||'<tr><td colspan="6" class="muted">No withdrawals yet. Bots cash out after MAIN reaches '+fmt(lo)+"–"+fmt(hi)+'.</td></tr>'}</tbody></table>`;
   $("wdNear").innerHTML=`<table><thead><tr><th>Bot</th><th>MAIN</th><th>Trigger</th><th>Gap</th></tr></thead><tbody>${S.bots.slice().sort((a,b)=>(b.balance||0)-(a.balance||0)).slice(0,12).map(b=>{const trig=Math.max(lo,+(b.withdrawAt||lo));return `<tr><td>${b.name}</td><td>${fmt(b.balance||0)}</td><td>${fmt(trig)}</td><td>${fmt(Math.max(0,trig-(b.balance||0)))}</td></tr>`;}).join("")}</tbody></table>`;
   // Player banking: deposits + KYC withdrawals
   const pdep=(S.rg?.deposits||[]),pwd=S.playerWithdrawals||{count:0,amount:0,log:[]},pwdLog=pwd.log||[];
@@ -489,6 +515,74 @@ function renderWithdrawals(){
   $("playerWdList").innerHTML=pwdLog.slice(0,25).map(x=>`<div class="kv"><span class="k">${new Date(x.t).toLocaleString()}<br><span class="muted">${x.method||'—'}${x.reference?' · '+x.reference:''}</span></span><span class="v">−${fmt(x.amount||0)} <span class="tag on">${(x.status||'completed').toUpperCase()}</span>${x.reference?` <button class="btn btn-danger btn-sm" onclick="adminReverseWithdraw('${x.reference.replace(/'/g,"\\'")}')">⤺ Reverse</button>`:''}</span></div>`).join("")||'<div class="muted">No player withdrawals yet. Run the player wallet to request one.</div>';
   if($("pydLedgerCount"))$("pydLedgerCount").textContent=(S.ledger||[]).length;
   if($("pydAuditCount"))$("pydAuditCount").textContent=(cfg().audit||[]).length;
+}
+/* ── Reports & Analytics ── */
+function reportsData(){
+  const now=Date.now(),D=86400000;
+  const days=Array.from({length:7},(_,i)=>{const d=new Date(now-(6-i)*D);d.setHours(0,0,0,0);return d.getTime();});
+  const inDay=(t,d)=>(t||0)>=d&&(t||0)<d+D;
+  const games=S.games||[],cat=S.catalogLog||[];
+  const depLog=S.rg?.deposits||[],botLog=S.botTopups||[];
+  const wdLog=(S.withdrawals||{}).log||[],pWdLog=(S.playerWithdrawals||{}).log||[];
+  const rev=days.map(d=>games.filter(g=>inDay(g.t,d)).reduce((n,g)=>n+(+g.fee||0),0)+cat.filter(x=>inDay(x.t,d)).reduce((n,x)=>n+(+x.fee||0),0));
+  const dep=days.map(d=>depLog.filter(x=>inDay(x.t,d)).reduce((n,x)=>n+(+(x.base??x.amount)||0),0)+botLog.filter(x=>inDay(x.t,d)).reduce((n,x)=>n+(+x.base||0),0));
+  const wd=days.map(d=>wdLog.filter(x=>inDay(x.t,d)).reduce((n,x)=>n+(+x.amount||0),0)+pWdLog.filter(x=>inDay(x.t,d)).reduce((n,x)=>n+(+x.amount||0),0));
+  return {days,rev,dep,wd,games:games.length,cat:cat.length};
+}
+function repBarChart(elId,vals,cls,title){
+  const m=Math.max(1,...vals),D=86400000;
+  $(elId).innerHTML=`<div class="rep-chart">${vals.map((v,i)=>`<div class="rep-col" title="${new Date(reportsCache.days[i]).toLocaleDateString()} — ${fmt(v)}"><div class="rep-bar ${cls}" style="height:${Math.max(4,Math.round(v/m*110))}px"></div><em>${new Date(reportsCache.days[i]).toLocaleDateString(undefined,{weekday:'short'}).slice(0,2)}</em></div>`).join("")}</div>`;
+}
+let reportsCache=null;
+function renderReports(){
+  reportsCache=reportsData();
+  const r=reportsCache,h=cfg().house;
+  const totRev=r.rev.reduce((a,b)=>a+b,0),totDep=r.dep.reduce((a,b)=>a+b,0),totWd=r.wd.reduce((a,b)=>a+b,0);
+  $("repTiles").innerHTML=[{v:fmt(totRev),k:"Revenue (7d)",cls:"green"},{v:fmt(totDep),k:"Deposits (7d)",cls:"blue"},{v:fmt(totWd),k:"Cash-outs (7d)",cls:"red"},{v:fmt(r.games+r.cat),k:"Matches settled"}].map(t=>`<div class="stat-tile ${t.cls||''}"><div class="v">${t.v}</div><div class="k">${t.k}</div></div>`).join("");
+  repBarChart("repDailyRev",r.rev,"gold","Revenue");
+  repBarChart("repDailyCash",r.dep.map((v,i)=>v-r.wd[i]),"blue","Net cash flow");
+  const mix=[["Coin Toss fees",h.fees||0],["Catalog earnings",h.catalogFees||0],["Series Cup rake",h.cupRakes||0],["Tournament rake",h.trnyRakes||0],["Shop & commerce",h.shop||0],["Transfer fees",h.xfFees||0],["Auction fees",h.auctionFees||0]];
+  const gmix=mix.reduce((a,x)=>a+x[1],0);
+  $("repMix").innerHTML=gmix?mix.map(x=>`<div class="kv"><span class="k">${x[0]}</span><span class="v">${fmt(x[1])} · ${Math.round(x[1]/gmix*100)}%</span></div><div class="bar"><i style="width:${Math.round(x[1]/gmix*100)}%"></i></div>`).join(""):'<div class="muted">No revenue recognised yet.</div>';
+  const byGame={};
+  (S.catalogLog||[]).forEach(x=>{const g=x.game||"Catalog";byGame[g]=byGame[g]||{plays:0,fee:0};byGame[g].plays++;byGame[g].fee+=+(x.fee||0);});
+  (S.games||[]).forEach(g=>{const name=g.game||"Coin Toss";byGame[name]=byGame[name]||{plays:0,fee:0};byGame[name].plays++;byGame[name].fee+=+(g.fee||0);});
+  const top=Object.entries(byGame).sort((a,b)=>b[1].plays-a[1].plays).slice(0,8);
+  $("repGames").innerHTML=top.map(([g,x])=>`<div class="kv"><span class="k">${g}</span><span class="v">${fmt(x.plays)} plays · ${fmt(x.fee)} fees</span></div>`).join("")||'<div class="muted">No matches yet.</div>';
+}
+/* ── Games & Content ── */
+function renderGamesAdmin(){
+  const v=VIEWS.gamesAdmin,q=v.filter.toLowerCase();
+  const enabled=id=>(S.config.gamesEnabled||{})[id]!==false;
+  const plays={},fees={};
+  (S.catalogLog||[]).forEach(x=>{plays[x.game]=(plays[x.game]||0)+1;fees[x.game]=(fees[x.game]||0)+(x.fee||0);});
+  const rows=ADMIN_CATALOG_GAMES.map(([id,name])=>({id,name,plays:plays[name]||0,fees:fees[name]||0,on:enabled(id)}));
+  const filtered=q?rows.filter(r=>r.name.toLowerCase().includes(q)):rows;
+  const sorted=[...filtered].sort((a,b)=>v.sort==="name-asc"?a.name.localeCompare(b.name):v.sort==="fee-desc"?b.fees-a.fees:b.plays-a.plays);
+  const pg=pageRows(sorted,v);setPager("gc",v,pg);
+  const totPlays=rows.reduce((n,r)=>n+r.plays,0),totFees=rows.reduce((n,r)=>n+r.fees,0),off=rows.filter(r=>!r.on).length;
+  $("gcTiles").innerHTML=[{v:String(rows.length),k:"Catalog games"},{v:fmt(totPlays),k:"Catalog plays"},{v:fmt(cfg().house.catalogFees||0),k:"Catalog earnings",cls:"green"},{v:String(off),k:"Disabled games",cls:off?"red":""}].map(t=>`<div class="stat-tile ${t.cls||''}"><div class="v">${t.v}</div><div class="k">${t.k}</div></div>`).join("");
+  $("gcList").innerHTML=pg.rows.length?`<table><thead><tr><th>Game</th><th>Plays</th><th>Fee contribution</th><th>Status</th><th></th></tr></thead><tbody>${pg.rows.map(r=>`<tr class="${r.on?"":"muted"}"><td>${r.name}</td><td>${fmt(r.plays)}</td><td>${fmt(r.fees)}${totFees?` · ${Math.round(r.fees/totFees*100)}%`:""}</td><td><span class="tag ${r.on?"on":"off"}">${r.on?"Live":"Disabled"}</span></td><td><button class="btn btn-ghost btn-sm" data-gc-toggle="${r.id}">${r.on?"Disable":"Enable"}</button></td></tr>`).join("")}</tbody></table>`:'<div class="muted">No games match the filter.</div>';
+}
+/* ── Referrals ── */
+function renderReferrals(){
+  const h=cfg().house,code=S.referralCode||"TM-0000";
+  const referred=(S.bots||[]).filter(b=>b.referredBy===code);
+  $("refTiles").innerHTML=[{v:code,k:"Referral code"},{v:String(referred.length),k:"Referred players"},{v:fmt(S.referralEarned||0),k:"Earned (5%)",cls:"green"},{v:fmt(h.referralCost||0),k:"House referral payout",cls:"red"}].map(t=>`<div class="stat-tile ${t.cls||''}"><div class="v">${t.v}</div><div class="k">${t.k}</div></div>`).join("");
+  $("refProgram").innerHTML=`<div class="kv"><span class="k">Program rate</span><span class="v">5% of referred player fees</span></div><div class="kv"><span class="k">This player's code</span><span class="v">${code}</span></div><div class="kv"><span class="k">Joined via</span><span class="v">${S.referredBy||"—"}</div></div><div class="kv"><span class="k">Payout wallet</span><span class="v">REFERRAL balance</span></div><div class="kv"><span class="k">Referral balance now</span><span class="v">${fmt(S.wallet?.referral||0)}</span></div>`;
+  const rows=[
+    ...(S.referredBy?[{name:S.playerName||"Demo player",country:"—",balance:S.wallet?.main||0,net:S.stats?.net||0,by:S.referredBy}]:[]),
+    ...referred.map(b=>({name:b.name,country:b.country,balance:b.balance||0,net:b.net||0,by:b.referredBy}))
+  ];
+  $("refList").innerHTML=rows.length?`<table><thead><tr><th>Player</th><th>Country</th><th>Balance</th><th>Net</th><th>Referred by</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.name}</td><td>${r.country||"—"}</td><td>${fmt(r.balance)}</td><td>${r.net>=0?"+":""}${fmt(r.net)}</td><td>${r.by}</td></tr>`).join("")}</tbody></table>`:'<div class="muted">No referred players yet. Register one and it will appear here.</div>';
+}
+/* ── Announcements ── */
+function renderAnnouncements(){
+  const list=S.announcements||[];
+  const pub=list.filter(a=>a.status==="published").sort((a,b)=>(b.t||0)-(a.t||0));
+  const cur=pub[0];
+  $("annCurrent").innerHTML=cur?`<div class="kv"><span class="k">Title</span><span class="v"><b>${cur.title}</b></span></div><div class="kv"><span class="k">Message</span><span class="v">${cur.body}</span></div><div class="kv"><span class="k">Published</span><span class="v">${new Date(cur.t).toLocaleString()}</span></div>`:'<div class="muted">Nothing published yet — player Homes show no banner.</div>';
+  $("annList").innerHTML=list.length?`<table><thead><tr><th>When</th><th>Title</th><th>Message</th><th>Status</th><th></th></tr></thead><tbody>${list.map(a=>`<tr><td>${new Date(a.t).toLocaleString()}</td><td><b>${a.title}</b></td><td>${a.body}</td><td><span class="tag ${a.status==="published"?"on":"warn"}">${a.status==="published"?"Published":"Draft"}</span></td><td><button class="btn btn-ghost btn-sm" data-ann-toggle="${a.id}">${a.status==="published"?"Unpublish":"Publish"}</button> <button class="btn btn-danger btn-sm" data-ann-del="${a.id}">Delete</button></td></tr>`).join("")}</tbody></table>`:'<div class="muted">No announcements yet.</div>';
 }
 function renderPeople(){
   const v=VIEWS.people,q=v.filter.toLowerCase();
@@ -542,9 +636,9 @@ function renderCatalogHistory(){
   el.innerHTML=`<table><thead><tr><th>When / #</th><th>Game</th><th>Match</th><th>Stake / Fee</th><th>Result</th><th>Resolution</th><th>Proof</th></tr></thead><tbody>${pg.rows.map(x=>`<tr class="table-click" data-cat-row="${x.id}"><td>${new Date(x.t).toLocaleTimeString()}<br><span class="muted">#${x.id}</span></td><td><b>${x.game}</b></td><td>${x.playerA} [${x.pickA}]<br>vs ${x.playerB} [${x.pickB}]</td><td>${fmt(x.stake)} / ${fmt(x.fee)}</td><td><span class="tag on">${x.result}</span></td><td style="min-width:240px">${x.detail}</td><td><span class="tag on" title="${x.proof||''}">✓ ${String(x.proof||'').slice(0,10)}…</span></td></tr>`).join('')}</tbody></table>`;
 }
 const ADMIN_NAV_META=[
- ['Command','dash','⌁','Overview','KPIs, alerts, revenue and quick controls','dashboard command'],['Command','ops','🚦','Live Ops','Player controls, queues, bots, limits and transfers','liquidity player bot'],['Command','people','👥','Players','Searchable roster with balances, records and top-ups','directory roster players'],['Command','features','✨','Feature Hub','Community, Arcade, Progress and Economy telemetry','b1 b4 features'],['Command','directory','🗂','Feature Directory','Search every feature and open exact destinations','product map'],
- ['Commercial','rates','💹','Rates & Jackpot','Fees, jackpot rules and transfer limits','configuration'],['Commercial','econ','📈','Economy','P&L, taps, sinks, simulator and compensation','revenue finance'],['Commercial','revenue','📊','Revenue','Total volume, net profit, daily/weekly charts and transaction exports','revenue volume profit chart export csv json'],['Commercial','topups','💳','Top-up Analytics','Player and bot top-up volume, bonuses, trends and records','topup deposit credit bonus liquidity'],['Commercial','withdraw','🏦','Withdrawals','Paid cash-outs, house P&L and reversal controls','cashout payout reversal'],['Commercial','promo','🎁','Promotions','Campaigns, top-up offer and broadcast banner','offers marketing'],
- ['Engagement','vip','💎','VIP & Levels','Eight VIP tiers and paginated level rewards','progression'],['Engagement','trny','🏟','Tournaments','Create and inspect bot and player brackets','competition'],
+ ['Command','dash','⌁','Overview','KPIs, alerts, revenue and quick controls','dashboard command'],['Command','ops','🚦','Live Ops','Player controls, queues, bots, limits and transfers','liquidity player bot'],['Command','people','👥','Players','Searchable roster with balances, records and top-ups','directory roster players'],['Command','features','✨','Feature Hub','Community, Arcade, Progress and Economy telemetry','b1 b4 features'],['Command','directory','🗂','Feature Directory','Search every feature and open exact destinations','product map'],['Command','reports','📈','Reports & Analytics','7-day revenue, cash flow, mix and busiest games with CSV/JSON export','report analytics chart export csv json'],
+ ['Commercial','rates','💹','Rates & Jackpot','Fees, jackpot rules and transfer limits','configuration'],['Commercial','econ','📈','Economy','P&L, taps, sinks, simulator and compensation','revenue finance'],['Commercial','revenue','📊','Revenue','Total volume, net profit, daily/weekly charts and transaction exports','revenue volume profit chart export csv json'],['Commercial','topups','💳','Top-ups & Deposits','Unified player and bot top-up and deposit volume, bonuses, trends and records','topup deposit credit bonus liquidity'],['Commercial','withdraw','🏦','Withdrawals','Paid cash-outs, house P&L and reversal controls','cashout payout reversal'],['Commercial','promo','🎁','Promotions','Campaigns, top-up offer and broadcast banner','offers marketing'],['Commercial','games','🎮','Games & Content','Catalog plays, fee contribution and enable/disable per game','catalog game enable disable content'],
+ ['Engagement','vip','💎','VIP & Levels','Eight VIP tiers and paginated level rewards','progression'],['Engagement','trny','🏟','Tournaments','Create and inspect bot and player brackets','competition'],['Engagement','referrals','🔗','Referrals','Invite program, referred players and 5% house referral payout','referral invite program payout'],['Engagement','announcements','📣','Announcements','Create and publish in-app announcements to player Homes','announcement broadcast message home'],
  ['Governance','audit','🧾','Audit & Data','Audit trail, histories, proofs and exports','compliance records'],['Governance','trust','🛡️','Trust Center','Analytics, anti-cheat, RG, PWA, API, 2FA and statements','security safety']
 ].map(x=>({group:x[0],tab:x[1],icon:x[2],name:x[3],desc:x[4],keys:x[5]}));
 const ADMIN_CATALOG_GAMES=[['overunder','Over / Under'],['speed','Speed Round'],['tug','Tug of War'],['evenodd','Even / Odd Sum'],['closest','Closest Number'],['luckybattle','Lucky Number Battle'],['sumpredict','Sum Prediction'],['higherbyte','Higher Byte'],['patternrace','Pattern Race'],['parlayduel','Parlay Duel'],['prediction','Prediction Streak'],['blind','Blind Pick'],['rangewar','Range War'],['bullseye','Bullseye'],['chain','Chain Reaction'],['ladder','Elimination Ladder'],['mirrored','Mirrored Coins'],['rps','Rock Paper Scissors'],['closest21','Closest to 21'],['triplecoin','Triple Coin Majority'],['sequencebuilder','Sequence Builder'],['dicesumduel','Dice Sum Duel'],['colourspectrum','Colour Spectrum'],['primecomposite','Prime vs Composite'],['medianbattle','Median Battle'],['streaksurvivor','Streak Survivor'],['territory','Territory Capture'],['modulo4','Modulo Four'],['pokerhigh','Poker High'],['threedicepoker','Three Dice Poker'],['lastdigit','Last Digit Duel'],['binaryduel','Binary Code Duel'],['coinbalance','Coin Balance Battle'],['bytewar','Byte War'],['sumfour','Sum Four'],['highcard','High Card Duel']];
@@ -560,9 +654,9 @@ function syncAdminNavigation(tab){$("adminNavJump").value=tab;document.querySele
 /* ── Admin access control (v13): login gate, RBAC roles, session, badges ── */
 const ADMIN_SESSION_KEY="fa_admin_session";
 const ADMIN_ROLES={
- 'Super Admin':['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','approvals','audit','trust','settings'],
- 'Finance':['dash','econ','revenue','topups','withdraw','promo','audit'],
- 'Operations':['dash','ops','people','features','directory','vip','trny','approvals','promo'],
+ 'Super Admin':['dash','ops','people','features','directory','rates','econ','revenue','topups','withdraw','promo','vip','trny','referrals','announcements','reports','games','approvals','audit','trust','settings'],
+ 'Finance':['dash','econ','revenue','topups','withdraw','promo','audit','reports'],
+ 'Operations':['dash','ops','people','features','directory','vip','trny','approvals','promo','games','announcements'],
  'Support':['dash','people','approvals','trust']
 };
 const ADMIN_ROLE_DESC={'Super Admin':'Full access to every console screen','Finance':'Revenue, economy, liquidity and audit','Operations':'Live ops, players, engagement and approvals','Support':'Player lookups, approvals and trust tools'};
@@ -970,6 +1064,10 @@ const ADMIN_TAB_RENDERERS={
   trny:()=>renderTrny(),
   audit:()=>{renderAudit();renderGameHistory();renderCatalogHistory();},
   trust:()=>renderTrust(),
+  reports:()=>renderReports(),
+  games:()=>renderGamesAdmin(),
+  referrals:()=>renderReferrals(),
+  announcements:()=>renderAnnouncements(),
 };
 /** Render only the active Admin screen (no monolithic repaint). */
 function renderAdminTab(tab){
@@ -979,7 +1077,7 @@ function renderAdminTab(tab){
   return true;
 }
 /** Periodic refresh: chrome + the active Admin screen only. */
-function renderAdminTick(){renderAdminChrome();updateAdminNavBadges();renderAdminTab();}
+function renderAdminTick(){withPatchedDom(()=>{renderAdminChrome();updateAdminNavBadges();renderAdminTab();});}
 
 export function bind(){
   "use strict";
@@ -1054,7 +1152,7 @@ export function bind(){
 
 
 /* expose top-level symbols to globalThis so legacy inline handlers and the shared theme engine can resolve them */
-Object.assign(globalThis,{$,ADMIN_TAB_RENDERERS,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_ROLES,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAddExclusion,adminDecideKyc,adminLogin,adminLogout,adminRemoveExclusion,adminResolveFlag,adminSession,applyAdminRbac,applyAdminNavGroups,renderAdminProfile,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,drawRng,filterAdminNavigation,fmt,downloadFile,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderAdminTab,renderAdminTick,renderFeatureDirectory,renderFlags,renderGameParams,renderOps,renderRates,renderRevenue,renderSessionMonitor,renderGameHistory,renderLevels,renderPeople,renderPromo,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics});
+Object.assign(globalThis,{$,ADMIN_TAB_RENDERERS,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_ROLES,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAddExclusion,adminDecideKyc,adminLogin,adminLogout,adminRemoveExclusion,adminResolveFlag,adminSession,applyAdminRbac,applyAdminNavGroups,renderAdminProfile,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,drawRng,filterAdminNavigation,fmt,downloadFile,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderAdminTab,renderAdminTick,renderFeatureDirectory,renderFlags,renderGameParams,renderOps,renderRates,renderRevenue,renderSessionMonitor,renderGameHistory,renderLevels,renderPeople,renderPromo,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,renderReports,renderGamesAdmin,renderReferrals,renderAnnouncements,reportsData,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics});
 
-export {$,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_TAB_RENDERERS,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,downloadFile,drawRng,filterAdminNavigation,fmt,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAdminTab,renderAdminTick,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderFeatureDirectory,renderFlags,renderGameHistory,renderGameParams,renderLevels,renderOps,renderPeople,renderPromo,renderRates,renderRevenue,renderSessionMonitor,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics};
+export {$,ADMIN_ARCADE_GAMES,ADMIN_CATALOG_GAMES,ADMIN_LIVE_ID,ADMIN_NAV_META,ADMIN_TAB_RENDERERS,BOT_CHANNEL_NAME,DIRECTORY,FEATURE_DIRECTORY,PAGE_SIZE,SAVE_KEY,VIEWS,VIP_BENEFIT_LABELS,adminAntiCheatScan,adminCommandEntries,adminPlayerHistory,adminSetFreeze,audit,botLiveChannel,cfg,checkVipMonthReset,closeAdminCommand,downloadFile,drawRng,filterAdminNavigation,fmt,gameParamDefaults,goAdminTab,houseCashIn,houseCashOut,houseGross,houseNet,houseNetCash,lastPlayerAliveAt,load,openAdminCommand,pageRows,processBotWithdrawals,readVip,reconcileHouse,render,renderAdminChrome,renderAdminCommand,renderAdminLiveStatus,renderAdminTab,renderAdminTick,renderAll,renderAudit,renderCatalogHistory,renderDash,renderEcon,renderFeatureAdmin,renderFeatureDirectory,renderFlags,renderGameHistory,renderGameParams,renderLevels,renderOps,renderPeople,renderPromo,renderRates,renderRevenue,renderSessionMonitor,renderTopupAnalytics,renderTrny,renderTrust,renderVip,renderWithdrawals,renderReports,renderGamesAdmin,renderReferrals,renderAnnouncements,reportsData,resetGameParams,save,saveGameParams,sendAdminBotPulse,setAdminActiveTab,setPager,syncAdminNavigation,toast,topupAnalytics};
 

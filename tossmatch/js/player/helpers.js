@@ -472,7 +472,18 @@ async function handleFeatureAction(a){const f=a.dataset.feature;
  else if(f==='utility-room'){const tier=a.dataset.tier,price=+a.dataset.price,u=S.economyPlus.utility;if(price&&!spendMain(price,`${tier} room upgrade`))return;u.roomUpgrade=tier;u.roomPurchases.unshift({t:Date.now(),tier,price});if(u.roomPurchases.length>20)u.roomPurchases.length=20;(S.social.privateRooms||[]).forEach(r=>r.visualTier=tier);pushHistory('economy',{title:'Private Room upgrade',detail:`Activated ${tier} visual tier`,result:'UPGRADED',amount:-price});toast(`${tier} room visuals activated.`,'ok');renderEconomyHub();}
  checkProgressAchievements();render();save();
 }
+function renderAnnouncement(){
+  const el=$("homeAnnounce");if(!el)return;
+  const list=Array.isArray(S.announcements)?S.announcements:[];
+  const pub=list.filter(a=>a&&a.status==="published"&&a.title&&a.body).sort((a,b)=>(b.t||0)-(a.t||0))[0];
+  const sig=pub?pub.id+"|"+(pub.t||0)+"|"+pub.title:"none";
+  if(el.dataset.sig===sig)return;
+  el.dataset.sig=sig;
+  if(pub){el.hidden=false;el.innerHTML=`<div class="announce-card"><span class="announce-badge">Announcement</span><div><b>${pub.title}</b><p class="muted" style="margin-top:2px">${pub.body}</p></div><span class="announce-time">${new Date(pub.t).toLocaleDateString()}</span></div>`;}
+  else{el.hidden=true;el.innerHTML="";}
+}
 function renderHome(){
+  renderAnnouncement();
   const vip=vipFor(S.monthWagered),next=cfg().vip.find(v=>v.wagered>S.monthWagered),queue=S.waiting.filter(b=>b.owner!=="you").slice(0,5);
   // ── KPI cards: rebuild only when the widget set/order changes, otherwise
   // update values in place so live ticks never reflow the Home layout. ──

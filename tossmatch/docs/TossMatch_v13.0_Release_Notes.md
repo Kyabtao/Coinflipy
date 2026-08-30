@@ -95,15 +95,52 @@ verifies `net = gross − (promo + comps + rakeback + referral)`.
   numerals), and the opportunities, VIP and feed cards rebuild only when their
   data actually changes, so the layout never reflows on a bot tick.
 
+
+## 7. v13.1 increment — Admin expansion and all-page stability
+
+- **No screen shake anywhere** — a new shared DOM patcher
+  (`patchHTML` / `withPatchedDom` in `js/shared/runtime.js`) routes every
+  background-tick `innerHTML` write in both apps through a structure-aware
+  merge: when the new markup has the same element skeleton, only changed
+  text and attributes update in place (no reflow, no lost focus or scroll);
+  structural changes (rows appearing/disappearing) still replace normally.
+  Player `renderTick` and Admin `renderAdminTick` both run inside it, so
+  Home, Lobby, Wallet, Stats, Season, Shop — and every Admin screen — stay
+  still while live data moves.
+- **Unified player/bot screens** — *Top-up Analytics* is now
+  **Top-ups & Deposits — Players and Bots**: one statistics block and one
+  records table covering player deposits and bot top-ups together, with an
+  All / Players / Bots filter, unified search, five sorts, pagination and
+  CSV export. The separate player and bot cards are gone. The *Withdrawals*
+  ledger is unified the same way — bot cash-outs and player withdrawals in
+  one table with Player/Bot badges and an All / Players / Bots filter.
+- **Four new Admin screens (17 → 21)**:
+  - **Reports & Analytics** — 7-day revenue and deposit/cash-out bar
+    charts, all-time revenue mix, busiest games, and one-click CSV/JSON
+    report exports.
+  - **Games & Content** — all 36 catalog games with plays, fee contribution
+    (amount + share) and a live enable/disable switch per game, filter and
+    sort, paginated.
+  - **Referrals** — the demo player's referral code, referred-player
+    roster, 5% house referral payout, and a register action that joins a
+    new referred player to the live network.
+  - **Announcements** — create, publish, unpublish and delete in-app
+    announcements; a published announcement appears at the top of every
+    player's Home (live across tabs via shared state).
+- **Nav & RBAC** — the four screens are wired into the grouped nav
+  (Command 6, Commercial 7, Engagement 4, Governance 4), quick-jump select,
+  command palette, feature directory (ADM-4…ADM-7) and role scopes.
+
 ## 4. Real-world Admin console
 
 - **Login gate** — `#adminLoginOverlay` blocks the console until sign-in.
   Demo credentials **admin / flip2026**, 2FA demo code **246810**. Sessions
   persist in `sessionStorage` (`fa_admin_session`) per browser tab.
-- **RBAC roles** — *Super Admin* (17 screens), *Finance* (dash, economy,
-  revenue, top-ups, withdrawals, promotions, audit), *Operations* (dash, live
-  ops, players, feature hub/directory, engagement, approvals, promotions),
-  *Support* (dash, players, approvals, trust). Out-of-scope tabs are hidden,
+- **RBAC roles** — *Super Admin* (21 screens), *Finance* (dash, economy,
+  revenue, top-ups, withdrawals, promotions, audit, reports, referrals),
+  *Operations* (dash, live ops, players, feature hub/directory, engagement,
+  approvals, promotions, games & content, announcements), *Support* (dash,
+  players, approvals, trust). Out-of-scope tabs are hidden,
   the jump select and command palette stay consistent, and an active
   out-of-scope screen redirects to the role's first screen.
 - **Approvals screen** (new) — player KYC approve/reset (audit-logged), a
@@ -117,10 +154,19 @@ verifies `net = gross − (promo + comps + rakeback + referral)`.
 
 ## 6. Verification
 
-- `node tools/boot-smoke.mjs` — 25/25 (boot, all 19 player tabs, all 17 Admin
+- `node tools/audit.js` — static + boot audit clean (module structure, ids,
+  asset references, no internal codes in visible copy, both apps boot).
+- `node tools/boot-smoke.mjs` — 25/25 (boot, all 19 player tabs, all 21 Admin
   screens, live bet + ledger invariants, Admin revenue screen).
-- `node tools/test-new-features.mjs` — 41/41 (event calendar + reminders,
+- `node tools/test-new-features.mjs` — 74/74 (event calendar + reminders,
   milestone claims, full auction flow incl. 10% fee, 36/25 game counts,
-  nav groups/badges/recent/search, Admin login, wrong-password rejection,
-  RBAC scoping, KYC queue decisions, settings persistence, Admin groups).
+  nav groups/badges/recent/search, per-page tick stability incl. structure
+  change, Admin login, wrong-password rejection, RBAC scoping over 21
+  screens, KYC queue decisions, settings persistence, Admin groups, unified
+  top-up/withdrawal tables + All/Players/Bots filters, Reports charts and
+  exports, Games & Content enable/disable, Referrals registration,
+  Announcements publish → player Home banner → unpublish).
+- `bash tools/run-audit-loop.sh 20` — 20 consecutive clean passes of the
+  full stack (audit + boot-smoke + new-features); log in
+  `tossmatch/docs/audit-loop-v13.0.log`.
 - Admin demo access: **admin / flip2026**, 2FA **246810**.

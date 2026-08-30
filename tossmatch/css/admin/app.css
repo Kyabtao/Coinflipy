@@ -241,3 +241,11 @@ body.admin-locked main,body.admin-locked header .h-stat,body.admin-locked header
   .admin-nav-group.collapsed .admin-nav-group-body{display:flex!important}
   .admin-nav-group-body{padding-bottom:0}
 }
+/* ── Reports & Analytics bar charts (v13.1) ── */
+.rep-chart{display:flex;gap:8px;align-items:flex-end;height:150px;padding:8px 4px 0}
+.rep-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;min-width:0}
+.rep-col em{font-size:9px;color:var(--mut);font-style:normal;white-space:nowrap}
+.rep-bar{width:70%;max-width:28px;border-radius:4px 4px 0 0;transition:height .4s ease}
+.rep-bar.gold{background:linear-gradient(180deg,var(--gold),rgba(251,191,36,.3))}
+.rep-bar.blue{background:linear-gradient(180deg,#38bdf8,rgba(56,189,248,.32))}
+.rep-bar.red{background:linear-gradient(180deg,#f43f5e,rgba(244,63,94,.32))}

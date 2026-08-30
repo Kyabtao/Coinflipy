@@ -432,3 +432,9 @@ body.a11y-reduced-motion .btn:hover,body.a11y-reduced-motion .card:hover{transfo
 #homeFeed{min-height:120px}
 #homeOpportunities{min-height:64px}
 .bar i{transition:width .4s ease}
+/* ── Home announcement banner (v13.1) ── */
+#homeAnnounce{margin-bottom:14px}
+.announce-card{display:flex;align-items:flex-start;gap:10px;background:linear-gradient(135deg,rgba(124,58,237,.14),rgba(244,63,94,.10));border:1px solid rgba(124,58,237,.4);border-radius:14px;padding:12px 14px}
+.announce-badge{flex:none;font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#f5d0fe;background:rgba(168,85,247,.25);border:1px solid rgba(168,85,247,.5);border-radius:99px;padding:3px 9px;margin-top:2px}
+.announce-card b{font-size:13px}
+.announce-time{flex:none;font-size:10px;color:var(--mut)}
