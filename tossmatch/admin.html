@@ -137,25 +137,25 @@
         <h3>💹 Fee Rates</h3>
         <p class="muted">Changes snapshotted per game at match time — running games are unaffected. All changes are audited.</p>
         <label>Regular bet fee: <b id="lblFee">5%</b></label>
-        <input type="range" id="rngFee" min="0" max="25" value="5" oninput="document.getElementById('lblFee').textContent=this.value+'%'"/>
+        <input type="range" id="rngFee" min="0" max="25" value="5" oninput="document.getElementById('lblFee').textContent=this.value+'%'" aria-label="Regular bet fee (%)"/>
         <label>Series Cup rake: <b id="lblCup">5%</b></label>
-        <input type="range" id="rngCup" min="0" max="25" value="5" oninput="document.getElementById('lblCup').textContent=this.value+'%'"/>
+        <input type="range" id="rngCup" min="0" max="25" value="5" oninput="document.getElementById('lblCup').textContent=this.value+'%'" aria-label="Series Cup rake (%)"/>
         <label>Tournament rake: <b id="lblTrny">10%</b></label>
-        <input type="range" id="rngTrny" min="0" max="25" value="10" oninput="document.getElementById('lblTrny').textContent=this.value+'%'"/>
+        <input type="range" id="rngTrny" min="0" max="25" value="10" oninput="document.getElementById('lblTrny').textContent=this.value+'%'" aria-label="Tournament rake (%)"/>
         <label>Transfer fee: <b id="lblXf">2%</b></label>
-        <input type="range" id="rngXf" min="0" max="10" value="2" oninput="document.getElementById('lblXf').textContent=this.value+'%'"/>
+        <input type="range" id="rngXf" min="0" max="10" value="2" oninput="document.getElementById('lblXf').textContent=this.value+'%'" aria-label="Transfer fee (%)"/>
         <div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-primary" id="saveRates">💾 Save rates</button><button class="btn btn-ghost btn-sm" id="resetRates">Reset defaults</button></div>
       </div>
       <div class="card">
         <h3>🎰 Jackpot Config</h3>
         <label>Funding % of each fee: <b id="lblJpFund">10%</b></label>
-        <input type="range" id="rngJpFund" min="0" max="50" value="10" oninput="document.getElementById('lblJpFund').textContent=this.value+'%'"/>
+        <input type="range" id="rngJpFund" min="0" max="50" value="10" oninput="document.getElementById('lblJpFund').textContent=this.value+'%'" aria-label="Jackpot funding % of each fee"/>
         <label>Floor per fee (min coins kept for house): <b id="lblJpFloor">1</b></label>
-        <input type="range" id="rngJpFloor" min="0" max="10" value="1" oninput="document.getElementById('lblJpFloor').textContent=this.value"/>
+        <input type="range" id="rngJpFloor" min="0" max="10" value="1" oninput="document.getElementById('lblJpFloor').textContent=this.value" aria-label="Jackpot floor kept per fee"/>
         <label>Arming threshold (pool must reach this before a 00 pays): <b id="lblJpArm">50</b></label>
-        <input type="range" id="rngJpArm" min="0" max="1000" step="10" value="50" oninput="document.getElementById('lblJpArm').textContent=this.value"/>
+        <input type="range" id="rngJpArm" min="0" max="1000" step="10" value="50" oninput="document.getElementById('lblJpArm').textContent=this.value" aria-label="Jackpot arming threshold"/>
         <label>Payout % of pool on hit (remainder rolls over): <b id="lblJpPay">50%</b></label>
-        <input type="range" id="rngJpPay" min="1" max="100" value="50" oninput="document.getElementById('lblJpPay').textContent=this.value+'%'"/>
+        <input type="range" id="rngJpPay" min="1" max="100" value="50" oninput="document.getElementById('lblJpPay').textContent=this.value+'%'" aria-label="Jackpot payout % of pool"/>
         <div class="row" style="margin-top:14px"><button class="btn btn-primary" id="saveJp">💾 Save jackpot</button>
           <button class="btn btn-gold btn-sm" id="seedJp">➕ Seed +500</button>
           <button class="btn btn-danger btn-sm" id="resetJp">Reset pool to 0</button></div>
@@ -164,15 +164,15 @@
     <div class="card">
       <h3>⚙️ Other Game Rules</h3>
       <div class="grid3">
-        <div><label>Non-main stake cap (%)</label><input type="number" id="cfgCap" min="10" max="20" value="20"/></div>
-        <div><label>Transfer daily cap</label><input type="number" id="cfgXfCap" min="100" max="10000" step="100" value="500"/></div>
-        <div><label>Transfer min</label><input type="number" id="cfgXfMin" min="1" max="100" value="10"/></div>
-        <div><label>Bot withdrawal min trigger</label><input type="number" id="cfgWdMin" min="1000" max="100000" step="100" value="3000"/></div>
-        <div><label>Bot withdrawal max trigger</label><input type="number" id="cfgWdMax" min="1000" max="100000" step="100" value="5000"/></div>
-        <div><label>Bot withdrawal tick chance</label><input type="number" id="cfgWdChance" min="0" max="1" step="0.05" value="0.35"/></div>
-        <div><label>Bot Arcade plays / tick</label><input type="number" id="cfgArcadeTick" min="1" max="10" value="2"/></div>
-        <div><label>Season number</label><input type="number" id="cfgSeason" min="1" value="1"/></div>
-        <div><label>House capital</label><input type="number" id="cfgHouseCap" min="0" step="1000" value="100000"/></div>
+        <div><label>Non-main stake cap (%)</label><input type="number" id="cfgCap" min="10" max="20" value="20" aria-label="Non-main stake cap (%)"/></div>
+        <div><label>Transfer daily cap</label><input type="number" id="cfgXfCap" min="100" max="10000" step="100" value="500" aria-label="Transfer daily cap"/></div>
+        <div><label>Transfer min</label><input type="number" id="cfgXfMin" min="1" max="100" value="10" aria-label="Transfer minimum"/></div>
+        <div><label>Bot withdrawal min trigger</label><input type="number" id="cfgWdMin" min="1000" max="100000" step="100" value="3000" aria-label="Bot withdrawal minimum trigger"/></div>
+        <div><label>Bot withdrawal max trigger</label><input type="number" id="cfgWdMax" min="1000" max="100000" step="100" value="5000" aria-label="Bot withdrawal maximum trigger"/></div>
+        <div><label>Bot withdrawal tick chance</label><input type="number" id="cfgWdChance" min="0" max="1" step="0.05" value="0.35" aria-label="Bot withdrawal tick chance (%)"/></div>
+        <div><label>Bot Arcade plays / tick</label><input type="number" id="cfgArcadeTick" min="1" max="10" value="2" aria-label="Bot Arcade plays per tick"/></div>
+        <div><label>Season number</label><input type="number" id="cfgSeason" min="1" value="1" aria-label="Season number"/></div>
+        <div><label>House capital</label><input type="number" id="cfgHouseCap" min="0" step="1000" value="100000" aria-label="House capital"/></div>
       </div>
       <button class="btn btn-primary" id="saveRules" style="margin-top:14px">💾 Save rules</button>
     </div>
@@ -180,12 +180,12 @@
       <h3>🎛 Game parameters <span class="muted" style="margin-left:auto;font-weight:400">mirrors every player-side betting control</span></h3>
       <p class="muted">Stake bounds, payout ceiling, house edge and animation speed are read live by the player app, so an Admin change is reflected on the very next bet.</p>
       <div class="grid3">
-        <div><label>Minimum stake</label><input type="number" id="cfgStakeMin" min="1" max="1000" value="10"/></div>
-        <div><label>Maximum stake ceiling</label><input type="number" id="cfgStakeMax" min="10" max="100000" step="10" value="1000"/></div>
-        <div><label>Payout cap per game (0 = unlimited)</label><input type="number" id="cfgPayoutCap" min="0" step="100" value="0"/></div>
-        <div><label>House edge (%)</label><input type="number" id="cfgEdge" min="0" max="25" step="0.5" value="2"/></div>
-        <div><label>Flip animation (ms)</label><input type="number" id="cfgAnim" min="200" max="6000" step="100" value="2300"/></div>
-        <div><label>Auto Bet default stop</label><input type="number" id="cfgAutoStop" min="-10000" max="-50" step="50" value="-200"/></div>
+        <div><label>Minimum stake</label><input type="number" id="cfgStakeMin" min="1" max="1000" value="10" aria-label="Minimum stake"/></div>
+        <div><label>Maximum stake ceiling</label><input type="number" id="cfgStakeMax" min="10" max="100000" step="10" value="1000" aria-label="Maximum stake ceiling"/></div>
+        <div><label>Payout cap per game (0 = unlimited)</label><input type="number" id="cfgPayoutCap" min="0" step="100" value="0" aria-label="Payout cap per game (0 = unlimited)"/></div>
+        <div><label>House edge (%)</label><input type="number" id="cfgEdge" min="0" max="25" step="0.5" value="2" aria-label="House edge (%)"/></div>
+        <div><label>Flip animation (ms)</label><input type="number" id="cfgAnim" min="200" max="6000" step="100" value="2300" aria-label="Flip animation (ms)"/></div>
+        <div><label>Auto Bet default stop</label><input type="number" id="cfgAutoStop" min="-10000" max="-50" step="50" value="-200" aria-label="Auto Bet default stop"/></div>
       </div>
       <div class="row" style="margin-top:14px"><button class="btn btn-primary" id="saveGameParams">💾 Save game parameters</button><button class="btn btn-ghost btn-sm" id="resetGameParams">Reset defaults</button><span class="muted" id="gameParamsStatus"></span></div>
       <div class="section-title" style="margin-top:16px">🛰️ Live player session</div>
@@ -217,7 +217,7 @@
     <div class="card">
       <h3>⭐ Level Reward Manager</h3>
       <p class="muted">XP curve: level = floor(sqrt(XP/60)) + 1. BONUS rewards now run through level 50; milestone levels 30/40/50 also grant rare, epic and legendary cosmetics.</p>
-      <div class="row" style="margin-bottom:10px"><input id="levelFilter" placeholder="Filter level…"/><select id="levelSort" style="max-width:170px"><option value="level-asc">Level low–high</option><option value="level-desc">Level high–low</option><option value="reward-desc">Reward high–low</option></select></div>
+      <div class="row" style="margin-bottom:10px"><input id="levelFilter" placeholder="Filter level…" aria-label="Filter VIP levels"/><select id="levelSort" style="max-width:170px" aria-label="Sort VIP levels"><option value="level-asc">Level low–high</option><option value="level-desc">Level high–low</option><option value="reward-desc">Reward high–low</option></select></div>
       <div id="levelEditor" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px"></div>
       <div class="row" style="margin-top:12px"><button class="btn btn-primary btn-sm" id="saveLevels">💾 Save visible rewards</button>
         <button class="btn btn-green btn-sm" id="addLevel">➕ Add level</button><button class="btn btn-ghost btn-sm" id="levelPrev">← Previous</button><span class="muted" id="levelPage">Page 1</span><button class="btn btn-ghost btn-sm" id="levelNext">Next →</button></div>
@@ -230,10 +230,10 @@
     <div class="grid2">
       <div class="card"><h3>💎 VIP+ Configuration</h3>
         <div class="grid3">
-          <div><label>Daily base</label><input id="vipPlusDailyBase" type="number" min="0" step="5"/></div>
-          <div><label>Add per tier</label><input id="vipPlusDailyPerTier" type="number" min="0" step="5"/></div>
-          <div><label>Quest wager</label><input id="vipPlusQuestWager" type="number" min="0" step="100"/></div>
-          <div><label>Quest reward / tier</label><input id="vipPlusQuestRewardPerTier" type="number" min="0" step="10"/></div>
+          <div><label>Daily base</label><input id="vipPlusDailyBase" type="number" min="0" step="5" aria-label="VIP+ daily base"/></div>
+          <div><label>Add per tier</label><input id="vipPlusDailyPerTier" type="number" min="0" step="5" aria-label="VIP+ add per tier"/></div>
+          <div><label>Quest wager</label><input id="vipPlusQuestWager" type="number" min="0" step="100" aria-label="VIP+ quest wager"/></div>
+          <div><label>Quest reward / tier</label><input id="vipPlusQuestRewardPerTier" type="number" min="0" step="10" aria-label="VIP+ quest reward per tier"/></div>
         </div>
         <div class="section-title" style="margin-top:12px">Tier rewards road (main / bonus)</div>
         <div id="vipPlusRoad"></div>
@@ -244,10 +244,10 @@
       </div>
       <div class="card"><h3>🏆 Season+ Configuration</h3>
         <div class="grid2">
-          <div><label>Points per game</label><input id="seasonPlusPerGame" type="number" min="0" step="1"/></div>
-          <div><label>Points per win</label><input id="seasonPlusPerWin" type="number" min="0" step="1"/></div>
-          <div><label>Points per cup</label><input id="seasonPlusPerCup" type="number" min="0" step="5"/></div>
-          <div><label>Points per tournament</label><input id="seasonPlusPerTrny" type="number" min="0" step="5"/></div>
+          <div><label>Points per game</label><input id="seasonPlusPerGame" type="number" min="0" step="1" aria-label="Season+ points per game"/></div>
+          <div><label>Points per win</label><input id="seasonPlusPerWin" type="number" min="0" step="1" aria-label="Season+ points per win"/></div>
+          <div><label>Points per cup</label><input id="seasonPlusPerCup" type="number" min="0" step="5" aria-label="Season+ points per cup"/></div>
+          <div><label>Points per tournament</label><input id="seasonPlusPerTrny" type="number" min="0" step="5" aria-label="Season+ points per tournament"/></div>
         </div>
         <div class="section-title" style="margin-top:12px">Prize track (points → BONUS)</div>
         <div id="seasonPlusTrack"></div>
@@ -293,18 +293,18 @@
         <h3>🏟 Create Tournament (admin-only)</h3>
         <p class="muted">Admin-created brackets accept players and bots. After a short public join window, bots fill every remaining seat and the tournament runs automatically—even with no real player.</p>
         <label>Match format</label>
-        <select id="trnyFormat"><option value="single">Single flip</option><option value="bo3">Bo3 Series Cup</option></select>
+        <select id="trnyFormat" aria-label="Tournament match format"><option value="single">Single flip</option><option value="bo3">Bo3 Series Cup</option></select>
         <label>Size (slots)</label>
-        <select id="trnySize"><option>2</option><option>4</option><option selected>8</option><option>16</option></select>
+        <select id="trnySize" aria-label="Tournament size (slots)"><option>2</option><option>4</option><option selected>8</option><option>16</option></select>
         <label>Entry fee (coins)</label>
-        <input type="number" id="trnyEntry" value="100" min="10" step="10"/>
+        <input type="number" id="trnyEntry" value="100" min="10" step="10" aria-label="Tournament entry fee (coins)"/>
         <label>Rake % (overrides global for this tourney? leave 0 to use global)</label>
-        <input type="number" id="trnyRake" value="0" min="0" max="25"/>
+        <input type="number" id="trnyRake" value="0" min="0" max="25" aria-label="Tournament rake % (0 uses the global rate)"/>
         <div class="row" style="margin-top:14px"><button class="btn btn-primary" id="createTrny">🏟 Create & open lobby</button></div>
       </div>
       <div class="card">
         <h3>📋 Open & Recent Tournaments</h3>
-        <div class="row" style="margin-bottom:8px"><select id="trnyStatusFilter"><option value="">All statuses</option><option value="open">Open</option><option value="running">Running</option><option value="complete">Complete</option></select><select id="trnySort"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="entry-desc">Highest entry</option><option value="size-desc">Largest bracket</option></select></div>
+        <div class="row" style="margin-bottom:8px"><select id="trnyStatusFilter" aria-label="Filter tournaments by status"><option value="">All statuses</option><option value="open">Open</option><option value="running">Running</option><option value="complete">Complete</option></select><select id="trnySort" aria-label="Sort tournaments"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="entry-desc">Highest entry</option><option value="size-desc">Largest bracket</option></select></div>
         <div id="trnyList"></div>
         <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="trnyPrev">← Previous</button><span class="muted" id="trnyPage">Page 1</span><button class="btn btn-ghost btn-sm" id="trnyNext">Next →</button></div>
       </div>
@@ -319,17 +319,17 @@
         <p class="muted">Scheduled promos auto-expire and write an audit entry. The first top-up +50% offer applies to the player and each bot’s first auto top-up; it can be paused independently.</p>
         <div class="kv" style="margin:12px 0"><span class="k">Player + bot first top-up +50% promo</span><span class="v"><label class="toggle"><input type="checkbox" id="togTopupPromo" checked><span class="slider"></span></label></span></div>
         <label>Type</label>
-        <select id="promoType">
+        <select id="promoType" aria-label="Promotion type">
           <option value="deposit">Deposit % bonus</option>
           <option value="credit">Flat credit (coins to all who claim)</option>
           <option value="cashdrop">Cash drop (free coins)</option>
         </select>
         <label>Amount</label>
-        <input type="number" id="promoAmt" value="100" min="1"/>
+        <input type="number" id="promoAmt" value="100" min="1" aria-label="Promotion amount"/>
         <label>Starts in (minutes from now, 0 = now)</label>
-        <input type="number" id="promoStart" value="0" min="0"/>
+        <input type="number" id="promoStart" value="0" min="0" aria-label="Promotion starts in (minutes from now)"/>
         <label>Ends in (minutes, 0 = never / manually disabled)</label>
-        <input type="number" id="promoEnd" value="60" min="0"/>
+        <input type="number" id="promoEnd" value="60" min="0" aria-label="Promotion ends in (minutes, 0 = never)"/>
         <div class="row" style="margin-top:12px"><button class="btn btn-primary" id="createPromo">➕ Create campaign</button></div>
       </div>
       <div class="card">
@@ -340,7 +340,7 @@
     <div class="card">
       <h3>📣 Global Broadcast Banner</h3>
       <p class="muted">Shows above every player's screen (all tabs). Set empty to clear. Audited on set/clear.</p>
-      <textarea id="broadcastInput" rows="2" maxlength="120" placeholder="e.g. 🔥 8-player tournament tonight at 20:00 UTC — 100 entry!"></textarea>
+      <textarea id="broadcastInput" rows="2" maxlength="120" placeholder="e.g. 🔥 8-player tournament tonight at 20:00 UTC — 100 entry!" aria-label="Broadcast message"></textarea>
       <div class="banner-preview" id="bcPreview" style="display:none"></div>
       <div class="row" style="margin-top:10px"><button class="btn btn-primary btn-sm" id="setBc">📣 Set broadcast</button>
         <button class="btn btn-ghost btn-sm" id="clearBc">✕ Clear</button></div>
@@ -357,7 +357,7 @@
     </div>
     <div class="card" style="margin-bottom:16px">
       <h3>🧾 All top-up &amp; deposit records</h3>
-      <div class="row" style="margin-bottom:8px"><input id="topupFilter" placeholder="Filter name, method, reference, campaign, source or amount…"/><select id="topupSort"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="base-desc">Largest base</option><option value="bonus-desc">Largest bonus</option><option value="credited-desc">Largest credited</option></select><button class="btn btn-ghost btn-sm" id="exportTopupStats">Export CSV</button></div>
+      <div class="row" style="margin-bottom:8px"><input id="topupFilter" placeholder="Filter name, method, reference, campaign, source or amount…" aria-label="Filter top-ups"/><select id="topupSort" aria-label="Sort top-ups"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="base-desc">Largest base</option><option value="bonus-desc">Largest bonus</option><option value="credited-desc">Largest credited</option></select><button class="btn btn-ghost btn-sm" id="exportTopupStats">Export CSV</button></div>
       <div id="topupList" style="overflow:auto"></div>
       <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="topupsPrev">← Previous</button><span class="muted" id="topupsPage">Page 1</span><button class="btn btn-ghost btn-sm" id="topupsNext">Next →</button></div>
     </div>
@@ -384,13 +384,13 @@
       <div class="card">
         <h3>🧮 Revenue Simulator</h3>
         <p class="muted">What-if projection using current live rates.</p>
-        <label>Games per day (regular)</label><input type="number" id="simGames" value="5000" min="0"/>
-        <label>Average stake</label><input type="number" id="simStake" value="100" min="10"/>
-        <label>Series Cups per day</label><input type="number" id="simCups" value="200" min="0"/>
-        <label>Tournaments per day</label><input type="number" id="simTrny" value="20" min="0"/>
-        <label>Avg tournament entry × size</label><input type="number" id="simTrnyPool" value="800" min="0"/>
-        <label>Shop coins/day</label><input type="number" id="simShop" value="2000" min="0"/>
-        <label>Auction house fees / day</label><input type="number" id="simAuction" value="300" min="0"/>
+        <label>Games per day (regular)</label><input type="number" id="simGames" value="5000" min="0" aria-label="Simulated games per day"/>
+        <label>Average stake</label><input type="number" id="simStake" value="100" min="10" aria-label="Simulated average stake"/>
+        <label>Series Cups per day</label><input type="number" id="simCups" value="200" min="0" aria-label="Simulated Series Cups per day"/>
+        <label>Tournaments per day</label><input type="number" id="simTrny" value="20" min="0" aria-label="Simulated tournaments per day"/>
+        <label>Avg tournament entry × size</label><input type="number" id="simTrnyPool" value="800" min="0" aria-label="Simulated average tournament entry × size"/>
+        <label>Shop coins/day</label><input type="number" id="simShop" value="2000" min="0" aria-label="Simulated shop coins per day"/>
+        <label>Auction house fees / day</label><input type="number" id="simAuction" value="300" min="0" aria-label="Simulated auction house fees per day"/>
         <button class="btn btn-primary btn-sm" id="runSim" style="margin-top:10px">Run simulation</button>
         <div id="simOut" style="margin-top:12px"></div>
       </div>
@@ -398,8 +398,8 @@
     <div class="card">
       <h3>💚 Comp Tool (goodwill credits)</h3>
       <p class="muted">Comps are funded strictly from accumulated house net revenue — a comp larger than available net revenue is refused, so generosity never creates coins out of nowhere.</p>
-      <div class="row"><div style="flex:1"><label>Amount (coins)</label><input type="number" id="compAmt" value="50" min="1"/></div>
-        <div style="flex:1"><label>Reason</label><input type="text" id="compReason" placeholder="e.g. goodwill for bug report"/></div>
+      <div class="row"><div style="flex:1"><label>Amount (coins)</label><input type="number" id="compAmt" value="50" min="1" aria-label="Comp amount (coins)"/></div>
+        <div style="flex:1"><label>Reason</label><input type="text" id="compReason" placeholder="e.g. goodwill for bug report" aria-label="Reason for the comp"/></div>
         <button class="btn btn-green" id="giveComp" style="align-self:flex-end">💚 Give comp</button></div>
       <div class="kv" style="margin-top:10px"><span class="k">Available house revenue for comps</span><span class="v" id="compAvail">0</span></div>
     </div>
@@ -423,10 +423,10 @@
       <h3>🤖 Bot Economy & Automatic Player Growth</h3>
       <p class="muted">Every bot must complete a first top-up before any play or activity. The first top-up uses varied 400–1,600 base values and the +50% promotion when enabled. Later low-balance top-ups use the configurable default trigger of 500.</p>
       <div class="grid4">
-        <div><label>Bot top-up trigger balance</label><input type="number" id="botTopupThreshold" min="0" max="10000" step="50" value="500"/></div>
-        <div><label>Maximum bot roster</label><input type="number" id="botGrowthMax" min="99" max="1000" value="250"/></div>
-        <div><label>Growth interval (seconds)</label><input type="number" id="botGrowthInterval" min="5" max="3600" value="15"/></div>
-        <div><label>Bots added per interval</label><input type="number" id="botGrowthBatch" min="1" max="10" value="1"/></div>
+        <div><label>Bot top-up trigger balance</label><input type="number" id="botTopupThreshold" min="0" max="10000" step="50" value="500" aria-label="Bot top-up trigger balance"/></div>
+        <div><label>Maximum bot roster</label><input type="number" id="botGrowthMax" min="99" max="1000" value="250" aria-label="Maximum bot roster"/></div>
+        <div><label>Growth interval (seconds)</label><input type="number" id="botGrowthInterval" min="5" max="3600" value="15" aria-label="Bot growth interval (seconds)"/></div>
+        <div><label>Bots added per interval</label><input type="number" id="botGrowthBatch" min="1" max="10" value="1" aria-label="Bots added per interval"/></div>
       </div>
       <div class="row" style="margin-top:12px"><button class="btn btn-primary" id="saveBotConfig">💾 Save bot settings</button><button class="btn btn-green" id="addBotNow">➕ Add bot now</button><span class="muted" id="botGrowthStatus"></span></div>
       <div class="grid3" id="botFirstTopupStatus" style="margin-top:12px"></div>
@@ -446,13 +446,13 @@
         </div>
         <div class="row" style="margin-top:8px">
           <button class="btn btn-green btn-sm" id="compPlayerBtn">💚 Comp this player</button>
-          <input type="number" id="compPlayerAmt" value="50" min="1" class="sm" style="width:90px"/>
+          <input type="number" id="compPlayerAmt" value="50" min="1" class="sm" style="width:90px" aria-label="Comp amount for this player (coins)"/>
         </div>
       </div>
       <div class="card">
         <h3>⚑ Big-Win Review Flags</h3>
         <p class="muted">Payouts ≥400 (or jackpot) auto-flag for manual review / AML. <span id="flagCount">0</span> pending.</p>
-        <div class="row" style="margin-bottom:8px"><select id="flagFilter"><option value="">All types</option><option value="jackpot">Jackpot</option><option value="big-win">Big win</option></select><select id="flagSort"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="amount-desc">Highest amount</option></select></div>
+        <div class="row" style="margin-bottom:8px"><select id="flagFilter" aria-label="Filter flags by type"><option value="">All types</option><option value="jackpot">Jackpot</option><option value="big-win">Big win</option></select><select id="flagSort" aria-label="Sort flags"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="amount-desc">Highest amount</option></select></div>
         <div id="flagList" style="max-height:320px;overflow-y:auto"></div>
         <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="flagPrev">← Previous</button><span class="muted" id="flagPage">Page 1</span><button class="btn btn-ghost btn-sm" id="flagNext">Next →</button></div>
       </div>
@@ -465,15 +465,15 @@
         <div class="stat-tile purple"><div class="v" id="qaBots">0</div><div class="k">Active bots</div></div>
       </div>
       <div class="section-title" style="margin-top:16px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:1px">Open P2P queue</div>
-      <div class="row" style="margin-bottom:8px"><input id="queueFilter" type="text" placeholder="Filter game, player, pick…"/><select id="queueSort" style="max-width:160px"><option value="wait-desc">Longest waiting</option><option value="stake-desc">Highest stake</option><option value="game-asc">Game A–Z</option></select></div>
+      <div class="row" style="margin-bottom:8px"><input id="queueFilter" type="text" placeholder="Filter game, player, pick…" aria-label="Filter the P2P queue"/><select id="queueSort" style="max-width:160px" aria-label="Sort the P2P queue"><option value="wait-desc">Longest waiting</option><option value="stake-desc">Highest stake</option><option value="game-asc">Game A–Z</option></select></div>
       <div id="qaList" style="max-height:300px;overflow:auto"></div>
       <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="queuePrev">← Previous</button><span class="muted" id="queuePage">Page 1</span><button class="btn btn-ghost btn-sm" id="queueNext">Next →</button></div>
       <div class="section-title" style="margin-top:16px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:1px">Recent bot transfers</div>
-      <div class="row" style="margin-bottom:8px"><input id="botXfFilter" type="text" placeholder="Filter sender or receiver…"/><select id="botXfSort" style="max-width:150px"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="amount-desc">Highest amount</option><option value="fee-desc">Highest fee</option></select></div>
+      <div class="row" style="margin-bottom:8px"><input id="botXfFilter" type="text" placeholder="Filter sender or receiver…" aria-label="Filter bot transfers"/><select id="botXfSort" style="max-width:150px" aria-label="Sort bot transfers"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="amount-desc">Highest amount</option><option value="fee-desc">Highest fee</option></select></div>
       <div id="botTransferList" style="max-height:320px;overflow:auto"></div>
       <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="botXfPrev">← Previous</button><span class="muted" id="botXfPage">Page 1</span><button class="btn btn-ghost btn-sm" id="botXfNext">Next →</button></div>
       <div class="section-title" id="botTopupHeading" style="margin-top:16px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:1px">Recent bot top-ups (trigger below 500)</div>
-      <div class="row" style="margin-bottom:8px"><input id="botTopupFilter" type="text" placeholder="Filter bot or reason…"/><select id="botTopupSort" style="max-width:150px"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="total-desc">Highest total</option><option value="promo-desc">Highest promo</option></select></div>
+      <div class="row" style="margin-bottom:8px"><input id="botTopupFilter" type="text" placeholder="Filter bot or reason…" aria-label="Filter bot top-ups"/><select id="botTopupSort" style="max-width:150px" aria-label="Sort bot top-ups"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="total-desc">Highest total</option><option value="promo-desc">Highest promo</option></select></div>
       <div id="botTopupList" style="max-height:300px;overflow:auto"></div>
       <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="botTopupPrev">← Previous</button><span class="muted" id="botTopupPage">Page 1</span><button class="btn btn-ghost btn-sm" id="botTopupNext">Next →</button></div>
       <div class="warn-box" style="margin-top:14px">💡 Every Coin Toss and Catalog bet appears here with its game, pick, stake, and wait time. Demo bots can supply liquidity automatically.</div>
@@ -515,7 +515,7 @@
     <div class="admin-hero compact"><div><span class="admin-eyebrow">PRODUCT MAP</span><h1>Feature Directory</h1><p>Browse every implemented, demo-only and recommended feature by category, with a one-click jump to the matching player or admin screen.</p></div></div>
     <div class="grid4" id="directoryTiles"></div>
     <div class="card" style="margin-top:16px">
-      <div class="directory-toolbar"><input id="directorySearch" placeholder="Search feature or description…"/><select id="directoryCategory"><option value="">All categories</option></select><select id="directoryStatus"><option value="">All statuses</option><option value="Implemented">Implemented</option><option value="Partial">Partial / demo-only</option><option value="Suggested">Suggested next</option></select></div>
+      <div class="directory-toolbar"><input id="directorySearch" placeholder="Search feature or description…" aria-label="Search the feature directory"/><select id="directoryCategory" aria-label="Filter the feature directory by category"><option value="">All categories</option></select><select id="directoryStatus" aria-label="Filter the feature directory by status"><option value="">All statuses</option><option value="Implemented">Implemented</option><option value="Partial">Partial / demo-only</option><option value="Suggested">Suggested next</option></select></div>
       <div id="featureDirectory"></div>
     </div>
   </section>
@@ -526,7 +526,7 @@
       <div class="card">
         <h3>🧾 Admin Audit Trail (last 50)</h3>
         <p class="muted">Every admin action is timestamped: rate changes, toggles, broadcasts, exclusions, comps, renames, season/VIP resets, promo lifecycle.</p>
-        <div class="row" style="margin-bottom:8px"><input id="auditFilter" type="text" placeholder="Filter action or detail…"/><select id="auditSort" style="max-width:150px"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="action-asc">Action A–Z</option></select></div>
+        <div class="row" style="margin-bottom:8px"><input id="auditFilter" type="text" placeholder="Filter action or detail…" aria-label="Filter the audit log"/><select id="auditSort" style="max-width:150px" aria-label="Sort the audit log"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="action-asc">Action A–Z</option></select></div>
         <div style="max-height:420px;overflow-y:auto">
           <table class="log-table"><thead><tr><th>Time</th><th>Who</th><th>Action</th><th>Detail</th></tr></thead>
           <tbody id="auditBody"></tbody></table>
@@ -546,7 +546,7 @@
     </div>
     <div class="card">
       <h3>📋 Player Game History with Proofs</h3>
-      <div class="row" style="margin-bottom:10px"><input id="gameFilter" type="text" placeholder="Filter game, result, opponent, details…"/><select id="gameSort" style="max-width:170px"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="stake-desc">Highest stake</option><option value="delta-desc">Highest player Δ</option><option value="game-asc">Game A–Z</option></select></div>
+      <div class="row" style="margin-bottom:10px"><input id="gameFilter" type="text" placeholder="Filter game, result, opponent, details…" aria-label="Filter player game history"/><select id="gameSort" style="max-width:170px" aria-label="Sort player game history"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="stake-desc">Highest stake</option><option value="delta-desc">Highest player Δ</option><option value="game-asc">Game A–Z</option></select></div>
       <div id="gameHistory" style="overflow:auto"></div>
       <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="gamePrev">← Previous</button><span class="muted" id="gamePage">Page 1</span><button class="btn btn-ghost btn-sm" id="gameNext">Next →</button></div>
     </div>
@@ -554,9 +554,9 @@
       <h3>🎮 P2P Results — Player & Bot Matches</h3>
       <div class="grid4" id="catalogSummary" style="margin-bottom:14px"></div>
       <div class="row" style="margin-bottom:10px">
-        <input id="catFilter" type="text" placeholder="Filter game, player, pick, detail…" style="max-width:300px"/>
-        <select id="catResultFilter" style="max-width:160px"><option value="">All results</option><option>WIN</option><option>LOSE</option><option>DRAW</option><option>CARRY</option></select>
-        <select id="catSort" style="max-width:190px"><option value="time-desc">Newest first</option><option value="time-asc">Oldest first</option><option value="fee-desc">Highest fee</option><option value="stake-desc">Highest stake</option><option value="game-asc">Game A–Z</option></select>
+        <input id="catFilter" type="text" placeholder="Filter game, player, pick, detail…" style="max-width:300px" aria-label="Filter catalog matches"/>
+        <select id="catResultFilter" style="max-width:160px" aria-label="Filter catalog matches by result"><option value="">All results</option><option>WIN</option><option>LOSE</option><option>DRAW</option><option>CARRY</option></select>
+        <select id="catSort" style="max-width:190px" aria-label="Sort catalog matches"><option value="time-desc">Newest first</option><option value="time-asc">Oldest first</option><option value="fee-desc">Highest fee</option><option value="stake-desc">Highest stake</option><option value="game-asc">Game A–Z</option></select>
       </div>
       <div id="catalogHistory" style="overflow:auto"></div>
       <div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn btn-ghost btn-sm" id="catPrev">← Previous</button><span class="muted" id="catPage">Page 1</span><button class="btn btn-ghost btn-sm" id="catNext">Next →</button></div>
@@ -589,9 +589,9 @@
     <div class="card">
       <h3>🧾 Withdrawal ledger</h3>
       <div class="row" style="margin-bottom:8px">
-        <input id="wdFilter" placeholder="Filter name, detail or amount…"/>
-        <select id="wdSort"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="amount-desc">Largest</option></select>
-        <select id="wdWho"><option value="all">All (players + bots)</option><option value="players">Players</option><option value="bots">Bots</option></select>
+        <input id="wdFilter" placeholder="Filter name, detail or amount…" aria-label="Filter withdrawals"/>
+        <select id="wdSort" aria-label="Sort withdrawals"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option><option value="amount-desc">Largest</option></select>
+        <select id="wdWho" aria-label="Filter withdrawals by who"><option value="all">All (players + bots)</option><option value="players">Players</option><option value="bots">Bots</option></select>
         <button class="btn btn-primary btn-sm" id="wdRun">Process eligible now</button>
         <button class="btn btn-ghost btn-sm" id="exportWd">Export CSV</button>
       </div>
@@ -607,8 +607,8 @@
         <div class="card"><h3>🏦 Player wallet override</h3>
           <p class="muted">Directly adjust the demo player wallet. Every change is ledgered and audited.</p>
           <div class="row" style="flex-wrap:wrap;gap:6px">
-            <select id="walletAdjKey" style="max-width:110px"><option value="main">MAIN</option><option value="bonus">BONUS</option><option value="bank">BANK</option><option value="referral">REFERRAL</option><option value="rakeback">RAKEBACK</option></select>
-            <input id="walletAdjAmt" type="number" value="100" min="1" style="max-width:90px"/>
+            <select id="walletAdjKey" style="max-width:110px" aria-label="Wallet to adjust"><option value="main">MAIN</option><option value="bonus">BONUS</option><option value="bank">BANK</option><option value="referral">REFERRAL</option><option value="rakeback">RAKEBACK</option></select>
+            <input id="walletAdjAmt" type="number" value="100" min="1" style="max-width:90px" aria-label="Wallet adjustment amount"/>
             <button class="btn btn-primary btn-sm" id="walletAdjBtn">Apply</button>
           </div>
           <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">
@@ -641,8 +641,8 @@
     <div class="card">
       <h3>👥 All players</h3>
       <div class="row" style="margin-bottom:8px">
-        <input id="peopleFilter" placeholder="Search name or country…"/>
-        <select id="peopleSort"><option value="balance">Sort: Balance</option><option value="wins">Sort: Wins</option><option value="net">Sort: Net</option><option value="topupCount">Sort: Top-ups</option><option value="level">Sort: Level</option></select>
+        <input id="peopleFilter" placeholder="Search name or country…" aria-label="Search the player roster"/>
+        <select id="peopleSort" aria-label="Sort the player roster"><option value="balance">Sort: Balance</option><option value="wins">Sort: Wins</option><option value="net">Sort: Net</option><option value="topupCount">Sort: Top-ups</option><option value="level">Sort: Level</option></select>
       </div>
       <div id="peopleList" style="overflow:auto"></div>
       <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="peoplePrev">← Previous</button><span class="muted" id="peoplePage">Page 1</span><button class="btn btn-ghost btn-sm" id="peopleNext">Next →</button></div>
@@ -651,11 +651,11 @@
       <h3>🎛 Player preferences override</h3>
       <p class="muted">Set the demo player's UX preferences directly. The player app reads these live from shared state.</p>
       <div class="grid3">
-        <div><label>Language</label><select id="adminLanguage"><option value="en">English</option><option value="hi">Hindi</option><option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option></select></div>
-        <div><label>Sound</label><select id="adminSound"><option value="true">On</option><option value="false">Off</option></select></div>
-        <div><label>Instant results</label><select id="adminInstant"><option value="true">On</option><option value="false">Off</option></select></div>
-        <div><label>Auto Bet stop</label><input type="number" id="adminStop" value="-200" min="-10000" max="-50" step="50"/></div>
-        <div><label>Player name</label><input id="adminPlayerName" placeholder="Leave blank to keep default"/></div>
+        <div><label>Language</label><select id="adminLanguage" aria-label="Player app language"><option value="en">English</option><option value="hi">Hindi</option><option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option></select></div>
+        <div><label>Sound</label><select id="adminSound" aria-label="Player app sound"><option value="true">On</option><option value="false">Off</option></select></div>
+        <div><label>Instant results</label><select id="adminInstant" aria-label="Instant results"><option value="true">On</option><option value="false">Off</option></select></div>
+        <div><label>Auto Bet stop</label><input type="number" id="adminStop" value="-200" min="-10000" max="-50" step="50" aria-label="Auto Bet stop limit"/></div>
+        <div><label>Player name</label><input id="adminPlayerName" placeholder="Leave blank to keep default" aria-label="Player display name"/></div>
       </div>
       <button class="btn btn-primary" id="savePlayerPrefs" style="margin-top:12px">💾 Save player preferences</button>
     </div>
@@ -663,7 +663,7 @@
       <div class="card"><h3>👥 Admin users</h3>
         <p class="muted">Console accounts and their roles. Every change is audit-logged.</p>
         <div id="setUsers"></div>
-        <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:10px"><input id="setUserName" placeholder="New admin name" style="max-width:160px"/><select id="setUserRole" style="max-width:130px"><option>Super Admin</option><option>Finance</option><option>Operations</option><option>Support</option></select><button class="btn btn-primary btn-sm" id="setUserAdd">Add user</button></div>
+        <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:10px"><input id="setUserName" placeholder="New admin name" style="max-width:160px" aria-label="New administrator name"/><select id="setUserRole" style="max-width:130px" aria-label="Role for the new user"><option>Super Admin</option><option>Finance</option><option>Operations</option><option>Support</option></select><button class="btn btn-primary btn-sm" id="setUserAdd">Add user</button></div>
       </div>
       <div class="card"><h3>💾 Backup &amp; restore</h3>
         <p class="muted">Point-in-time snapshots of the whole demo state, kept in this browser. The five newest snapshots are retained.</p>
@@ -701,8 +701,8 @@
     <div class="grid2" style="margin-bottom:16px">
       <div class="card"><h3>📨 Message a player</h3>
         <div class="row" style="flex-wrap:wrap;gap:6px;margin-bottom:8px">
-          <select id="supMsgTo" style="max-width:170px"><option value="you">Demo player</option><option value="all">All players (broadcast)</option></select>
-          <input id="supMsgBody" placeholder="Your message…" style="flex:1;min-width:200px"/>
+          <select id="supMsgTo" style="max-width:170px" aria-label="Message recipient"><option value="you">Demo player</option><option value="all">All players (broadcast)</option></select>
+          <input id="supMsgBody" placeholder="Your message…" style="flex:1;min-width:200px" aria-label="Message to the player"/>
           <button class="btn btn-primary btn-sm" id="supMsgSend">Send</button>
         </div>
         <p class="muted">Messages to the demo player appear live in their Services → Support tab.</p>
@@ -712,9 +712,9 @@
     <div class="card">
       <h3>🎫 Ticket inbox</h3>
       <div class="row" style="margin-bottom:8px">
-        <input id="supFilter" placeholder="Filter name, subject or message…"/>
-        <select id="supStatus"><option value="">All statuses</option><option value="open">Open</option><option value="replied">Replied</option><option value="closed">Closed</option></select>
-        <select id="supSort"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option></select>
+        <input id="supFilter" placeholder="Filter name, subject or message…" aria-label="Filter support tickets"/>
+        <select id="supStatus" aria-label="Filter support tickets by status"><option value="">All statuses</option><option value="open">Open</option><option value="replied">Replied</option><option value="closed">Closed</option></select>
+        <select id="supSort" aria-label="Sort support tickets"><option value="time-desc">Newest</option><option value="time-asc">Oldest</option></select>
       </div>
       <div id="supList" style="overflow:auto"></div>
       <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="supPrev">← Previous</button><span class="muted" id="supPage">Page 1</span><button class="btn btn-ghost btn-sm" id="supNext">Next →</button></div>
@@ -747,7 +747,7 @@
     <div class="grid4" id="gcTiles" style="margin-bottom:16px"></div>
     <div class="card">
       <h3>🎮 Game catalog</h3>
-      <div class="row" style="margin-bottom:8px"><input id="gcFilter" placeholder="Filter game…"/><select id="gcSort"><option value="plays-desc">Most played</option><option value="fee-desc">Top fee earners</option><option value="name-asc">Name A–Z</option></select></div>
+      <div class="row" style="margin-bottom:8px"><input id="gcFilter" placeholder="Filter game…" aria-label="Filter the game catalog"/><select id="gcSort" aria-label="Sort the game catalog"><option value="plays-desc">Most played</option><option value="fee-desc">Top fee earners</option><option value="name-asc">Name A–Z</option></select></div>
       <div id="gcList" style="overflow:auto"></div>
       <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="gcPrev">← Previous</button><span class="muted" id="gcPage">Page 1</span><button class="btn btn-ghost btn-sm" id="gcNext">Next →</button></div>
     </div>
@@ -761,7 +761,7 @@
       <div class="card"><h3>🔗 Program</h3><div id="refProgram"></div></div>
       <div class="card"><h3>➕ Register a referred player</h3>
         <p class="muted">Simulate a new player joining with the demo player's referral code. They start like any player: 0 MAIN + 1,000 BONUS.</p>
-        <div class="row" style="flex-wrap:wrap;gap:6px"><input id="refName" placeholder="Player name" style="max-width:200px"/><select id="refCountry"><option>India</option><option>Brazil</option><option>USA</option><option>Japan</option><option>UK</option></select><button class="btn btn-primary btn-sm" id="refAddBtn">Register</button></div>
+        <div class="row" style="flex-wrap:wrap;gap:6px"><input id="refName" placeholder="Player name" style="max-width:200px" aria-label="Referred player name"/><select id="refCountry" aria-label="Referred player country"><option>India</option><option>Brazil</option><option>USA</option><option>Japan</option><option>UK</option></select><button class="btn btn-primary btn-sm" id="refAddBtn">Register</button></div>
       </div>
     </div>
     <div class="card"><h3>👥 Referred players</h3><div id="refList" style="overflow:auto"></div></div>
@@ -772,7 +772,7 @@
     <div class="admin-hero compact"><div><span class="admin-eyebrow">IN-APP MESSAGING</span><h1>Announcements</h1><p>Create and publish in-app announcements. A published announcement appears at the top of every player's Home.</p></div></div>
     <div class="grid2">
       <div class="card"><h3>✍️ New announcement</h3>
-        <div class="row" style="flex-wrap:wrap;gap:6px;margin-bottom:8px"><input id="annTitle" placeholder="Title" style="max-width:260px"/><input id="annBody" placeholder="Message" style="flex:1;min-width:220px"/><button class="btn btn-primary btn-sm" id="annPublish">📣 Publish</button></div>
+        <div class="row" style="flex-wrap:wrap;gap:6px;margin-bottom:8px"><input id="annTitle" placeholder="Title" style="max-width:260px" aria-label="Announcement title"/><input id="annBody" placeholder="Message" style="flex:1;min-width:220px" aria-label="Announcement message"/><button class="btn btn-primary btn-sm" id="annPublish">📣 Publish</button></div>
         <p class="muted">Published live to player Homes across open tabs.</p>
       </div>
       <div class="card"><h3>📋 Currently on player Home</h3><div id="annCurrent"></div></div>
@@ -801,15 +801,15 @@
         <div id="kycQueue"></div>
       </div>
       <div class="card"><h3>⚑ Review Flags</h3>
-        <div class="row" style="margin-bottom:10px"><select id="flagFilterSel"><option value="">All types</option><option value="big-win">Big wins</option><option value="jackpot">Jackpots</option><option value="anti-cheat">Anti-cheat</option><option value="deposit">Deposits</option></select><button class="btn btn-ghost btn-sm" id="flagRefresh">↻ Refresh</button></div>
+        <div class="row" style="margin-bottom:10px"><select id="flagFilterSel" aria-label="Filter flags by type"><option value="">All types</option><option value="big-win">Big wins</option><option value="jackpot">Jackpots</option><option value="anti-cheat">Anti-cheat</option><option value="deposit">Deposits</option></select><button class="btn btn-ghost btn-sm" id="flagRefresh">↻ Refresh</button></div>
         <div id="flagQueue"></div>
       </div>
     </div>
     <div class="grid2" style="margin-top:14px">
       <div class="card"><h3>🚫 Account Restrictions</h3>
         <p class="muted">Freeze a simulated player instantly, or add a name to the persistent exclusion list. Both blocks new games until cleared.</p>
-        <div class="row" style="margin-top:10px"><select id="restrictBotSel"></select><button class="btn btn-ghost btn-sm" id="restrictFreeze">❄ Freeze / unfreeze</button></div>
-        <div class="row" style="margin-top:8px"><input id="exclusionInput" type="text" placeholder="Player name to exclude" maxlength="24"/><button class="btn btn-danger btn-sm" id="exclusionAdd">Exclude</button></div>
+        <div class="row" style="margin-top:10px"><select id="restrictBotSel" aria-label="Select a player to freeze or unfreeze"></select><button class="btn btn-ghost btn-sm" id="restrictFreeze">❄ Freeze / unfreeze</button></div>
+        <div class="row" style="margin-top:8px"><input id="exclusionInput" type="text" placeholder="Player name to exclude" maxlength="24" aria-label="Player name to exclude"/><button class="btn btn-danger btn-sm" id="exclusionAdd">Exclude</button></div>
         <div class="section-title" style="margin-top:12px">Exclusions</div>
         <div id="exclusionList"></div>
       </div>
@@ -825,18 +825,18 @@
     <div class="grid2">
       <div class="card"><h3>💹 House Economics</h3>
         <div class="grid3">
-          <div><label>Toss fee %</label><input id="setFeePct" type="number" step="0.1" min="0" max="20"/></div>
-          <div><label>Cup rake %</label><input id="setCupRake" type="number" step="0.1" min="0" max="20"/></div>
-          <div><label>Tournament rake %</label><input id="setTrnyRake" type="number" step="0.1" min="0" max="20"/></div>
-          <div><label>Jackpot arm at</label><input id="setJpArm" type="number" step="100" min="0"/></div>
-          <div><label>Jackpot pays %</label><input id="setJpPay" type="number" step="1" min="0" max="100"/></div>
-          <div><label>Stake min / max</label><input id="setStakeRange" type="text" placeholder="min, max"/></div>
+          <div><label>Toss fee %</label><input id="setFeePct" type="number" step="0.1" min="0" max="20" aria-label="Toss fee %"/></div>
+          <div><label>Cup rake %</label><input id="setCupRake" type="number" step="0.1" min="0" max="20" aria-label="Cup rake %"/></div>
+          <div><label>Tournament rake %</label><input id="setTrnyRake" type="number" step="0.1" min="0" max="20" aria-label="Tournament rake %"/></div>
+          <div><label>Jackpot arm at</label><input id="setJpArm" type="number" step="100" min="0" aria-label="Jackpot arming threshold"/></div>
+          <div><label>Jackpot pays %</label><input id="setJpPay" type="number" step="1" min="0" max="100" aria-label="Jackpot payout %"/></div>
+          <div><label>Stake min / max</label><input id="setStakeRange" type="text" placeholder="min, max" aria-label="Stake range as min, max"/></div>
         </div>
         <div class="row" style="margin-top:12px"><button class="btn btn-primary btn-sm" id="setEconSave">Save economics</button><span class="muted" id="setEconNote"></span></div>
       </div>
       <div class="card"><h3>👤 Administrator Account</h3>
         <div class="kv-row" id="setAccountRow"></div>
-        <div class="row" style="margin-top:10px"><label>Role</label><select id="setRoleSel"><option>Super Admin</option><option>Finance</option><option>Operations</option><option>Support</option></select><button class="btn btn-ghost btn-sm" id="setRoleSave">Apply role</button></div>
+        <div class="row" style="margin-top:10px"><label>Role</label><select id="setRoleSel" aria-label="Administrator role"><option>Super Admin</option><option>Finance</option><option>Operations</option><option>Support</option></select><button class="btn btn-ghost btn-sm" id="setRoleSave">Apply role</button></div>
         <p class="muted" style="margin-top:10px">Roles control which Admin screens are visible (RBAC). Super Admin sees everything; Finance, Operations and Support see scoped subsets. The 2FA demo code is <b>246810</b>.</p>
       </div>
     </div>
@@ -859,13 +859,36 @@
     <div class="admin-login-brand"><span class="shield">🛡️</span> FlipArena Admin</div>
     <h3>Operations sign-in</h3>
     <p class="muted">Restricted console. Demo credentials: <b>admin</b> / <b>flip2026</b> · 2FA code <b>246810</b>.</p>
-    <label>Username</label><input id="adminLoginUser" type="text" autocomplete="username" value="admin"/>
-    <label>Password</label><input id="adminLoginPass" type="password" autocomplete="current-password" placeholder="••••••••"/>
-    <label>Role</label><select id="adminLoginRole"><option>Super Admin</option><option>Finance</option><option>Operations</option><option>Support</option></select>
-    <label>2FA code</label><input id="adminLoginTfa" type="text" inputmode="numeric" maxlength="6" placeholder="6 digits"/>
+    <label>Username</label><input id="adminLoginUser" type="text" autocomplete="username" value="admin" aria-label="Username"/>
+    <label>Password</label><input id="adminLoginPass" type="password" autocomplete="current-password" placeholder="••••••••" aria-label="Password"/>
+    <label>Role</label><select id="adminLoginRole" aria-label="Sign-in role"><option>Super Admin</option><option>Finance</option><option>Operations</option><option>Support</option></select>
+    <label>2FA code</label><input id="adminLoginTfa" type="text" inputmode="numeric" maxlength="6" placeholder="6 digits" aria-label="Two-factor authentication code"/>
     <div id="adminLoginError" class="admin-login-error" hidden></div>
     <button class="btn btn-primary" id="adminLoginBtn" style="width:100%;justify-content:center">Sign in to Admin</button>
     <p class="muted" style="text-align:center;margin-top:10px"><a href="index.html" style="color:var(--purple)">← Back to the player app</a></p>
+  </div>
+</div>
+<div class="modal-bg" id="paletteBg" role="dialog" aria-modal="true" aria-label="Theme palette" aria-hidden="true">
+  <div class="modal palette-modal" id="paletteContent">
+    <div class="palette-head">
+      <h3>🎨 Theme palette</h3>
+      <button class="icon-btn" id="paletteClose" title="Close theme palette" aria-label="Close theme palette">✕</button>
+    </div>
+    <p class="muted">Pick a preset or mix your own colours. The choice is saved on this device and shared by the player and admin apps.</p>
+    <div class="theme-preset-grid" id="themePresetGrid"></div>
+    <div class="palette-custom">
+      <h4>Custom palette</h4>
+      <div class="palette-fields">
+        <div><label for="pcBg">Background</label><input type="color" id="pcBg" value="#0b1020" aria-label="Custom background colour"></div>
+        <div><label for="pcCard">Cards</label><input type="color" id="pcCard" value="#121a2e" aria-label="Custom card colour"></div>
+        <div><label for="pcAccent">Accent</label><input type="color" id="pcAccent" value="#f6c453" aria-label="Custom accent colour"></div>
+        <div><label for="pcTxt">Text</label><input type="color" id="pcTxt" value="#e8edf7" aria-label="Custom text colour"></div>
+      </div>
+      <div class="palette-actions">
+        <button class="btn btn-primary" id="pcApply">Apply palette</button>
+        <button class="btn btn-ghost" id="pcReset">Reset to Midnight Gold</button>
+      </div>
+    </div>
   </div>
 </div>
 <div id="toasts"></div>

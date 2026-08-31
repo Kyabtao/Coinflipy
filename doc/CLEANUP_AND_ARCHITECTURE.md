@@ -9,15 +9,16 @@ deleted during the cleanup sweep.
 Everything described here is verified automatically on every run of
 
 ```bash
-npm i jsdom            # once — powers the headless boot smoke
-bash tools/run-audit-loop.sh 20
+npm i                          # once — installs jsdom for the headless boot smoke
+bash tools/run-audit-loop.sh 50
 ```
 
 | Harness | What it proves | Command |
 |---|---|---|
-| `tools/audit.js` | module graph, DOM ids, assets, service-worker cache, JS hygiene, human labels, targeted rendering, component wiring, Admin ↔ Player alignment, repository hygiene | `node tools/audit.js` |
+| `tools/audit.js` | module graph + ESM parse, DOM ids, assets, service-worker precache completeness, JS hygiene, accessible names on every form control, human labels, targeted rendering, component wiring, Admin ↔ Player alignment, repository hygiene | `node tools/audit.js` |
 | `tools/ledger-simulation.mjs` | safe integer math, escrow conservation, concurrency/double-spend, ledger invariants, reconciliation formula | `node tools/ledger-simulation.mjs` |
-| `tools/boot-smoke.mjs` | both apps boot headlessly, all 34 screens paint, tabs swap without errors, a bet settles, Admin screens (including Revenue) render, zero console output | `node tools/boot-smoke.mjs` |
+| `tools/boot-smoke.mjs` | both apps boot headlessly, every screen paints, tabs swap without errors, a bet settles, the theme palette works end to end, Admin screens (including Revenue) render, zero console output | `node tools/boot-smoke.mjs` |
+| `tools/test-new-features.mjs` | catalog/arcade games, hubs, economy, privacy and persistence flows | `node tools/test-new-features.mjs` |
 
 ---
 

@@ -1,7 +1,7 @@
 /* FlipArena admin module — theme */
 import "../shared/runtime.js";
 import {$,DIRECTORY,SAVE_KEY,VIEWS,audit,cfg,downloadFile,fmt,render,renderAnnouncements,renderAudit,renderCatalogHistory,renderFeatureDirectory,renderFlags,renderGameHistory,renderGamesAdmin,renderLevels,renderPeople,renderReferrals,renderReports,renderSupport,renderTopupAnalytics,renderTrny,renderWithdrawals,reportsData,save,toast} from "./core.js";
-import {THEME_PRESETS,applyTheme,clearThemeVars,closePalette,hexToRgb,openPalette,renderThemePresets,saveThemePrefs,shadeRgb,themeName,themePalette} from "../shared/theme.js";
+import {THEME_PRESETS,applyTheme,bindPalette,clearThemeVars,closePalette,hexToRgb,openPalette,renderThemePresets,saveThemePrefs,shadeRgb,themeName,themePalette} from "../shared/theme.js";
 
 function bindViewControls(){
   const bindInput=(id,view,key,fn)=>{$(id).oninput=e=>{view[key]=e.target.value;view.page=1;fn();};};
@@ -77,18 +77,11 @@ const {adminReplyTicket,adminCloseTicket,adminSendPlayerMessage,adminAddUser,adm
 function openDrawer(title,html){$("drawerTitle").textContent=title;$("drawerContent").innerHTML=html;$("adminDrawer").classList.add("show");$("drawerBackdrop").classList.add("show");}
 function closeDrawer(){$("adminDrawer").classList.remove("show");$("drawerBackdrop").classList.remove("show");}
 
-function cycleTheme(){
-  const i=Math.max(0,THEME_PRESETS.findIndex(p=>p.id===themeName()));
-  const next=THEME_PRESETS[(i+1)%THEME_PRESETS.length];
-  S.settings.themeName=next.id;
-  S.settings.customPalette=null;
-  applyTheme();
-  saveThemePrefs();
-  toast(`${next.name} applied.`,'ok');
-}
-
+/* Header theme controls: #themeBtn toggles light/midnight (bound in render.js)
+   and #paletteBtn opens the shared theme palette — six presets plus a custom
+   colour editor, wired once by bindPalette(). */
 export function bind(){
-  $('paletteBtn')&&($('paletteBtn').onclick=cycleTheme);
+  bindPalette();
   bindViewControls();
   $("directorySearch").oninput=e=>{DIRECTORY.search=e.target.value;renderFeatureDirectory();};
   $("directoryCategory").onchange=e=>{DIRECTORY.category=e.target.value;renderFeatureDirectory();};

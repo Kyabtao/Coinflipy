@@ -1,5 +1,35 @@
 # TossMatch Changelog
 
+## v13.0.1 — UI/UX & functionality fixes surfaced by the audit
+
+Fixes found while driving the audit stack to 50 consecutive clean passes.
+
+- **Theme palette restored** — the 🎨 header button only cycled presets and the
+  palette modal it advertises was missing from both shells, so the shared
+  engine's custom-palette editor was unreachable. `index.html` and
+  `admin.html` now ship the palette dialog (six presets + background, card,
+  accent and text pickers, Apply / Reset / Close). The shared engine grew
+  `bindPalette()`, `applyCustomPalette()`, `resetPalette()` and
+  `syncPaletteInputs()`; opening, applying, resetting and closing are covered by
+  new boot-smoke checks in both apps.
+- **Offline precache completed** — the service worker cached only 39 of the 49
+  files a cold offline start needs (`js/shared/money.js`, `js/shared/progress.js`,
+  `js/admin/plus.js`, `js/player/arcade100.js`, `js/player/catalog100.js`,
+  `src/css/variables.css` and the `src/` components the Admin revenue screen
+  imports were missing, so an offline first load rendered unstyled and the
+  admin screens threw). Cache bumped to `tossmatch-v13.0` and `tools/audit.js`
+  now derives the expected precache from the real import graph, so the list
+  cannot silently drift again.
+- **Accessible names** — 105 form controls (13 player, 92 admin) had no
+  `<label>`, `aria-label` or `title`, so screen readers announced them as
+  unnamed fields. Every control now carries a human label, and
+  `tools/audit.js` fails the build if an unnamed control is reintroduced.
+- **Tooling** — `package.json` (ESM, `jsdom` dev dependency, `npm run audit` /
+  `smoke` / `test` scripts) so the harness installs reproducibly with `npm i`;
+  `tools/audit.js` converted to ESM; `tools/run-audit-loop.sh` installs jsdom on
+  demand and defaults documented to 50 passes; stray `DEBUG` logging removed
+  from `tools/test-new-features.mjs` so its output is clean JSON.
+
 ## v13.0 — Admin Alignment, Ledger Audit & Cleanup (Phases 2–6)
 
 - **Safe money math** — new shared module `js/shared/money.js` (built on the

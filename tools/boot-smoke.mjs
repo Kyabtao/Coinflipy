@@ -60,6 +60,40 @@ function makeEnv(file) {
   return dom;
 }
 
+/* Exercise the shared theme palette end to end in a given window:
+   header button → preset → custom colours → reset → close. */
+function paletteSmoke(w, label) {
+  const $ = id => w.document.getElementById(id);
+  const click = el => { if (el) el.dispatchEvent(new w.MouseEvent('click', { bubbles: true })); };
+  try {
+    click($('paletteBtn'));
+    const presets = $('themePresetGrid').querySelectorAll('[data-theme-id]').length;
+    record(label + ' theme palette opens with every preset',
+      $('paletteBg').classList.contains('show') && presets === 7, 'presets=' + presets);
+
+    click($('themePresetGrid').querySelector('[data-theme-id="ocean"]'));
+    record(label + ' palette applies a preset theme',
+      globalThis.S.settings.themeName === 'ocean' && w.document.body.dataset.theme === 'ocean',
+      'theme=' + globalThis.S.settings.themeName);
+
+    $('pcBg').value = '#101020'; $('pcCard').value = '#1a1a30';
+    $('pcAccent').value = '#ff7849'; $('pcTxt').value = '#eeeeee';
+    click($('pcApply'));
+    const pal = globalThis.S.settings.customPalette || {};
+    record(label + ' custom palette applies the picked colours',
+      globalThis.S.settings.themeName === 'custom' && pal.bg === '#101020' && pal.accent === '#ff7849',
+      JSON.stringify(pal).slice(0, 120));
+
+    click($('pcReset'));
+    record(label + ' palette reset restores the default preset',
+      globalThis.S.settings.themeName === 'midnight' && !globalThis.S.settings.customPalette,
+      'theme=' + globalThis.S.settings.themeName);
+
+    click($('paletteClose'));
+    record(label + ' palette closes', !$('paletteBg').classList.contains('show'));
+  } catch (e) { record(label + ' theme palette works end to end', false, e.message); }
+}
+
 const errors = [];
 const origError = console.error, origWarn = console.warn;
 console.error = (...a) => { errors.push('console.error: ' + a.join(' ')); };
@@ -101,6 +135,9 @@ process.on('unhandledRejection', e => errors.push('unhandledRejection: ' + (e &&
 
   try { rtab('home'); rc(); rt(); record('renderTick() repaints chrome + active tab', true); }
   catch (e) { record('renderTick() repaints chrome + active tab', false, e.message); }
+
+  // theme palette: open, preset, custom colours, reset, close
+  paletteSmoke(w, 'player');
 
   // isolation: renderTab must not touch an inactive panel
   try {
@@ -155,6 +192,9 @@ process.on('unhandledRejection', e => errors.push('unhandledRejection: ' + (e &&
   record('live player session monitor rendered', !!$('playerSessionMonitor') && /ACTIVE|FROZEN/.test($('playerSessionMonitor').textContent));
   record('player roster offers freeze + bet history controls',
     /data-freeze=|data-unfreeze=/.test($('peopleList').innerHTML) && /data-history=/.test($('peopleList').innerHTML));
+
+  // theme palette: open, preset, custom colours, reset, close
+  paletteSmoke(w, 'admin');
 
   try { globalThis.renderAdminTick(); record('renderAdminTick() refreshes chrome + active screen', true); }
   catch (e) { record('renderAdminTick() refreshes chrome + active screen', false, e.message); }

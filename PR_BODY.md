@@ -56,15 +56,15 @@ Full record: **`doc/CLEANUP_AND_ARCHITECTURE.md`**.
 
 ### Phase 5 — 20-pass audit
 
-`tools/run-audit-loop.sh 20` runs three harnesses per pass:
+`tools/run-audit-loop.sh 50` runs three harnesses per pass:
 
 | Harness | Covers |
 |---|---|
-| `tools/audit.js` | module graph, DOM ids, assets, SW cache, JS hygiene, human labels, targeted rendering, component wiring, Admin ↔ Player alignment, repository hygiene |
+| `tools/audit.js` | module graph + ESM parse, DOM ids, assets, SW precache completeness, JS hygiene, accessible names on every form control, human labels, targeted rendering, component wiring, Admin ↔ Player alignment, repository hygiene |
 | `tools/ledger-simulation.mjs` | safe integer math, escrow conservation, concurrency/double-spend, invariants, reconciliation formula |
-| `tools/boot-smoke.mjs` | headless jsdom boot of both apps, all 34 screens, tab walks, a live bet, Admin Revenue rendering, zero console output |
+| `tools/boot-smoke.mjs` | headless jsdom boot of both apps, all 34 screens, tab walks, a live bet, the theme palette end to end, Admin Revenue rendering, zero console output |
 
-**Result: 20/20 clean passes — 157 checks per pass, 3,140 assertions, 0
+**Result: 50/50 clean passes — 315 checks per pass, 15,750 assertions, 0
 failures** (`tossmatch/docs/audit-loop-v13.0.log`).
 
 ### Phase 6 — Cleanup & documentation
@@ -80,5 +80,5 @@ component catalog, integration hooks, ledger audit and audit confirmation.
 
 - [x] `node tools/audit.js` — all checks clean
 - [x] `node tools/ledger-simulation.mjs` — 20/20 money + concurrency checks
-- [x] `node tools/boot-smoke.mjs` — 25/25 headless boot checks (`npm i jsdom`)
-- [x] `bash tools/run-audit-loop.sh 20` — 20/20 consecutive clean passes
+- [x] `node tools/boot-smoke.mjs` — 35/35 headless boot checks (`npm i`)
+- [x] `bash tools/run-audit-loop.sh 50` — 50/50 consecutive clean passes

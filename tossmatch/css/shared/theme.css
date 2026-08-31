@@ -9,12 +9,16 @@
 .theme-preset .tp-name{font-size:11px;font-weight:800;color:var(--txt)}
 .theme-preset .tp-desc{font-size:9px;color:var(--mut);text-align:center;line-height:1.3}
 .palette-modal{max-width:560px}
+.palette-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.palette-head h3{margin-bottom:0}
 .palette-custom{border-top:1px solid var(--line);padding-top:12px;margin-top:6px}
 .palette-custom h4{font-size:13px;color:var(--gold);margin-bottom:4px}
 .palette-fields{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
-.palette-fields label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-bottom:4px}
-.palette-fields input[type=color]{padding:2px;height:42px;border-radius:9px;cursor:pointer}
-@media(max-width:520px){.palette-fields{grid-template-columns:1fr 1fr}}
+.palette-fields label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-bottom:4px}
+.palette-fields input[type=color]{padding:2px;height:42px;border-radius:9px;cursor:pointer;width:100%}
+.palette-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.palette-actions .btn{flex:1 1 auto;justify-content:center}
+@media(max-width:520px){.palette-fields{grid-template-columns:1fr 1fr}.palette-actions{flex-direction:column}}
 
 /* ═══ MODERN PREMIUM POLISH v12 (shared) ═══ */
 body{background-image:

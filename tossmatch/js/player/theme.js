@@ -4,24 +4,13 @@ import {SAVE_KEY} from "./core.js";
 import {HISTORY} from "./bots.js";
 import {$,fmt,toast} from "./helpers.js";
 import {renderHistory} from "./render.js";
-import {THEME_PRESETS,applyTheme,closePalette,openPalette,saveThemePrefs,themeName} from "../shared/theme.js";
+import {bindPalette} from "../shared/theme.js";
 
-/* Theme settings UI was removed from every page. The header icon buttons stay:
-   #themeBtn toggles light/midnight (bound in render.js) and #paletteBtn cycles
-   through the shared presets — no embedded grids or palette modal. */
-function cycleTheme(){
-  const presets=THEME_PRESETS;
-  const i=Math.max(0,presets.findIndex(p=>p.id===themeName()));
-  const next=presets[(i+1)%presets.length];
-  S.settings.themeName=next.id;
-  S.settings.customPalette=null;
-  applyTheme();
-  saveThemePrefs();
-  toast(`${next.name} applied.`,'ok');
-}
-
+/* Header theme controls: #themeBtn toggles light/midnight (bound in render.js)
+   and #paletteBtn opens the shared theme palette — six presets plus a custom
+   colour editor, wired once by bindPalette(). */
 export function bind(){
-  $('paletteBtn')&&($('paletteBtn').onclick=cycleTheme);
+  bindPalette();
   $("historyTabs").addEventListener("click",e=>{const b=e.target.closest("[data-history-tab]");if(!b)return;HISTORY.tab=b.dataset.historyTab;HISTORY.page=1;renderHistory();});
   $("historyPrev").onclick=()=>{HISTORY.page=Math.max(1,HISTORY.page-1);renderHistory();};
   $("historyNext").onclick=()=>{HISTORY.page++;renderHistory();};
