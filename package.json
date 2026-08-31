@@ -1,0 +1,16 @@
+{
+  "name": "fliparena-tossmatch",
+  "version": "13.0.0",
+  "private": true,
+  "description": "FlipArena (TossMatch) — offline-capable play-coin P2P coin-game demo: player app, admin console and the audit toolchain.",
+  "type": "module",
+  "scripts": {
+    "audit": "node tools/audit.js",
+    "smoke": "node tools/boot-smoke.mjs",
+    "test": "node tools/audit.js && node tools/boot-smoke.mjs && node tools/test-new-features.mjs",
+    "audit:loop": "bash tools/run-audit-loop.sh"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1"
+  }
+}

@@ -2,12 +2,13 @@
 /* TossMatch continuous audit harness (modular build).
    Run: node tools/audit.js
    Exits 0 when every check passes, 1 otherwise. */
-'use strict';
-const fs = require('fs');
-const path = require('path');
-const cp = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import cp from 'child_process';
+import vm from 'vm';
+import { fileURLToPath } from 'url';
 
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const files = ['tossmatch/index.html', 'tossmatch/admin.html'];
 let failures = [];
 function check(name, ok, detail) {
@@ -197,6 +198,83 @@ const as = checkAssets();
 check('static asset references exist', as.ok, as.detail);
 const sw = checkSwCache();
 check('sw.js CORE assets exist', sw.ok, sw.detail);
+/* The precache must cover everything a cold offline start needs: every ES module
+   reachable from the two entry points, plus every stylesheet/asset the shells,
+   stylesheets and manifest link to. */
+function bootClosure() {
+  const need = new Set(), seen = new Set();
+  const rel = p => './' + path.relative(path.join(root, 'tossmatch'), p).split(path.sep).join('/');
+  const walk = p => {
+    p = path.normalize(p);
+    if (seen.has(p)) return;
+    seen.add(p);
+    if (!fs.existsSync(p)) return;
+    need.add(rel(p));
+    const txt = fs.readFileSync(p, 'utf8');
+    for (const m of txt.matchAll(/from\s+["'](\.[^"']+)["']/g)) walk(path.resolve(path.dirname(p), m[1]));
+    for (const m of txt.matchAll(/import\s+["'](\.[^"']+)["']/g)) walk(path.resolve(path.dirname(p), m[1]));
+  };
+  for (const f of files) {
+    const html = fs.readFileSync(path.join(root, f), 'utf8');
+    for (const m of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
+      const u = m[1].split('?')[0];
+      if (/^(https?:|data:|mailto:|tel:|#)/i.test(u)) continue;
+      const abs = path.resolve(path.join(root, 'tossmatch'), u);
+      if (!fs.existsSync(abs)) continue;
+      need.add(rel(abs));
+      if (u.endsWith('.js')) walk(abs);
+    }
+  }
+  for (const css of APP['tossmatch/index.html'].css.concat(APP['tossmatch/admin.html'].css)) {
+    const p = path.join(root, 'tossmatch', css);
+    if (!fs.existsSync(p)) continue;
+    need.add(rel(p));
+    for (const m of fs.readFileSync(p, 'utf8').matchAll(/url\(([^)]+)\)/g)) {
+      const u = m[1].replace(/^['"]|['"]$/g, '');
+      if (/^(https?:|data:)/i.test(u)) continue;
+      const abs = path.resolve(path.dirname(p), u);
+      if (fs.existsSync(abs)) need.add(rel(abs));
+    }
+  }
+  const manifest = path.join(root, 'tossmatch', 'manifest.webmanifest');
+  if (fs.existsSync(manifest)) {
+    need.add('./manifest.webmanifest');
+    for (const m of fs.readFileSync(manifest, 'utf8').matchAll(/"src"\s*:\s*"([^"]+)"/g)) {
+      const abs = path.resolve(path.join(root, 'tossmatch'), m[1]);
+      if (fs.existsSync(abs)) need.add(rel(abs));
+    }
+  }
+  return need;
+}
+{
+  const core = new Set([...fs.readFileSync(path.join(root, 'tossmatch/sw.js'), 'utf8')
+    .match(/const CORE=\[([^\]]+)\]/)[1].matchAll(/'([^']+)'/g)].map(m => m[1]));
+  const missing = [...bootClosure()].filter(u => !core.has(u));
+  check('sw.js precaches everything the apps load offline', missing.length === 0, missing.join(', '));
+}
+
+/* 3b. accessible names on every static form control */
+console.log('\naccessibility');
+function unnamedControls(html) {
+  const labelFor = new Set([...html.matchAll(/<label[^>]*\bfor="([^"]+)"/g)].map(m => m[1]));
+  const stack = [], bad = [];
+  const re = /<(\/?)label\b[^>]*>|<(input|select|textarea)\b([^>]*)>/gi;
+  for (const m of html.matchAll(re)) {
+    if (m[1] === '/') { stack.pop(); continue; }
+    if (!m[2]) { stack.push(/<label[^>]*\bfor="/.test(m[0]) ? 1 : 0); continue; }
+    const attrs = m[3] || '';
+    if (/type="hidden"/i.test(attrs)) continue;
+    const id = (attrs.match(/\bid="([^"]+)"/) || [])[1];
+    const named = /aria-label=|title=/.test(attrs);
+    const wrapped = stack.length > 0 && stack[stack.length - 1] === 0; // inside <label> without for=
+    if (!(named || wrapped || (id && labelFor.has(id)))) bad.push((id || '(no id)') + ' <' + m[2] + '>');
+  }
+  return bad;
+}
+for (const f of files) {
+  const bad = unnamedControls(fs.readFileSync(path.join(root, f), 'utf8'));
+  check(f + ' every form control has an accessible name', bad.length === 0, bad.slice(0, 6).join(', '));
+}
 
 /* 4. nullish/boolean precedence sanity */
 console.log('\njs hygiene');
@@ -284,7 +362,6 @@ try{
 _res;
 `;
   const sandbox = { console };
-  const vm = require('vm');
   try {
     vm.createContext(sandbox);
     const res = vm.runInContext(body, sandbox, { timeout: 3000 });

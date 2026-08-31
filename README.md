@@ -141,7 +141,21 @@ path `tossmatch`. See `tossmatch/docs/github-pages-workflow.md`.
 
 ## Audit
 
-The merged project was verified with a 50-pass automated audit loop
-(`audit/` harness outside this app folder): JS syntax validation, boot tests,
-full tab/screen walks, live game settlement, state invariants, resource and
-PWA checks across both apps, executed 50 consecutive times with zero errors.
+Every part of the project is verified by the harness in `tools/`. One command
+runs the whole stack — static audit, headless boot smoke and the feature
+regression suite — 50 consecutive times, and every pass must be clean:
+
+```bash
+npm i                          # once — installs jsdom for the headless boot smoke
+bash tools/run-audit-loop.sh 50
+```
+
+| Harness | What it proves |
+|---|---|
+| `tools/audit.js` | module graph + ESM parse, DOM ids, assets, service-worker precache completeness, JS hygiene, accessible names on every form control, human labels, targeted rendering, component wiring, Admin ↔ Player alignment, repository hygiene |
+| `tools/boot-smoke.mjs` | both apps boot headlessly in jsdom, all screens paint, tabs swap without errors, a bet settles, the theme palette works end to end, Admin screens (including Revenue) render, zero console output |
+| `tools/ledger-simulation.mjs` | safe integer money math, escrow conservation, concurrency/double-spend, ledger invariants, reconciliation formula |
+| `tools/test-new-features.mjs` | catalog/arcade games, hubs, economy, privacy and persistence flows |
+
+The current run executes **315 checks per pass — 50/50 clean passes, 15,750
+assertions, 0 failures** (log: `tossmatch/docs/audit-loop-v13.0.log`).

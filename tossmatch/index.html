@@ -112,12 +112,12 @@
           <button class="side-btn heads" id="pickHeads"><span class="s-ico">🪙</span>HEADS<span class="s-sub">even byte</span></button>
           <button class="side-btn tails" id="pickTails"><span class="s-ico">💿</span>TAILS<span class="s-sub">odd byte</span></button>
         </div>
-        <div class="stake-row"><input type="number" class="stake-input" id="stakeInput" value="100" min="10" max="1000" step="10"/></div>
+        <div class="stake-row"><input type="number" class="stake-input" id="stakeInput" value="100" min="10" max="1000" step="10" aria-label="Stake amount in coins"/></div>
         <div class="qchips">
           <button class="qchip" data-stake="50">50</button><button class="qchip" data-stake="100">100</button>
           <button class="qchip" data-stake="250">250</button><button class="qchip" data-stake="500">500</button><button class="qchip" data-stake="1000">1000</button>
         </div>
-        <input type="text" class="taunt-input" id="tauntInput" maxlength="24" placeholder="Add a taunt (24 chars, optional)..."/>
+        <input type="text" class="taunt-input" id="tauntInput" maxlength="24" placeholder="Add a taunt (24 chars, optional)..." aria-label="Taunt to send with your bet"/>
         <div class="toggles" style="justify-content:flex-start;margin-top:10px">
           <button class="tog" id="togPrivate">🔓 Public</button>
           <button class="tog" id="togSound">🔊 Sound</button>
@@ -126,7 +126,7 @@
         </div>
         <div class="auto-bet-config" id="autoBetConfig">
           <div><span class="feature-code">AUTO BET STOP</span><b>Stop when session P/L reaches</b><small>Default is −200. Enter a negative value between −50 and −10,000.</small></div>
-          <div class="auto-bet-controls"><button class="qchip" data-auto-stop="-100">−100</button><button class="qchip active" data-auto-stop="-200">−200</button><button class="qchip" data-auto-stop="-500">−500</button><input id="autoStopInput" type="number" min="-10000" max="-50" step="50" value="-200"/></div>
+          <div class="auto-bet-controls"><button class="qchip" data-auto-stop="-100">−100</button><button class="qchip active" data-auto-stop="-200">−200</button><button class="qchip" data-auto-stop="-500">−500</button><input id="autoStopInput" type="number" min="-10000" max="-50" step="50" value="-200" aria-label="Auto Bet stop limit (negative session profit)"/></div>
         </div>
         <div class="bet-actions" style="justify-content:flex-start">
           <button class="btn btn-primary" id="postBtn">📨 Post Bet</button>
@@ -163,7 +163,7 @@
           <button class="qchip" data-fmt="adv">Advantage</button>
         </div>
         <div class="stake-row" style="justify-content:flex-start;margin-top:10px">
-          <input type="number" class="stake-input sm" id="cupStake" value="100" min="10" max="1000"/>
+          <input type="number" class="stake-input sm" id="cupStake" value="100" min="10" max="1000" aria-label="Series Cup stake"/>
           <button class="btn btn-primary btn-sm" id="openCupBtn">Open Cup</button>
         </div>
         <div class="section-title" style="margin-top:18px">Open Cups</div>
@@ -375,7 +375,7 @@
         <h3>💳 Deposit</h3>
         <p class="muted">Choose an amount and payment method, confirm the demo deposit and get a full receipt with a processing state. Demo coins only — never real money.</p>
         <div class="stake-row" style="justify-content:flex-start;margin-top:12px">
-          <input type="number" class="stake-input sm" id="depositAmt" value="500" min="100"/>
+          <input type="number" class="stake-input sm" id="depositAmt" value="500" min="100" aria-label="Deposit amount"/>
           <select class="stake-input sm" id="depositMethod" aria-label="Deposit method">
             <option>UPI</option><option>Card</option><option>NetBanking</option><option>Demo wallet</option>
           </select>
@@ -387,7 +387,7 @@
         <div class="section-title">🏦 Bank / Vault</div>
         <p class="muted">Park MAIN coins outside the betting wallet to reduce tilt. Bonus/referral/rakeback can't be vaulted.</p>
         <div class="stake-row" style="justify-content:flex-start;margin-top:6px">
-          <input type="number" class="stake-input sm" id="bankAmt" value="100" min="10"/>
+          <input type="number" class="stake-input sm" id="bankAmt" value="100" min="10" aria-label="Amount to vault"/>
           <button class="btn btn-ghost btn-sm" id="parkBtn">➡️ Park</button>
           <button class="btn btn-ghost btn-sm" id="unparkBtn">⬅️ Unpark</button>
         </div>
@@ -396,7 +396,7 @@
         <h3>🏧 Withdraw</h3>
         <p class="muted">MAIN only · min 100 · method + KYC verification (demo) · processing state and a withdrawal receipt.</p>
         <div class="stake-row" style="justify-content:flex-start;margin-top:12px">
-          <input type="number" class="stake-input sm" id="withdrawAmt" value="200" min="100"/>
+          <input type="number" class="stake-input sm" id="withdrawAmt" value="200" min="100" aria-label="Withdrawal amount"/>
           <select class="stake-input sm" id="withdrawMethod" aria-label="Withdraw method">
             <option>UPI</option><option>Bank transfer</option><option>Card</option>
           </select>
@@ -410,13 +410,13 @@
         <div class="kv-row"><span class="k">Friends referred</span><span class="v" id="refCount">0</span></div>
         <div class="kv-row"><span class="k">Earned (5% of fees)</span><span class="v" id="refEarned">0</span></div>
         <div class="stake-row" style="justify-content:flex-start;margin-top:8px">
-          <input type="text" class="taunt-input" id="refApply" placeholder="Apply a friend's code (once)" style="max-width:200px;text-align:left"/>
+          <input type="text" class="taunt-input" id="refApply" placeholder="Apply a friend's code (once)" style="max-width:200px;text-align:left" aria-label="Friend's referral code to apply"/>
           <button class="btn btn-ghost btn-sm" id="refApplyBtn">Apply</button>
         </div>
         <div class="section-title">💸 Transfer to friend</div>
         <div class="muted">2% fee · min 10 · cap 500/day · MAIN only</div>
         <div class="stake-row" style="justify-content:flex-start;margin-top:6px">
-          <input type="number" class="stake-input sm" id="xfAmt" value="100" min="10" max="500"/>
+          <input type="number" class="stake-input sm" id="xfAmt" value="100" min="10" max="500" aria-label="Transfer amount to a friend"/>
           <button class="btn btn-ghost btn-sm" id="xfBtn">Send coins to a bot</button>
         </div>
       </div>
@@ -426,7 +426,7 @@
       <div class="grid3">
         <div>
           <div class="muted" style="margin-bottom:6px"><b>Session loss limit</b><br>Blocks betting when session net ≤ −limit.</div>
-          <div class="stake-row" style="justify-content:flex-start"><input type="number" class="stake-input sm" id="lossLim" value="0" min="0" step="50"/><button class="btn btn-ghost btn-sm" id="setLossBtn">Set</button></div>
+          <div class="stake-row" style="justify-content:flex-start"><input type="number" class="stake-input sm" id="lossLim" value="0" min="0" step="50" aria-label="Session loss limit"/><button class="btn btn-ghost btn-sm" id="setLossBtn">Set</button></div>
         </div>
         <div>
           <div class="muted" style="margin-bottom:6px"><b>Self-exclusion</b><br>Durable 60-second quick lock; longer/permanent options are in Safety & Services.</div>
@@ -479,7 +479,7 @@
       <div class="player-hero compact-history"><div><span class="eyebrow">FULL ACTIVITY LEDGER</span><h1>History</h1><p>Search, inspect and export every flip, challenge, room, clan event, Arcade Zone run and Economy+ transaction.</p></div><div class="hero-actions"><button class="btn btn-ghost" id="historyExport">📦 Export history JSON</button></div></div>
       <div class="home-kpis" id="historyKpis"></div>
       <div class="card">
-        <div class="history-toolbar"><div class="hub-tabs" id="historyTabs"></div><div class="history-filters"><input id="historySearch" placeholder="Search history…"/><select id="historySort"><option value="time-desc">Newest first</option><option value="time-asc">Oldest first</option><option value="amount-desc">Highest amount</option></select></div></div>
+        <div class="history-toolbar"><div class="hub-tabs" id="historyTabs"></div><div class="history-filters"><input id="historySearch" placeholder="Search history…" aria-label="Search history"/><select id="historySort" aria-label="Sort history"><option value="time-desc">Newest first</option><option value="time-asc">Oldest first</option><option value="amount-desc">Highest amount</option></select></div></div>
         <div id="historyList"></div>
         <div class="history-pager"><button class="btn btn-sm btn-ghost" id="historyPrev">← Previous</button><span class="muted" id="historyPage">Page 1</span><button class="btn btn-sm btn-ghost" id="historyNext">Next →</button></div>
       </div>
@@ -489,10 +489,10 @@
         <div class="card">
           <h3>🔍 Standalone Verifier</h3>
           <p class="muted">Paste any game's four inputs. Recomputes every hash locally — nothing trusted from the server.</p>
-          <label class="muted" style="font-size:11px">Server seed (revealed)</label><input class="vfy-input" id="vSeed"/>
-          <label class="muted" style="font-size:11px">Maker bet hash</label><input class="vfy-input" id="vMaker"/>
-          <label class="muted" style="font-size:11px">Taker bet hash</label><input class="vfy-input" id="vTaker"/>
-          <label class="muted" style="font-size:11px">Game ID</label><input class="vfy-input" id="vGid"/>
+          <label class="muted" style="font-size:11px">Server seed (revealed)</label><input class="vfy-input" id="vSeed" aria-label="Server seed (revealed)"/>
+          <label class="muted" style="font-size:11px">Maker bet hash</label><input class="vfy-input" id="vMaker" aria-label="Maker bet hash"/>
+          <label class="muted" style="font-size:11px">Taker bet hash</label><input class="vfy-input" id="vTaker" aria-label="Taker bet hash"/>
+          <label class="muted" style="font-size:11px">Game ID</label><input class="vfy-input" id="vGid" aria-label="Game ID"/>
           <div style="display:flex;gap:8px;margin-top:6px">
             <button class="btn btn-primary" id="vfyBtn">Verify</button>
             <button class="btn btn-ghost btn-sm" id="vfyLast">Load last game</button>
@@ -529,6 +529,29 @@ jackpot    = firstByte == 0  (1 in 256, only when pool armed)</pre>
 <div class="sr-only" id="a11yLive" aria-live="polite"></div>
 
 
+<div class="modal-bg" id="paletteBg" role="dialog" aria-modal="true" aria-label="Theme palette" aria-hidden="true">
+  <div class="modal palette-modal" id="paletteContent">
+    <div class="palette-head">
+      <h3>🎨 Theme palette</h3>
+      <button class="icon-btn" id="paletteClose" title="Close theme palette" aria-label="Close theme palette">✕</button>
+    </div>
+    <p class="muted">Pick a preset or mix your own colours. The choice is saved on this device and shared by the player and admin apps.</p>
+    <div class="theme-preset-grid" id="themePresetGrid"></div>
+    <div class="palette-custom">
+      <h4>Custom palette</h4>
+      <div class="palette-fields">
+        <div><label for="pcBg">Background</label><input type="color" id="pcBg" value="#0b1020" aria-label="Custom background colour"></div>
+        <div><label for="pcCard">Cards</label><input type="color" id="pcCard" value="#121a2e" aria-label="Custom card colour"></div>
+        <div><label for="pcAccent">Accent</label><input type="color" id="pcAccent" value="#f6c453" aria-label="Custom accent colour"></div>
+        <div><label for="pcTxt">Text</label><input type="color" id="pcTxt" value="#e8edf7" aria-label="Custom text colour"></div>
+      </div>
+      <div class="palette-actions">
+        <button class="btn btn-primary" id="pcApply">Apply palette</button>
+        <button class="btn btn-ghost" id="pcReset">Reset to Midnight Gold</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="toasts"></div>
 <div class="modal-bg" id="modalBg"><div class="modal" id="modalContent"></div></div>
 

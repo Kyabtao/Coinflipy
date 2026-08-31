@@ -40,7 +40,6 @@ let booted = true, bootErr = '';
 try { await import(pathToFileURL(path.join(ROOT, 'tossmatch', 'js', 'player', 'main.js')).href); }
 catch (e) { booted = false; bootErr = e.message; }
 record('player boots with new-feature modules', booted, bootErr);
-console.log('DEBUG after boot:', typeof globalThis.S, typeof globalThis.cfg, typeof globalThis.renderTick, typeof globalThis.GAMES, typeof globalThis.EXT_ARCADE, typeof globalThis.handleFeatureAction);
 const S = globalThis.S, cfg = globalThis.cfg;
 const click = el => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 const switchTab = t => click(w.document.querySelector('.tab[data-tab="' + t + '"]'));
@@ -235,7 +234,6 @@ switchTab('players');
 
 /* ── New catalog + arcade games registered ── */
 const GAMES = globalThis.GAMES || w.GAMES || (globalThis.CATALOG_GROUPS ? globalThis.GAMES : null);
-if(!GAMES) console.log('DEBUG GAMES missing; keys:', Object.keys(globalThis).filter(k=>/GAME|CATALOG/i.test(k)).join(','));
 record('GAMES catalog now 100 games incl. CAT34–CAT100', GAMES && GAMES.length === 100 && ['bytewar','sumfour','highcard','suitduel','nimgame'].every(id => GAMES.some(g => g.id === id)), 'count=' + GAMES.length);
 const extKeys=Object.keys(globalThis.EXT_ARCADE||{});
 const navList=globalThis.ARCADE_NAV_META||[];
